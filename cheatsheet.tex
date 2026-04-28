@@ -74,86 +74,145 @@
 \raggedcolumns
 
 %% ============================================================
-\section{Type Inference \& Unification}
+\section{Polymorphic Type Inference}
 %% ============================================================
 
-\subsection{Algorithm}
-\begin{enumerate}
-  \item Assign fresh type vars to every parameter.
-  \item Recurse down AST as in normal type checking.
-  \item On the way back up, \textbf{unify} types.
-\end{enumerate}
+\subsection{Parametric Polymorphism}
+Types that are ``for all.'' Example: \texttt{map} in SML says ``for any types A and B, give me an A$\to$B function and a list of A's, I'll return a list of B's.'' No info about the types needed to type-check.
 
-\subsection{Unification}
-\textbf{Base cases}: type var with type $\to$ mapping; same type $\to$ $\emptyset$; constructor mismatch $\to$ FAIL.
-
-\textbf{Recursive}: \texttt{unify(T1*T2, S1*S2)}: sub1=\allowbreak{}unify(T1,S1); apply sub1 to T2,S2; sub2=\allowbreak{}unify(T2',S2'); combine. \textbf{Must apply sub from left before right.}
-
-\textbf{Concrete examples}:
+\textbf{How languages handle ``for all'' being too constraining:}
 \begin{itemize}
-  \item \texttt{unify(int*'a, int*string)} $\to$ \{a$\to$string\}
-  \item \texttt{unify(int->'a, 'b*string)} $\to$ FAIL (arrow vs tuple)
-  \item \texttt{unify('a*'a, int*string)}: left gives 'a$\to$int; apply to right: unify(int,string) $\to$ FAIL
+  \item \textbf{C++}: Only type-checks on types you actually use (``not truly for all T, for all T's you use''). Templates are specialized per type.
+  \item \textbf{Java}: Type bounds -- \texttt{for all T extends Comparable}. Type-check body once, instantiate only with subtypes of bound.
+  \item \textbf{SML}: \texttt{'a} = any type. \texttt{''a} = equality types (where \texttt{=} is defined). For generic structures needing comparison (ordered maps), use \textbf{functors}: give a signature defining operations, it creates a structure.
 \end{itemize}
 
-\subsection{Occurs Check}
-When mapping \texttt{'b} to $T$, \texttt{'b} cannot appear inside $T$.
+\subsection{Type Inference Algorithm}
+\begin{enumerate}
+  \item Assign fresh type variables to every parameter and return type.
+  \item Recurse down AST as in normal type checking.
+  \item On the way back up, instead of checking ``are these equal?'', \textbf{unify} the types you have with the types you expect.
+  \item Unification may fail (ill-typed), do nothing (already match), or produce mappings (new info about type vars).
+\end{enumerate}
 
-\texttt{fun f(x) = f}: f:'a$\to$'b, body is f itself ('a$\to$'b). Unify 'b with 'a$\to$'b $\to$ infinite type $\to$ \textbf{FAIL}.
+\subsection{Unification Algorithm}
 
-\textbf{Workaround}: \texttt{datatype 'a hungry = F of 'a -> 'a hungry}. Then \texttt{fun f(x) = F(f)} : 'a $\to$ 'a hungry. SML datatypes allow recursive types.
+\textbf{Base cases:}
+\begin{itemize}
+  \item Type var with type $\to$ return that mapping (e.g., \texttt{'a} with \texttt{int} gives \{\texttt{'a}$\to$int\})
+  \item Same type with itself $\to$ return $\emptyset$ (nothing to do)
+  \item Constructor mismatch (arrow vs tuple, int vs string) $\to$ FAIL (``Tycon mismatch'')
+  \item Unary constructors like \texttt{list}: strip off \texttt{list} and unify argument
+\end{itemize}
 
-\begin{exambox}[Worked: Type Inference for len]
+\textbf{Recursive case:}
+\begin{lstlisting}
+unify(T1 ?? T2, S1 ?? S2) =
+  let m1 = unify(T1, S1)
+      T2' = apply(m1, T2)  (* MUST apply *)
+      S2' = apply(m1, S2)  (* before continuing *)
+      m2 = unify(T2', S2')
+  in  combine(m1, m2)
+\end{lstlisting}
+
+\textbf{CRITICAL}: Before unifying the right parts, you MUST apply the substitution from unifying the left parts. Otherwise you get inconsistent results.
+
+\textbf{Concrete examples:}
+\begin{itemize}
+  \item \texttt{unify(int*'a, int*string)} $\to$ \{'a$\to$string\}
+  \item \texttt{unify(int->'a, 'b*string)} $\to$ FAIL (arrow vs tuple, tycon mismatch)
+  \item \texttt{unify('a*'a, int*string)}: left gives 'a$\to$int; apply: unify(int,string) $\to$ FAIL
+  \item \texttt{unify('a list, int list)} $\to$ strip list, unify('a, int) $\to$ \{'a$\to$int\}
+\end{itemize}
+
+\begin{exambox}[{Worked Example: Type Inference for len}]
 \scriptsize
 \texttt{fun len list = case list of [] => 0 | y::z => 1 + len z}
 
-Assign: list:'a, return:'b, y:'c, z:'d. len : 'a$\to$'b.
+\textbf{Step 1 -- Assign type vars:} list:'a, return:'b, y:'c, z:'d. len : 'a$\to$'b.
 
-From \texttt{len(z)}: unify 'a with 'd $\to$ 'a='d.
+\textbf{Step 2 -- Unify from bottom up:}
 
-From \texttt{1+len z}: plus needs int*int$\to$int, so 'b=int.
+\texttt{len(z)}: z has type 'd, len expects 'a. Unify 'd with 'a $\to$ 'a='d.
 
-From pattern \texttt{y::z}: cons has type 'e*'e list$\to$'e list, so 'e='c, 'd='c list.
+\texttt{1+len z}: plus needs int*int$\to$int. len z returns 'b. Unify 'b with int $\to$ 'b=int.
 
-From nil: type 'f list, unify with 'c list $\to$ 'f='c.
+Pattern \texttt{y::z}: cons has type 'e*'e list$\to$'e list. Unify 'e*'e list with 'c*'d $\to$ 'e='c, 'd='c list.
 
-\textbf{Result}: len : 'c list $\to$ int.
+Nil \texttt{[]}: type 'f list. Unify with 'c list $\to$ 'f='c.
+
+Both cases match 'c list and produce int.
+
+list had type 'a = 'd = 'c list. Return type 'b = int.
+
+\textbf{Result}: len : 'c list $\to$ int (i.e., 'a list $\to$ int).
 \end{exambox}
 
-\begin{exambox}[Practice Final Q1]
+\begin{exambox}[Practice Final Q1 -- Type Inference]
 \scriptsize
 \texttt{fun f(w,x) = case x of [] => [] | y::z => w(y)::f(w,z)}
 
-Assign w:'a, x:'b. Unification table:
+\textbf{Assign:} w:'a, x:'b, return:'c, y:'d, z:'e.
 
-x with [] $\to$ 'b = 'f list.
-(y,z) with cons arg $\to$ 'd='h, 'e='h list.
-x with cons result $\to$ 'f='h.
-w as fn taking y $\to$ 'a = 'h$\to$'i.
-(w(y),f(w,z)) with cons $\to$ 'i='j, 'c='j list.
-1st case = 2nd case $\to$ 'k='j.
+\textbf{Unification table:}
+\begin{itemize}[leftmargin=0.8em]
+  \item x with [] $\to$ 'b = 'f list
+  \item (y,z) with cons arg $\to$ 'd='h, 'e='h list
+  \item x with cons result $\to$ 'f='h
+  \item w as fn taking y $\to$ 'a = 'h$\to$'i
+  \item (w(y), f(w,z)) with cons $\to$ 'i='j, 'c='j list
+  \item 1st case = 2nd case $\to$ 'k list = 'j list $\to$ 'k='j
+  \item f's arg types consistent: ('h$\to$'j)*'h list = ('h$\to$'j)*'h list \checkmark
+\end{itemize}
 
-\textbf{Result}: $f:(\text{'h}\to\text{'j})\times\text{'h list}\to\text{'j list}$ (this is \texttt{map}).
+\textbf{Final type}: $f : (\text{'h}\to\text{'j})\times\text{'h list}\to\text{'j list}$
 
-\texttt{fun f(x) = f} fails the occurs check.
+This is \texttt{map}! Takes a function and a list, applies function to each element.
+
+\textbf{Part 2}: \texttt{fun f(x) = f} fails the \textbf{occurs check} (see below).
 \end{exambox}
 
+\subsection{Occurs Check}
+When mapping \texttt{'b} to type $T$, check that \texttt{'b} does NOT appear inside $T$. Otherwise the type would be infinite.
+
+\textbf{Example}: \texttt{fun f x = f}. f:'a$\to$'b. Body is f itself ('a$\to$'b). Must unify 'b with 'a$\to$'b. But 'b appears inside 'a$\to$'b $\to$ infinite type $\to$ \textbf{FAIL}.
+
+\subsection{Hungry Types (Workaround for Occurs Check)}
+\begin{lstlisting}
+datatype 'a hungry = F of ('a -> 'a hungry)
+\end{lstlisting}
+This is a valid, finite SML datatype. Now \texttt{fun f x = F(f)} works: f:'a$\to$'a hungry. F expects 'a$\to$'a hungry, returns 'a hungry. Everything checks out.
+
+\textbf{Why ``hungry''}: Pattern match F to get f, apply to a value, get another 'a hungry, keep feeding forever. Used for: print sinks, random generators, Y combinator.
+
+SML datatypes allow recursive types via constructors. The occurs check only fails for bare type variables, not datatype-wrapped recursion.
+
 \subsection{Options Gotcha}
-\texttt{case ... of ... => NONE | ... => 42} FAILS: unify 'a option with int $\to$ tycon mismatch. Fix: use \texttt{SOME 42} so both branches are int option.
+\texttt{case ... of ... => NONE | ... => 42} FAILS: NONE has type 'a option, 42 has type int. Can't unify option with int (tycon mismatch).
+
+\textbf{Fix}: \texttt{SOME 42} so both branches are int option.
 
 %% ============================================================
 \section{Subtyping}
 %% ============================================================
 
-\textbf{Covariance}: read $\Rightarrow$ same direction.
-\textbf{Contravariance}: write $\Rightarrow$ opposite.
-\textbf{Invariant}: read+write $\Rightarrow$ no subtyping.
+\textbf{Covariance}: if you can \textbf{read} it $\Rightarrow$ same direction.
 
-Functions: covariant in return, contravariant in arg.
+\textbf{Contravariance}: if you can \textbf{write} it $\Rightarrow$ opposite direction.
 
-If Lion $<:$ Cat: Lion list $<:$ Cat list (covariant); Lion ref $\not<:$ Cat ref (invariant -- can write a Frog into Cat ref, then read expecting Lion); Cat$\to$int $<:$ Lion$\to$int (contra in arg).
+\textbf{Invariant}: read+write $\Rightarrow$ no subtyping allowed.
 
-\textbf{SML}: \texttt{'a}=any type, \texttt{''a}=equality types. Complex constraints $\to$ \textbf{functors}.
+\textbf{Functions}: covariant in return type (you read the return), contravariant in argument type (you write the argument into the function).
+
+\textbf{If Lion $<:$ Cat:}
+\begin{itemize}
+  \item Lion list $<:$ Cat list (covariant -- lists are read-only in SML)
+  \item Lion ref $\not<:$ Cat ref (\textbf{invariant} -- refs are read+write. Could write a Frog into Cat ref, then read expecting Lion $\to$ type error)
+  \item Cat$\to$int $<:$ Lion$\to$int (contravariant in arg: function expecting Cat can handle anything given Lion, but a Lion$\to$int function can't handle arbitrary Cats)
+  \item If it were \texttt{const ref} (read-only), then covariance would apply
+\end{itemize}
+
+\textbf{SML}: \texttt{'a}=any type, \texttt{''a}=equality types. Complex constraints $\to$ \textbf{functors} (give a signature, get a structure).
 
 %% ============================================================
 \section{MIPS Registers \& Calling Convention}
@@ -166,12 +225,14 @@ If Lion $<:$ Cat: Lion list $<:$ Cat list (covariant); Lion ref $\not<:$ Cat ref
 \textbf{Reg} & \textbf{Name} & \textbf{Purpose} \\
 \midrule
 r0 & zero & Hardwired to 0 \\
-r1 & AT & Assembler temp (pseudo-instrs) \\
+r1 & AT & Assembler temp (pseudo-instrs like BLT decompose to SLT+branch using r1) \\
 r2--3 & v0--v1 & Return values \\
 r4--7 & a0--a3 & Arguments ({>}4 on stack) \\
 r8--15 & t0--t7 & \textbf{Caller-saved} temps \\
-r16--23 & s0--s7 & \textbf{Callee-saved} \\
+r16--23 & s0--s7 & \textbf{Callee-saved} (must restore) \\
 r24--25 & t8--t9 & Caller-saved temps \\
+r26--27 & k0--k1 & Reserved (OS/kernel) \\
+r28 & gp & Global pointer (globals = GP+offset) \\
 r29 & sp & Stack pointer \\
 r30 & fp & Frame pointer \\
 r31 & ra & Return address \\
@@ -179,69 +240,200 @@ r31 & ra & Return address \\
 \end{tabular}
 \end{adjustbox}
 
-\subsection{Function Prolog}
-(1) SP$-$=frame\_size (2) Save old FP (3) FP=SP+frame\_size (4) Save S regs used (5) Save RA (only if non-leaf -- leaf = calls nobody)
+\textbf{Usable registers:} $\sim$25 (excluding r0, r1, r26--28).
 
-\subsection{Function Epilog}
-(1) Restore S regs (2) Restore RA (3) Reset SP via FP (4) Restore old FP (5) \texttt{jr \$ra}
+\textbf{T vs S analogy}: Like treadmills at the gym. T regs = you wipe down before use (caller saves). S regs = previous user wipes after (callee saves/restores).
+
+\subsection{Function Prolog (before body)}
+\begin{enumerate}
+  \item \texttt{SP -= frame\_size} (allocate stack frame)
+  \item Save old FP to stack
+  \item \texttt{FP = SP + frame\_size} (set up new FP)
+  \item Save any S registers this function will use (only ones we clobber)
+  \item Save RA -- \textbf{only if non-leaf} (leaf = calls no other functions)
+\end{enumerate}
+
+\subsection{Function Epilog (at end)}
+\begin{enumerate}
+  \item Restore saved S registers
+  \item Restore RA (if saved)
+  \item \texttt{SP = FP} or \texttt{SP += frame\_size} (reset SP)
+  \item Restore old FP from stack
+  \item \texttt{jr \$ra} (return)
+\end{enumerate}
 
 \subsection{Caller's Responsibilities}
-\textbf{Before}: save T regs needed, args to a0--a3 (extras on stack), \texttt{jal}.
-\textbf{After}: restore T regs.
+\textbf{Before call}: Save any T regs you need preserved. Move args into a0--a3 (extras on stack). Execute \texttt{jal target}.
+
+\textbf{After call}: Restore T regs. Result in v0.
 
 \subsection{Why Frame Pointer Matters}
-FP is \textbf{fixed}; SP changes with \texttt{alloca()}, VLAs, nested call args. Vars: FP$-$offset (stable) vs SP+offset (varies). Debuggers use FP chain. \textbf{Can omit FP} when no dynamic stack alloc.
+\begin{enumerate}
+  \item \textbf{Fixed reference}: FP stays fixed throughout function. SP changes with \texttt{alloca()}, VLAs, nested call args. Vars at FP$-$offset (stable) vs SP+offset (varies).
+  \item \textbf{Variable-size frames}: C allows \texttt{int arr[n]} where n is runtime. SP moves unpredictably. FP remains fixed.
+  \item \textbf{Debugging}: Debuggers use FP chain (linked list of frames) to walk the call stack.
+\end{enumerate}
+
+\textbf{Can omit FP} when no dynamic stack alloc $\to$ saves instructions at entry/exit, frees a register.
 
 %% ============================================================
 \section{Static Links \& Escaping Variables}
 %% ============================================================
 
-Each frame stores pointer to \textbf{statically enclosing function}'s frame. Follow $N$ static links to access variable $N$ levels out. In Tiger: SL passed as implicit first arg (a0). SL $\neq$ old FP: FP follows dynamic call chain; SL follows lexical nesting.
+\subsection{Why Static Links?}
+Tiger allows nested functions where inner functions access/modify outer variables. These vars can't be in registers (no guarantee the register is intact levels deep). They must live in stack frames.
 
-\begin{exambox}[Static Link Rules + Practice Final Q2]
+The naive approach (following old FP links / dynamic chain) fails because recursion creates unpredictable numbers of frames. The old FP follows the \textbf{dynamic call chain}, not the lexical nesting.
+
+\subsection{How Static Links Work}
+Each frame stores a \textbf{static link} (SL) pointing to its \textbf{statically enclosing function}'s frame (the function it is textually nested inside in source code).
+
+\textbf{Implementation in Tiger}: SL passed as implicit first argument (a0). Stored in frame like an escaping variable.
+
+\textbf{Access variable N levels out}: follow N static links, then access at known offset. Always exactly N regardless of recursion depth.
+
+\textbf{SL $\neq$ old FP}: FP chain follows dynamic calls; SL follows lexical nesting.
+
+\subsection{Static Link Rules}
+\begin{itemize}
+  \item \textbf{Calling child} (function nested inside you): pass your \textbf{FP} (you are its static parent)
+  \item \textbf{Calling sibling} (same nesting level): pass your \textbf{SL} = MEM(FP)
+  \item \textbf{Calling self recursively}: pass your \textbf{SL} = MEM(FP) (same parent)
+  \item \textbf{Calling function N levels out}: follow N static links
+\end{itemize}
+
+\begin{exambox}[Practice Final Q2 -- Static Links]
 \scriptsize
-\textbf{Calling child}: pass own FP.
-\textbf{Calling sibling/recursive}: pass own SL (MEM(FP)).
-\textbf{Calling outer function}: follow SL chain outward.
+\textbf{Nesting}: Level 0: top-level let. Level 1: \texttt{odd}, \texttt{f}. Level 2: \texttt{g}, \texttt{h} (inside f).
 
-Nesting: top has \texttt{odd}, \texttt{f}; inside \texttt{f}: \texttt{g}, \texttt{h}.
+SL is stored in frame slot pointed to by FP.
 
-f$\to$g: \textbf{FP} (child). g$\to$h: \textbf{MEM(FP)} (sibling). g$\to$g: \textbf{MEM(FP)} (recursive). h$\to$f: \textbf{MEM(MEM(FP))} (2 up). g$\to$odd: \textbf{MEM(MEM(FP))} (2 up).
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}ll@{}}
+\textbf{Call} & \textbf{SL argument} \\
+f$\to$g & \textbf{FP} (child -- f is g's parent) \\
+g$\to$h & \textbf{MEM(FP)} (sibling -- pass f's FP = g's SL) \\
+g$\to$g & \textbf{MEM(FP)} (recursive -- same parent f) \\
+h$\to$f & \textbf{MEM(MEM(FP))} (2 up: h$\to$f$\to$top) \\
+g$\to$odd & \textbf{MEM(MEM(FP))} (2 up: g$\to$f$\to$top) \\
+\end{tabular}
+\end{adjustbox}
 
 \textbf{Deep nesting}: \texttt{foo} inside \texttt{h} inside \texttt{g} inside \texttt{f}. To access \texttt{a} from f's frame in foo: follow 3 static links (foo$\to$h$\to$g$\to$f). Always exactly 3 regardless of recursion depth.
 \end{exambox}
 
 \subsection{Escaping Variables}
-Tiger: used in nested function $\to$ must live in stack frame. C: address taken. \textbf{Escape analysis}: recurse AST, track declaration depth, mark escaping if referenced deeper.
+A variable ``escapes'' if it can't go in a register:
+\begin{itemize}
+  \item \textbf{Tiger}: used in a nested function $\to$ must live in stack frame
+  \item \textbf{C}: address taken (\texttt{\&x}) $\to$ needs memory location
+\end{itemize}
+
+\textbf{Escape analysis}: Recurse over AST. Map each variable to its declaration depth. When referenced at a deeper depth, mark as escaping. Non-escaping vars $\to$ hopefully in registers (faster).
 
 %% ============================================================
 \section{Intermediate Representation (IR)}
 %% ============================================================
 
-$L$ langs $\times$ $I$ ISAs $\to L{\cdot}I$ compilers. With IR: $L+I$.
+\subsection{Why IR?}
+\begin{enumerate}
+  \item \textbf{N+M instead of N*M}: N languages, M ISAs. Without IR: N*M compilers. With IR: N front-ends + M back-ends.
+  \item \textbf{Incremental step}: AST$\to$assembly is a huge leap. IR is halfway.
+\end{enumerate}
 
-\textbf{Statements}: SEQ(s1,s2), LABEL(l), JUMP(e,labels), CJUMP(relop,e1,e2,lt,lf) [\textbf{two targets}], MOVE(dst,src) [dst=TEMP or MEM], EXP(e).
+\begin{adjustbox}{max width=\columnwidth}
+\scriptsize
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Feature} & \textbf{AST} & \textbf{IR} & \textbf{Assembly} \\
+\midrule
+Structure & Tree & Tree & Linear \\
+Functions & Nested & Flat list of fragments & Top-level \\
+Variables & Named & Infinite temps & $\sim$25 regs \\
+Scope & Nested/tree & Flat & Flat \\
+Types & int,string,\ldots & 32-bit words & byte,half,word \\
+Control flow & if/while/for & 2-target CJUMP & 1-target branch \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
 
-\textbf{Expressions}: BINOP(op,e1,e2), MEM(e) [in MOVE dst=store; else=load], TEMP(t), ESEQ(s,e), NAME(l), CONST(n), CALL(f,args).
+\subsection{IR Datatypes}
 
-\subsection{Ex / Nx / Cx Wrappers \& Conversions}
-\textbf{Ex}=expression, \textbf{Nx}=statement, \textbf{Cx}=condition function (lbl*lbl$\to$stm).
+\textbf{Statements} (side effects, no value):
+\begin{itemize}
+  \item \textbf{SEQ(s1,s2)}: do s1 then s2
+  \item \textbf{LABEL(l)}: declares label location
+  \item \textbf{JUMP(e, label list)}: unconditional jump. List usually [l]. \textbf{Empty list} for \texttt{jr \$ra} (end of function). Multiple labels for jump tables.
+  \item \textbf{CJUMP(relop,e1,e2,lt,lf)}: conditional jump with \textbf{two targets} (true and false labels). relop: $<, \leq, >, \geq, =, \neq$. No fall-through in IR.
+  \item \textbf{MOVE(dst,src)}: dst must be TEMP or MEM. MOVE to MEM = store. MOVE to TEMP = register write.
+  \item \textbf{EXP(e)}: evaluate expression for side effects, discard value.
+\end{itemize}
 
-\textbf{unEx(Cx(f))}: alloc r; MOVE(r,1); f(tl,fl); LABEL fl; MOVE(r,0); LABEL tl; result=ESEQ(\ldots,TEMP r).
+\textbf{Expressions} (produce a value):
+\begin{itemize}
+  \item \textbf{BINOP(op,e1,e2)}: arithmetic/logic
+  \item \textbf{MEM(e)}: memory at address e. In MOVE dst = store; elsewhere = load.
+  \item \textbf{TEMP(t)}: register from infinite pool
+  \item \textbf{ESEQ(s,e)}: do statement s for effect, then evaluate e for value. How expressions have side effects.
+  \item \textbf{NAME(l)}: reference to a label (address)
+  \item \textbf{CONST(n)}: integer constant
+  \item \textbf{CALL(f,args)}: function call. f is usually NAME(label).
+\end{itemize}
 
-\textbf{unCx(Ex(e))}: CJUMP(e$\neq$0, true, false).
+\textbf{Design flaw}: MOVE dst is type \texttt{exp} but can only be TEMP or MEM. Should have been a separate \texttt{location} type. Causes non-exhaustive match warnings.
 
-\textbf{unEx(Nx(s))}: ESEQ(s, CONST 0).
+\subsection{Fragments}
+A top-level assembly entity. Two types: \textbf{string literal} (label + string data) or \textbf{function} (body + frame info). Translation outputs a list of fragments.
+
+\subsection{Ex / Nx / Cx Wrappers}
+
+Three constructors for translate output:
+\begin{itemize}
+  \item \textbf{Ex} (expression): wraps IR exp -- things evaluated for value (e.g., a+b)
+  \item \textbf{Nx} (no-result): wraps IR stm -- things done for effect (e.g., a:=3)
+  \item \textbf{Cx} (conditional): wraps a \texttt{label*label$\to$stm} function -- things used for control flow (e.g., x$<$4). Given true/false labels, produces CJUMP.
+\end{itemize}
+
+Return whichever is natural: \texttt{a+b}$\to$Ex, \texttt{a:=3}$\to$Nx, \texttt{x<4}$\to$Cx.
+
+\subsection{Conversions Between Ex/Nx/Cx}
+
+\textbf{unEx(Ex(e))}: just return e.
+
+\textbf{unEx(Nx(s))}: ESEQ(s, CONST 0) -- do the statement, evaluate to 0.
+
+\textbf{unEx(Cx(f))}: Must turn conditional into 0/1 value:
+\begin{lstlisting}
+r = newTemp(); tl = newLabel(); fl = newLabel()
+Ex(ESEQ(seq[
+  MOVE(TEMP r, CONST 1),     (* assume true *)
+  f(tl, fl),                  (* CJUMP *)
+  LABEL fl,                   (* false: *)
+  MOVE(TEMP r, CONST 0),      (* set 0 *)
+  LABEL tl                    (* true: 1 stays *)
+], TEMP r))
+\end{lstlisting}
+
+\textbf{unCx(Ex(e))}: CJUMP(e $\neq$ 0, true\_label, false\_label). ``Implicitly if expr $\neq$ 0.''
+
+\textbf{unNx(Ex(e))}: EXP(e) -- evaluate, discard.
+
+\textbf{Helper}: \texttt{fun seq [] = EXP(CONST 0) | seq [s] = s | seq (s::rest) = SEQ(s, seq rest)}
 
 \begin{exambox}[Practice Final Q3 -- IR Translation]
 \scriptsize
-$x{\to}$InReg $t_1$, $y{\to}$InReg $t_2$, $z{\to}$InFrame $-4$, $a{\to}$InReg $t_3$.
+$x\to$InReg $t_1$, $y\to$InReg $t_2$, $z\to$InFrame $-4$, $a\to$InReg $t_3$.
 
-\textbf{y := 1+x}: MOVE(TEMP $t_2$, BINOP(PLUS, CONST 1, TEMP $t_1$))
+\textbf{y := 1+x}:
+\texttt{MOVE(TEMP $t_2$, BINOP(PLUS, CONST 1, TEMP $t_1$))}
 
-\textbf{a[y] := f(z)}: MOVE(MEM(BINOP(PLUS, TEMP $t_3$, BINOP(TIMES, TEMP $t_2$, CONST 4))), CALL(LABEL(f), [MEM(BINOP(PLUS, FP, CONST $-4$))]))
+\textbf{a[y] := f(z)}:
+\texttt{MOVE(MEM(BINOP(PLUS, TEMP $t_3$, BINOP(TIMES, TEMP $t_2$, CONST 4))), CALL(LABEL(f), [MEM(BINOP(PLUS, FP, CONST $-4$))]))}
 
-\textbf{Record r.z}: MEM(BINOP(PLUS, TEMP r, CONST 8)) -- z is 3rd field, offset 8.
+Left side: array base $t_3$ + index $t_2$ * word size 4.
+Right side: call f with z from frame at FP$-4$.
+
+\textbf{Record r.z}: MEM(BINOP(PLUS, TEMP r, CONST 8)) -- z is 3rd field, offset 8 (0-indexed, 4 bytes each).
 \end{exambox}
 
 %% ============================================================
@@ -249,200 +441,422 @@ $x{\to}$InReg $t_1$, $y{\to}$InReg $t_2$, $z{\to}$InFrame $-4$, $a{\to}$InReg $t
 %% ============================================================
 
 \subsection{If-Then-Else}
+3 params: condition (unCx), then-clause (unEx), else-clause (unEx).
 \begin{lstlisting}
-c'=unCx(cond), t'=unEx(then), e'=unEx(else)
-r=newTemp, lt/lf/le=newLabels
-ESEQ(SEQ(c'(lt,lf), LABEL lt,
-  MOVE(TEMP r, t'), JUMP(NAME le,[le]),
-  LABEL lf, MOVE(TEMP r, e'),
-  LABEL le), TEMP r)
+c' = unCx(cond); t' = unEx(then); e' = unEx(else)
+r = newTemp; lt/lf/le = newLabels
+Ex(ESEQ(seq[
+  c'(lt, lf),              (* CJUMP *)
+  LABEL lt,                (* true case: *)
+  MOVE(TEMP r, t'),        (* store then-value *)
+  JUMP(NAME le, [le]),     (* jump to end *)
+  LABEL lf,                (* false case: *)
+  MOVE(TEMP r, e'),        (* store else-value *)
+  LABEL le                 (* end *)
+], TEMP r))
 \end{lstlisting}
+7 statements in the sequence. For statement-only if: use unNx, moves store 0 (harmless).
 
-\subsection{While Loop (Optimized -- 1 branch/iter)}
+\textbf{Expression sequences with side effects}: Tiger \texttt{(x:=x+1; x+3)} translates to ESEQ: do assignment, then evaluate x+3.
+
+\subsection{While Loop}
+
+\textbf{Naive (2 branches/iter -- bad):}
+\begin{lstlisting}
+L_start: if NOT cond, goto L_end
+         body
+         goto L_start
+L_end:
+\end{lstlisting}
+For 1M iterations: 1,000,001 conditional + 1,000,000 unconditional = 2,000,001 branches.
+
+\textbf{Optimized (1 branch/iter -- good):}
 \begin{lstlisting}
   JUMP(NAME L_test, [L_test])
-L_body: ... body ...
+L_body: body
 L_test: CJUMP(cond, L_body, L_done)
 L_done:
 \end{lstlisting}
-Naive has 2 branches/iter ($\sim$2M for 1M iters). Optimized: 1M+1.
+1 initial jump + 1,000,001 conditional = 1,000,002. Saves $\sim$1M branches!
 
-\textbf{Break}: JUMP(NAME(done\_label)). Track with label option.
+\textbf{Break}: \texttt{JUMP(NAME(done\_label), [done\_label])}. Track with \texttt{label option}: NONE if outside loop, SOME(label) if inside.
 
 \subsection{For Loop -- Max-Int Edge Case}
-Tiger inclusive bounds. If high=maxint, naive i++ overflows $\to$ infinite loop.
+Tiger for loops have \textbf{inclusive bounds}. If high=maxint, naive \texttt{i++} overflows $\to$ infinite loop.
+
+\textbf{Correct compilation}:
 \begin{lstlisting}
-i:=low; h:=high
-if i<=h goto L_body else L_done
-L_body: ... body ...
-  if i<h then  (* STRICT, BEFORE incr *)
-    i:=i+1; goto L_body
-  else goto L_done
+i := low; h := high
+if i > h goto L_done    (* zero iterations *)
+L_body: body
+  if i < h goto L_incr  (* STRICT less-than *)
+  goto L_done            (* i==h, last iter *)
+L_incr: i := i + 1
+  goto L_body
 L_done:
 \end{lstlisting}
+Key: check $i < h$ (strictly) BEFORE incrementing. If $i = h$, we've done the last iteration -- don't increment (would overflow).
 
 \subsection{Arrays}
-\textbf{Layout}: [size | elem0 | elem1 | \ldots]. Return ptr to elem0; size at MEM(arr$-$4).
+\textbf{Layout}: [size $|$ elem0 $|$ elem1 $|$ \ldots]. Return ptr to elem0. Size at MEM(arr$-$4).
 
-\textbf{Create}: malloc (size+1)*4, store size at offset 0, incr ptr by 4, fill values.
+\textbf{Create}: malloc((size+1)*4), store size at offset 0, increment ptr by 4, fill values.
 
 \textbf{Index}: MEM(base + idx*4). Eval idx into temp first (avoid dup side effects).
 
-\textbf{Bounds}: $0 \le \text{idx} < \text{MEM(arr}-4)$. If out of bounds, jump to exit label.
+\textbf{Bounds check}: $0 \le \text{idx} < \text{MEM(arr}-4)$. Two CJUMPs. Fail $\to$ jump to exit label.
+
+\textbf{IMPORTANT}: If using index multiple times (bounds check + access), move it to a register first! An expression like (x:=x+1; x) would increment twice if evaluated twice.
 
 \subsection{Records}
-malloc, MOVE each field to MEM at offset. Access: MEM(base + offset) -- offset known at compile time. No bounds check.
+malloc, MOVE each field to MEM at offset. Access: MEM(base + offset). Offset known at compile time. No bounds check.
 
-\subsection{Switch/Case}
-If-else $O(n)$; binary search $O(\log n)$; \textbf{jump table} $O(1)$ for dense cases (array of labels, indirect jump); hybrid for mixed. JUMP takes exp*label list for jump tables.
+\subsection{Switch/Case Compilation}
+\begin{itemize}
+  \item \textbf{If-else chain}: O(n). Fine for small switches.
+  \item \textbf{Binary search}: O(log n). Sort cases, binary search.
+  \item \textbf{Jump table}: O(1). Array of labels indexed by case value. Great for \textbf{dense} cases (0,1,2,\ldots,n). Terrible for sparse (0, 9000, 57000).
+  \item \textbf{Hybrid}: Binary search to find dense range, then jump table within range.
+\end{itemize}
+\textbf{Why JUMP has a label list}: For jump tables, exp = MEM(i*4+tableBase), label list = all possible targets so later phases can build the CFG.
+
+\subsection{Pattern Matching Compilation}
+SML datatypes: each constructor gets an integer tag (NONE=0, SOME=1). Data stored as struct with \texttt{int tag} + union of payloads. Pattern match $\to$ check tag (if-else on ints), extract payload, recurse for nested patterns.
 
 \subsection{Critical Rule}
-\textbf{Never reuse an IR sub-tree.} Dup labels=asm error; dup side effects=bugs.
+\textbf{Never reuse an IR sub-tree.} Dup labels = asm error. Dup side effects = bugs. Evaluate once, store in TEMP.
 
 %% ============================================================
 \section{Purifying \& Linearizing}
 %% ============================================================
 
-\subsection{Removing ESEQ}
+\subsection{Removing ESEQ (Purifying Expressions)}
+Goal: bubble all side effects to top level. Want statements then pure expressions (no side effects).
+
+\textbf{Rule 1 -- Squish nested ESEQs:}
+ESEQ(s1, ESEQ(s2, e)) $\to$ ESEQ(SEQ(s1,s2), e). ``Do s1 then s2, then evaluate e.''
+
+\textbf{Rule 2 -- Push ESEQs outward through BINOPs:}
+BINOP(+, ESEQ(s,e1), e2):
 \begin{itemize}
-  \item ESEQ(s1,ESEQ(s2,e)) $\to$ ESEQ(SEQ(s1,s2),e)
-  \item BINOP(+,ESEQ(s,e1),e2): if independent $\to$ ESEQ(s,BINOP(+,e1,e2)). Else $\to$ ESEQ(SEQ(MOVE(t,e1),s), BINOP(+,t,e2)). Extra temp increases register pressure but is always safe.
+  \item If s and e2 are \textbf{independent} (s doesn't change e2's value): $\to$ ESEQ(s, BINOP(+,e1,e2))
+  \item If NOT independent (or unknown): $\to$ capture e1 first:
+  ESEQ(SEQ(MOVE(t,e1), s), BINOP(+,TEMP t,e2))
 \end{itemize}
+Safe version always works but increases register pressure (t lives across s).
+
+\subsection{Alias Analysis (Determining Independence)}
+\textbf{If no memory involved}: Check what regs expression reads vs what regs statement writes. Disjoint $\to$ independent.
+
+\textbf{If memory involved}: ``Do two pointers point at the same thing?'' This is \textbf{undecidable}.
+
+Possible answers: Yes (definitely same), No (definitely different), \textbf{May alias} (sometimes).
+
+Must use \textbf{false positives} (say ``may alias'' when they don't). Never false negatives.
+
+\textbf{Approaches}:
+\begin{enumerate}
+  \item \textbf{Conservative}: all memory may interfere. Safe, pessimistic.
+  \item \textbf{Type-based}: different types can't alias. GCC \texttt{-fstrict-aliasing}.
+  \item \textbf{Allocation-site}: different malloc sites $\to$ different objects. Needs data flow analysis.
+\end{enumerate}
+
+For Tiger: commute function returns true/false. ``return false'' always works (pessimistic but correct).
 
 \subsection{Hoisting Function Calls}
-\texttt{f(g(x),h(y))} clobbers shared regs (a0,v0). Fix: t1=g(x); t2=h(y); result=f(t1,t2). L-to-R in Tiger.
+\texttt{f(g(x), h(y))} $\to$ t1=g(x); t2=h(y); result=f(t1,t2).
 
-\subsection{Alias Analysis}
-Yes/No/Maybe. \textbf{Undecidable}. (1) Conservative: all memory may interfere. (2) Type-based: different types can't alias (GCC \texttt{-fstrict-aliasing}). (3) Allocation-site: different malloc sites $\to$ different objects. Never false negatives.
+\textbf{Why}: Without this, nested calls trash each other's argument registers and return values (a0, v0 get overwritten). After pulling to top level, each call is isolated.
 
-\subsection{Linearizing}
-False branch of every CJUMP falls through. \textbf{DFS} $\gg$ BFS (fewer jumps). \texttt{notRel}: negate relops when true branch needs to fall through.
+Order: left to right in Tiger. Must maintain evaluation order for side effects.
+
+\subsection{Linearizing (Block Ordering)}
+Goal: put basic blocks into linear sequence. Requirement: false branch of every CJUMP falls through.
+
+\textbf{BFS is bad}: Execution flows go everywhere, lots of extra jumps needed. Straight-line sequences are short.
+
+\textbf{DFS is good}: Execution follows one path deeply. Straight-line code sequences are longer. Fewer extra jumps.
+
+\textbf{Topological sort won't work}: CFG has cycles (loops).
+
+\textbf{Branch flipping}: If DFS puts ``true'' successor next instead of ``false,'' flip the relop. \texttt{notRel}: negate $<$ to $\geq$, = to $\neq$, etc.
+
+\textbf{Profile-guided optimization}: Branches are not 50/50. Loop branches usually taken. DFS should follow likely path. GCC: \texttt{\_\_builtin\_expect(expr, val)}, C++20: \texttt{[[likely]]}/\texttt{[[unlikely]]}.
+
+\textbf{I-cache}: Hot path blocks close together. Rarely-executed blocks (error handlers, epilogs) placed far away to avoid polluting instruction cache.
 
 %% ============================================================
 \section{Instruction Selection}
 %% ============================================================
 
-\subsection{Maximal Munch}
-(1) Match \textbf{largest} IR subtree to one asm instruction. (2) Recurse on remaining children. (3) Emit instruction, return result register.
+\subsection{Maximal Munch Algorithm}
+\begin{enumerate}
+  \item At current node, match the \textbf{largest} IR subtree to a single asm instruction.
+  \item Recurse on remaining children to get operands into registers.
+  \item Each recursion returns the register where result lives.
+  \item Emit instruction using returned registers.
+\end{enumerate}
 
-\begin{exambox}[Worked: a[i] = (z.field3 + 27) * 3]
+Two functions: \textbf{munch\_stm} (statements, no register returned) and \textbf{munch\_exp} (expressions, returns a register).
+
+SML pattern matching is perfect: each pattern = one instruction template. Start simple (each node = basic instruction), then add special cases.
+
+\textbf{Key patterns}:
+\begin{itemize}
+  \item MEM(BINOP(+, e, CONST c)) $\to$ single \texttt{LW rd, c(rs)} (load with offset!)
+  \item BINOP(+, e, CONST c) $\to$ \texttt{ADDI rd, rs, c} (add immediate!)
+  \item MOVE(MEM(BINOP(+, e1, CONST c)), e2) $\to$ \texttt{SW rs, c(rd)}
+  \item MEM(e) alone $\to$ \texttt{LW rd, 0(rs)}
+  \item CONST(c) $\to$ \texttt{LI rd, c}
+\end{itemize}
+
+\begin{exambox}[{Worked: a[i] = (z.field3 + 27) * 3}]
 \scriptsize
 IR: MOVE(MEM(+(a, *(i, 4))), *(+(MEM(+(z,8)), 27), 3))
 
-\texttt{li t100, 4} \quad (CONST 4)
+Step by step (top-down match, bottom-up emit):
 
-\texttt{mul t101, i, t100} \quad (i*4)
+\texttt{LI t100, 4} \quad (CONST 4 -- MIPS has no mul-immediate)
 
-\texttt{add t102, a, t101} \quad (a + i*4)
+\texttt{MUL t101, i, t100} \quad (i*4)
 
-\texttt{lw t103, 8(z)} \quad (MEM(+(z,8)) -- load with offset!)
+\texttt{ADD t102, a, t101} \quad (a + i*4 = address)
 
-\texttt{addi t104, t103, 27} \quad (add immediate!)
+\texttt{LW t103, 8(z)} \quad (MEM(+(z, CONST 8)) $\to$ single LW with offset!)
 
-\texttt{li t105, 3}
+\texttt{ADDI t104, t103, 27} \quad (+(e, CONST 27) $\to$ ADDI!)
 
-\texttt{mul t106, t104, t105}
+\texttt{LI t105, 3}
 
-\texttt{sw t106, 0(t102)} \quad (store word)
+\texttt{MUL t106, t104, t105} \quad ((z.field3 + 27) * 3)
 
-Key patterns: MEM(+(e,CONST c)) $\to$ single LW with offset. +(e,CONST c) $\to$ ADDI.
+\texttt{SW t106, 0(t102)} \quad (store to a[i])
+
+Key optimizations: MEM(+(e,CONST)) $\to$ single LW. +(e,CONST) $\to$ ADDI. Without these: 2 extra instructions.
 \end{exambox}
 
+\subsection{Multiplication Optimization (Strength Reduction)}
+MIPS has no multiply-immediate. Must load constant first.
+\begin{itemize}
+  \item Multiply by 4 (power of 2): shift left 2 (1 cycle vs 3+)
+  \item Multiply by 3: shift left 1 + add original (2 instrs)
+  \item Multiply by 127: shift left 7, subtract original (2 instrs)
+  \item Many set bits: just use MUL
+\end{itemize}
+Cycle costs: ALU/shift = 1 cycle. Multiply = 3--4 cycles.
+
 \subsection{Output Data Types}
-\textbf{OPER}: asm string + src/dst lists + jump targets. \textbf{MOVE}: reg-to-reg (kept separate for coalescing). \textbf{LABEL}: marker.
+\begin{itemize}
+  \item \textbf{OPER}: asm string with \texttt{`s0}, \texttt{`d0} placeholders + src/dst lists + jump targets. jump=NONE $\to$ fall through. jump=SOME([]) $\to$ end of function (JR RA). jump=SOME(list) $\to$ branch targets.
+  \item \textbf{MOVE}: reg-to-reg move. Kept separate: if reg allocator maps src=dst, \textbf{move eliminated}. Can't do this for multiply etc.
+  \item \textbf{LABEL}: marker.
+\end{itemize}
 
-Jump list: NONE=fall through; SOME(list)=targets; SOME([])=end of fn (JR RA).
+\textbf{JAL destinations}: list ALL caller-saved regs (t0--t9, a0--a3, v0, ra) because callee may clobber them. Even though only v0 is ``return value,'' call potentially overwrites all caller-saved.
 
-\textbf{JAL dsts}: list ALL caller-saved (t0--t9, a0--a3, v0, ra) because callee may clobber them.
+\subsection{Register Pressure and Ordering}
+Left-side address result (t102) must live across all right-side computation. Could reorder: compute right side first, then left. Safe because expressions are pure. Reduces simultaneously-live temps.
+
+\subsection{Instruction Scheduling (Not Required)}
+Load word followed immediately by use $\to$ pipeline stall (1--3 cycle latency). Fix: move independent instructions between load and use.
+
+\textbf{SAXPY example}: Loop body has data dependency chain. Schedule for 2-wide processor by building dependency graph, picking 2 ready instructions per cycle, preferring instructions with longest outgoing chain (critical path first).
+
+\textbf{Loop unrolling}: Enlarges scheduling scope (more independent instructions to interleave). Needs alias analysis to prove stores and loads from different iterations don't conflict. \texttt{restrict} keyword in C: this pointer doesn't alias others.
+
+Limits: I-cache pressure, register pressure, diminishing returns.
 
 %% ============================================================
 \section{Liveness Analysis}
 %% ============================================================
 
-\textbf{Live}: value may be read before overwritten. False positives (say live when dead) are safe.
+\subsection{Definitions}
+\textbf{Live}: a variable's value may be read in the future before it is written again. False positives (say live when dead) are \textbf{safe} -- worse register pressure but correct code. False negatives (say dead when live) are \textbf{UNSAFE} -- would break code.
 
-\textbf{def(B)}: vars written. \textbf{use(B)}: vars read before any def in B.
+\textbf{Dead}: definitely going to be written before read, or never read again.
+
+This is undecidable in general (some control flow paths may be impossible). We approximate.
+
+\subsection{Basic Blocks}
+Sequence of instructions: enter first, execute all through last. No jumps in, no jumps out of middle. Jump only at end. \textbf{Maximal} such sequence.
+
+\subsection{Def and Use Sets}
+For each block B:
+\begin{itemize}
+  \item \textbf{def(B)}: temps/variables that B writes to
+  \item \textbf{use(B)}: temps that B reads \textbf{before} any write to them in B
+\end{itemize}
+If block writes t100 then later reads t100: only DEF (doesn't need incoming value). If block reads t100 then later writes t100: USE (needs incoming value).
 
 \begin{keybox}[Liveness Equations]
 \scriptsize
-$\text{live-in}(B) = (\text{live-out}(B) - \text{def}(B)) \cup \text{use}(B)$
+$\text{live-in}(B) = \text{use}(B) \cup (\text{live-out}(B) - \text{def}(B))$
 
 $\text{live-out}(B) = \bigcup_{S \in \text{succ}(B)} \text{live-in}(S)$
 
-Backward, union, least fixed point (start $\emptyset$).
+\textbf{Direction}: Backward. \textbf{Meet}: Union over successors.
+\textbf{Fixed point}: Least (start with $\emptyset$, only add).
 \end{keybox}
 
-\begin{exambox}[Worked: Instruction-Level Liveness]
+\subsection{Fixed Point Iteration}
+\begin{enumerate}
+  \item Initialize: live-in(B) = $\emptyset$, live-out(B) = $\emptyset$ for all B
+  \item For each block (prefer \textbf{reverse order} for speed), compute live-in and live-out
+  \item If anything changed, repeat step 2
+  \item When nothing changes: done (fixed point reached)
+\end{enumerate}
+
+\textbf{Why LEAST fixed point} (start from $\emptyset$): Starting full and removing gives ``greatest'' -- a variable is live ``because it can be'' not ``because it has to be.'' Example: if you start assuming X is live in a loop, you'll conclude X is live everywhere even if never used. Least fixed point only marks live because of actual uses.
+
+\textbf{Convergence}: Finite variables, sets only grow (monotonic) $\to$ must converge.
+
+\textbf{Processing order}: Backwards through CFG converges faster. Forward works too, just more iterations. Same correct answer either way.
+
+\begin{exambox}[{Worked: Instruction-Level Liveness}]
 \scriptsize
-Block: x=q+a; y=c*3; z=5. live-out=$\{x,y,u\}$.
+Block: \texttt{x = q + a; y = c * 3; z = 5}. live-out=\{x, y, u\}.
 
-After z=5: $\{x,y,u\}$ (kill z, not in set; gen nothing)
+Work backwards through instructions:
 
-After y=c*3: kill y, gen c $\to$ $\{x,c,u\}$
+After \texttt{z=5}: kill z (not in set), gen nothing new. Live = \{x, y, u\}
 
-After x=q+a: kill x, gen q,a $\to$ $\{q,a,c,u\}$ = live-in
+After \texttt{y=c*3}: kill y, gen c $\to$ \{x, c, u\}
+
+After \texttt{x=q+a}: kill x, gen q, a $\to$ \{q, a, c, u\} = live-in
+
+Each instruction: remove destination (kill), add sources (gen).
 \end{exambox}
 
-\begin{exambox}[Worked: Liveness with Loops]
+\begin{exambox}[{Worked: Liveness with Loops (Vampire/Zombie Example)}]
 \scriptsize
-Key insight from vampire/zombie example: liveness propagates backwards through loop back-edges. First pass may miss variables; second pass propagates them through the cycle. ``Zombies propagate everywhere'' -- variables used inside a loop become live throughout it. ``Vampires die at dawn'' -- killed (defined) variables stop being live at that point.
+Variables: vampires, zombies, x, y, z, buffy, answer, snack. CFG with 7+ blocks.
 
-Convergence: finite vars + sets only grow $\to$ must converge. Process blocks in \textbf{reverse order} for efficiency.
+\textbf{First pass} (backward): Some blocks' successors haven't been processed yet (still $\emptyset$). Partial results.
+
+\textbf{Second pass}: ``Zombies'' propagate everywhere through the loop back-edges. Variables used inside a loop become live throughout it. ``Zombies propagate everywhere -- which is what zombies do.''
+
+\textbf{Third pass}: Nothing changes $\to$ converged.
+
+\textbf{Key insight}: Liveness propagates backwards through loop back-edges. First pass may miss variables; second pass propagates them through the cycle.
+
+\textbf{Only-add property}: We never remove from sets during iteration. Once a variable enters a liveness set, it stays. This guarantees convergence.
 \end{exambox}
 
 \subsection{Infeasible Paths}
-If x$<$7 true but x$\geq$9 impossible, liveness can't detect this $\to$ false positives. Improving precision approaches undecidability.
+If \texttt{x<7} implies \texttt{x<9}, the path where \texttt{x<7} is true but \texttt{x>=9} is impossible. Liveness can't detect this $\to$ false positives. Adding analysis improves but never perfects (undecidable). ``The Turing cliff is always there'' -- trying to be perfect makes your analyzer loop forever.
+
+\subsection{View Shift (procEntryExit)}
+Caller puts args in a0--a3 (extras on stack). Callee's IR expects vars in specific temps/frame slots.
+
+View shift inserts moves: \texttt{MOVE(temp100, a0)} (x from register), \texttt{SW a1, -4(fp)} (y escapes to frame), \texttt{LW temp103, ??(sp)} (b from stack, 5th arg), etc.
+
+Register-to-register moves might be eliminated later if allocator assigns same physical register.
+
+\textbf{procEntryExit 1/2/3}: Different phases of prolog/epilog generation. 1 = view shift + save/restore callee-saved regs. 2 = sink instruction (defines callee-saved regs as live at end so allocator doesn't use them). 3 = prolog/epilog assembly (SP adjustment, label, JR RA with SOME([])).
 
 %% ============================================================
 \section{Register Allocation}
 %% ============================================================
 
 \subsection{Interference Graph}
-Nodes=temps. Solid edge: live at same time. Dashed: move-related. Build: for each write of t, add interference with all live-out temps (except t). For MOVE: move edge instead.
+Nodes = temps/variables. \textbf{Solid edge} (interference): two temps live at same time, cannot share register. \textbf{Dashed edge} (move): move-related, we'd LIKE them in same register.
 
-$k$ = physical registers. Goal: $k$-color the graph. NP-complete but heuristic works well.
+\textbf{Building}: For each write to temp t, add interference edges between t and everything \textbf{live-out} after that instruction (except t itself). For MOVE instructions: add move edge (not interference) between src and dst.
 
-\subsection{Algorithm: Simplify$\to$Coalesce$\to$Freeze$\to$Spill}
+$k$ = number of physical registers. Goal: $k$-color the graph so no adjacent nodes share a color. Each color = one physical register.
 
-\textbf{1. Simplify}: degree $<k$ AND no move edges $\to$ remove, push stack. Move edges do NOT count toward degree.
+\subsection{Graph Coloring is NP-Complete}
+NP = \textbf{nondeterministic polynomial} (NOT ``not polynomial''). Can verify a solution in polynomial time. P=NP? Unknown (\$1M prize).
 
-\textbf{2. Coalesce}: merge move-related nodes.
+Best known exact algorithm: exponential. For $\sim$25 MIPS registers and typical programs, brute force would work. But we use heuristic anyway.
 
-\begin{keybox}[{Coalescing Heuristics (either $\Rightarrow$ safe)}]
+\textbf{Safe approximation}: Accept false failures (say ``can't color'' when actually could) $\to$ unnecessary spills but correct code. Never false success (same color on adjacent nodes $\to$ INCORRECT code).
+
+\subsection{Trivial Degree}
+A node has \textbf{trivial degree} if its degree (number of \textbf{interference} edges, NOT move edges) is strictly $< k$.
+
+\textbf{Key property}: If the rest of the graph can be $k$-colored, a trivial-degree node can ALWAYS be colored. It has fewer than $k$ neighbors, so at least one color is available.
+
+\subsection{Algorithm: Simplify $\to$ Coalesce $\to$ Freeze $\to$ Spill}
+
+\textbf{1. SIMPLIFY}: Remove a node of trivial degree that is NOT move-related. Push onto stack (record adjacencies). This may lower neighbors' degrees, creating new trivial-degree nodes. Repeat until no more.
+
+Move-related nodes are NOT eligible -- we want to try coalescing first.
+
+\textbf{2. COALESCE}: Try to merge two move-related nodes (eliminating the register-to-register move). Only coalesce if safe (won't force spills).
+
+\begin{keybox}[{Coalescing Heuristics (if EITHER says yes $\Rightarrow$ safe)}]
 \scriptsize
-\textbf{Briggs}: Combined node has $<k$ neighbors of non-trivial degree ($\geq k$). Trivial-degree neighbors can always be simplified later.
+\textbf{Briggs}: Count the combined node's neighbors of \textbf{non-trivial degree} ($\geq k$). If count $< k$, safe. Rationale: all trivial-degree neighbors can be simplified away later; only non-trivial ones matter.
 
-\textbf{George} (A into B): Every neighbor t of A either already interferes with B (no new constraint), or has trivial degree ($<k$, simplifiable). Check each direction separately -- asymmetric!
+\textbf{George} (A into B, \textbf{asymmetric}): For every neighbor T of A: either T \textbf{already interferes with B} (no new constraint), OR T has \textbf{trivial degree} ($< k$, simplifiable). Must check both directions separately -- may get different answers!
+
+If EITHER heuristic says yes in EITHER direction, coalescing is safe.
 \end{keybox}
 
-\textbf{3. Freeze}: give up on a move edge (prefer where $\geq$1 node is trivial degree).
+After successful coalesce, go back to SIMPLIFY (may open new opportunities).
 
-\textbf{4. Potential Spill}: pick node, remove, mark with star.
+\textbf{3. FREEZE}: If stuck (can't simplify or coalesce): remove a move edge (give up on that move elimination). This ``unfreezes'' nodes for simplification. Prefer edges where $\geq$1 node is trivial degree. Go back to SIMPLIFY.
 
-\textbf{5. Select}: pop stack, assign colors. Simplified=guaranteed. Potential spills may fail $\to$ actual spill $\to$ insert loads/stores, \textbf{restart from scratch}.
+\textbf{4. POTENTIAL SPILL}: If stuck (can't simplify, coalesce, or freeze): remove ANY node, push to stack, mark with star. When rebuilding, might not be colorable. Heuristic: low-degree = more likely to get lucky; high-degree = removes more constraints.
 
-\begin{exambox}[Worked: Coalescing Check for C and D]
+\textbf{5. SELECT (Pop and Color)}: Pop nodes from stack, assign lowest available color not used by neighbors. Trivially-removed nodes = guaranteed color. Potential spills may fail $\to$ \textbf{actual spill} $\to$ insert loads/stores to stack, \textbf{restart from scratch}.
+
+\textbf{Failure does NOT prove} graph is not $k$-colorable -- just that this ordering failed. Backtracking would give correctness but exponential time.
+
+\begin{exambox}[{Worked: Coalescing Check for C and D}]
 \scriptsize
-George C$\to$D: C interferes with M (already interferes with D? \textbf{YES}), C interferes with B (already interferes with D? \textbf{YES}). All neighbors OK $\to$ \textbf{safe to coalesce}.
+\textbf{George C$\to$D}: C's neighbors: M (interferes with D? \textbf{YES} $\checkmark$), B (interferes with D? \textbf{YES} $\checkmark$). All pass $\to$ \textbf{safe}.
 
-George D$\to$C: D interferes with K (interferes with C? \textbf{NO}. Trivial degree? \textbf{NO}) $\to$ \textbf{fails}.
+\textbf{George D$\to$C}: D's neighbors: M, B, K, J. K does NOT interfere with C and is NOT trivial degree $\to$ \textbf{FAILS}.
 
 One direction passed $\to$ proceed with coalesce.
+
+\textbf{Why asymmetric}: Combining A into B only adds A's neighbors to B. If all of A's neighbors are already connected to B or trivial, the combined node's degree doesn't effectively increase.
 \end{exambox}
 
-\begin{exambox}[Practice Final Q4 -- 3-reg machine]
+\begin{exambox}[{Worked: Coalescing Check for B and J}]
 \scriptsize
-(1) Simplify b (trivial degree, no move edges). (2) Coalesce p,q (move-related, safe). (3) Simplify pq. (4) Freeze x,c move edge (can't coalesce). (5) Simplify x,y,a,z,c.
+\textbf{Briggs}: Combined BJ node's non-trivial-degree neighbors: E (non-trivial), M (non-trivial), CD (non-trivial) = 3 $\geq$ k=3 $\to$ \textbf{FAILS}.
 
-Rebuild: c=r1, z=r2, a=r3, y=r1, x=r2, pq=r2, b=r3.
+\textbf{George B$\to$J}: B adj to E (interferes with J? Yes $\checkmark$), M (interferes with J? \textbf{NO}; trivial? \textbf{NO} $\to$ FAIL).
+
+\textbf{George J$\to$B}: J adj to E ($\checkmark$), CD ($\checkmark$), K ($\checkmark$), F (interferes with B? \textbf{NO}; trivial? \textbf{NO} $\to$ FAIL).
+
+Neither heuristic says yes $\to$ \textbf{cannot coalesce}.
+\end{exambox}
+
+\begin{exambox}[Practice Final Q4 -- 3-Register Machine]
+\scriptsize
+Nodes: x, y, z, a, b, c, p, q. k=3.
+
+\textbf{Step 1}: Simplify b (trivial degree $<$3, no move edges) $\to$ push.
+
+\textbf{Step 2}: Coalesce p,q (move-related, safe by heuristic) $\to$ merge into pq.
+
+\textbf{Step 3}: Simplify pq (degree dropped $<$3) $\to$ push.
+
+\textbf{Step 4}: Freeze x--c move edge (can't safely coalesce -- combined node would have too many high-degree neighbors).
+
+\textbf{Step 5}: Simplify x, y, a, z, c (all now trivial degree or non-move-related) $\to$ push each.
+
+\textbf{Pop and color}:
+c=r1, z=r2, a=r3, y=r1, x=r2, pq=r2, b=r3.
+
+p and q both get r2 (coalesced) $\to$ move eliminated!
 \end{exambox}
 
 \subsection{Pre-colored Temps}
-Fixed regs (temp100=a0). All interfere with each other. \textbf{Never simplified/spilled}. Base case: only pre-colored remain.
+Certain temps MUST be specific registers (temp100=a0 for calling convention). All pre-colored temps interfere with each other. \textbf{Never simplified or spilled}. Base case: only pre-colored remain.
 
-Temp live across JAL $\to$ interferes with all caller-saved $\to$ naturally gets s-register.
+Temp live across JAL $\to$ interferes with ALL caller-saved (t0--t9, a0--a3, v0, ra) $\to$ naturally gets s-register. Short-lived temps near calls are free to use t-registers. The algorithm handles this automatically.
 
-\textbf{S-reg strategy}: Try 0 s-regs; if fails, try 1, 2, etc.
+\textbf{S-reg saving strategy}: Try 0 s-regs; if allocation fails, try 1 (s0), then 2, etc. Avoids wasteful saves. Use lowest-numbered color first (reuse registers, leave more open).
+
+\subsection{Spilling}
+If coloring fails: pick a variable, mark as escaping, every access becomes load/store from stack. Very short live ranges = less interference. Restart register allocation from scratch.
+
+If fails again, spill another variable. More sophisticated: analyze where register pressure is highest, add loads/stores only there. Consider: inside a loop? Save before, load after.
 
 %% ============================================================
 \section{Data Flow Analysis Framework}
@@ -451,239 +865,446 @@ Temp live across JAL $\to$ interferes with all caller-saved $\to$ naturally gets
 \begin{keybox}[Master Table]
 \scriptsize
 \begin{adjustbox}{max width=\linewidth}
-\begin{tabular}{@{}lcccc@{}}
+\begin{tabular}{@{}lcccl@{}}
 \toprule
 \textbf{Analysis} & \textbf{Dir} & \textbf{Meet} & \textbf{Init} & \textbf{Drives} \\
 \midrule
-Avail Exprs & Fwd & $\cap$ pred & Greatest & CSE \\
-Reaching Defs & Fwd & $\cup$ pred & Least & const/copy prop \\
-Liveness & Bwd & $\cup$ succ & Least & reg alloc \\
-Very Busy & Bwd & $\cap$ succ & Greatest & code hoisting \\
+Avail Exprs & Fwd & $\cap$ pred & Greatest (full) & CSE \\
+Reaching Defs & Fwd & $\cup$ pred & Least ($\emptyset$) & const/copy prop \\
+Liveness & Bwd & $\cup$ succ & Least ($\emptyset$) & reg alloc \\
+Very Busy & Bwd & $\cap$ succ & Greatest (full) & code hoisting \\
 \bottomrule
 \end{tabular}
 \end{adjustbox}
+
+\textbf{Rule}: $\cap$ (intersection) $\Rightarrow$ greatest fixed point (start full, shrink). $\cup$ (union) $\Rightarrow$ least fixed point (start $\emptyset$, grow).
 \end{keybox}
 
-$\cap \Rightarrow$ greatest fixed pt (start full). $\cup \Rightarrow$ least fixed pt (start $\emptyset$).
-
 \subsection{Available Expressions}
-$x$ op $y$ is \textbf{available} if computed on \textbf{ALL} paths and operands unmodified.
+Expression $x$ op $y$ is \textbf{available} at a point if it has been computed on \textbf{ALL} paths reaching that point and its operands have not been modified since.
 
-$\text{AE-in}(B) = \bigcap_{P\in\text{pred}} \text{AE-out}(P)$, $\text{AE-out}(B) = (\text{AE-in}(B){-}\text{Kill}) \cup \text{Gen}$
+$\text{AE-in}(B) = \bigcap_{P \in \text{pred}} \text{AE-out}(P)$
 
-\textbf{Gen}: exprs computed (operands not killed in B). \textbf{Kill}: exprs using vars defined in B.
+$\text{AE-out}(B) = (\text{AE-in}(B) - \text{Kill}) \cup \text{Gen}$
 
-\begin{exambox}[Worked: Why Greatest Fixed Point]
+\textbf{Gen}: expressions computed in B (whose operands are not redefined in B after the computation).
+
+\textbf{Kill}: any expression containing a variable that B writes to. Also: write to memory kills anything using memory (unless alias analysis says safe).
+
+\begin{exambox}[{Worked: Why Greatest Fixed Point for Available Exprs}]
 \scriptsize
-Block 1: a=x*y $\to$ loop (doesn't modify x,y) $\to$ Block 2: b=x*y.
+Block 1: \texttt{a = x*y} $\to$ loop (doesn't modify x,y) $\to$ Block 2: \texttt{b = x*y}.
 
-\textbf{Wrong (start $\emptyset$)}: Loop merge: \{x*y\} $\cap$ \{\} = \{\}. x*y never available. WRONG.
+\textbf{Wrong (start $\emptyset$, least fixed point)}: Loop back-edge merge: \{x*y\} $\cap$ \{\} = \{\}. x*y never available at Block 2. \textbf{WRONG} -- can't do CSE when we should.
 
-\textbf{Right (start full)}: Loop merge: \{everything\} $\cap$ \{x*y\} = \{x*y\}. Propagates correctly. x*y IS available at Block 2.
+\textbf{Right (start full, greatest fixed point)}: Loop back-edge merge: \{everything\} $\cap$ \{x*y\} = \{x*y\}. x*y IS available at Block 2. Converges correctly.
 
-Cycles with intersection need greatest fixed point. Starting $\emptyset$ kills everything through cycles.
+\textbf{Why}: Cycles with intersection need greatest fixed point. Starting $\emptyset$ kills everything through cycles. Starting full lets correct information survive.
+
+\textbf{General rule}: $\cap$ analyses are like ``innocent until proven guilty'' -- start assuming everything, remove what's contradicted. $\cup$ analyses are ``guilty until proven innocent'' -- start empty, add what's confirmed.
 \end{exambox}
+
+\subsection{How CSE Actually Works (Multiple Predecessors)}
+If x*y is available via different computations (\texttt{a=x*y} in one path, \texttt{b=x*y} in another): can't just use a or b directly (they may have changed). Solution: at each computation site, add \texttt{temp = result}. At use point, replace with \texttt{temp}. May introduce reg-to-reg moves (cheaper than multiply, may be eliminated by allocator).
 
 \subsection{Reaching Definitions}
-Def ``$x$:=\ldots'' reaches use if path exists with no redef of $x$.
+A definition ``$x$:=\ldots'' at line $L$ \textbf{reaches} a use of $x$ if there exists a path from $L$ to the use with no other definition of $x$.
 
-$\text{RD-in}(B) = \bigcup_{P} \text{RD-out}(P)$, $\text{RD-out}(B) = (\text{RD-in}(B){-}\text{Kill}) \cup \text{Gen}$
+$\text{RD-in}(B) = \bigcup_{P \in \text{pred}} \text{RD-out}(P)$
 
-\textbf{Gen}: defs in B. \textbf{Kill}: all other defs of same var.
+$\text{RD-out}(B) = (\text{RD-in}(B) - \text{Kill}) \cup \text{Gen}$
 
-\begin{exambox}[Worked: Reaching Defs Applications]
+\textbf{Gen}: definitions in B (the last definition of each variable).
+
+\textbf{Kill}: all OTHER definitions of the same variable anywhere in the program.
+
+``Definition'' = assignment, not declaration. Line 47 and line 12 are different definitions even if both say \texttt{x = c - d}.
+
+\begin{exambox}[{Worked: Reaching Definitions Applications}]
 \scriptsize
-\textbf{Constant prop}: Only reaching def is x=0, have a=x+q $\to$ a=0+q=q.
+\textbf{1. Constant Propagation}: Only reaching def is \texttt{x=0}, have \texttt{a=x+q} $\to$ \texttt{a=0+q=q}. Then constant folding simplifies.
 
-\textbf{Copy prop}: Only reaching def is x=y $\to$ replace uses of x with y. Then x=y is dead code.
+\textbf{2. Copy/Move Propagation}: Only reaching def is \texttt{x=y} $\to$ replace all uses of x with y. Then \texttt{x=y} becomes dead code $\to$ delete.
 
-\textbf{Uninit var}: No defs reach a use $\to$ variable may be uninitialized.
+\textbf{3. Dead Code Elimination}: Definition reaches NO uses and has no side effects $\to$ delete it.
 
-\textbf{Dead code}: Def reaches no use and no side effects $\to$ delete.
+\textbf{4. Uninitialized Variable Detection}: No definitions reach a use $\to$ variable may be uninitialized (compiler warning).
+
+\textbf{5. Live Range Splitting}: See below.
 \end{exambox}
 
-\begin{exambox}[Practice Final Q5 -- Reaching Defs]
+\begin{exambox}[Practice Final Q5 -- Reaching Definitions]
 \scriptsize
-$a$ in instr 4: defs \textbf{1, 8}. $a$ in instr 8: defs \textbf{1, 8, 13}. $b$ in instr 6: defs \textbf{2, 11}.
+CFG: Block A (instrs 1--3) $\to$ B (4--7) $\to$ C (8--10) or D (11--14) $\to$ back to B or E (15=return).
+
+\textbf{Defs reaching use of $a$ in instr 4}: \textbf{1, 8} (def at 1 from Block A, def at 8 from Block C; note: solution key shows 1,8)
+
+\textbf{Defs reaching use of $a$ in instr 8}: \textbf{1, 8, 13} (from A via B, from C looping back, from D's def at 13 via B then C)
+
+\textbf{Defs reaching use of $b$ in instr 6}: \textbf{2, 11} (def at 2 from A, def at 11 from D looping back)
 \end{exambox}
-
-\subsection{Very Busy Expressions}
-\textbf{Definitely computed} on all forward paths before operand modified. $\text{VBE-out}(B) = \bigcap_{S\in\text{succ}} \text{VBE-in}(S)$
-
-Drives: \textbf{code hoisting} (precompute earlier). Also LICM safety check. Caveat: moving code earlier can change exception behavior.
 
 \subsection{Live Range Splitting}
-Label all defs (D0,D1\ldots) and uses (A,B\ldots) of a variable. For each use, find reaching defs. Build graph connecting uses to their reaching defs. Each \textbf{connected component} = separate live range $\to$ assign different temps $\to$ lower interference degree.
+Label all defs (D0, D1\ldots) and uses (A, B\ldots) of a variable. For each use, find reaching defs. Build graph connecting uses to their reaching defs. Each \textbf{connected component} = separate live range $\to$ rename to different temps $\to$ lower interference.
 
-\textbf{Example}: Two for-loops with i. Defs D0,D1 (1st loop), D2,D3 (2nd). Uses A-D reached by \{D0,D1\}, uses E-H by \{D2,D3\}. Two disjoint components $\to$ split i into i and i'.
+\textbf{Example}: Two for-loops both using \texttt{i}. Defs D0,D1 reach uses A--D (loop 1). Defs D2,D3 reach uses E--H (loop 2). Two disjoint components $\to$ split into \texttt{i} and \texttt{i'}.
+
+\subsection{Very Busy Expressions}
+Expression is \textbf{very busy} at a point if it will \textbf{definitely be computed} on ALL forward paths before any operand is modified.
+
+$\text{VBE-in}(B) = (\text{VBE-out}(B) - \text{Kill}) \cup \text{Gen}$
+
+$\text{VBE-out}(B) = \bigcap_{S \in \text{succ}} \text{VBE-in}(S)$
+
+Backward, intersection, greatest fixed point.
+
+\textbf{Drives}: \textbf{Code hoisting} (precompute expression earlier -- reduces code size, helps I-cache). Also LICM safety check (expression guaranteed to execute $\to$ safe to hoist).
+
+\textbf{Exception behavior warning}: Moving \texttt{x/y} earlier could change when divide-by-zero occurs. Changes exception behavior = confusing to programmer.
 
 \begin{exambox}[{Practice Final Q5 -- Matching}]
 \scriptsize
-CSE $\to$ Avail Exprs. Fwd/union $\to$ Reaching Defs. Def/use web $\to$ Reaching Defs. Bwd/intersect $\to$ Very Busy.
+\begin{tabular}{@{}ll@{}}
+CSE & Available Expressions \\
+Forward flow / union & Reaching Definitions \\
+Def/Use web formation & Reaching Definitions \\
+Backwards flow / intersection & Very Busy Expressions \\
+\end{tabular}
+\end{exambox}
+
+\begin{exambox}[{Practice Final Q5 -- Very Busy Expressions Table}]
+\scriptsize
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+Block & a+1 & m-1 & a+b & b*47 & x+y & b+1 & arr[b] \\
+\midrule
+After 3 & Y & N & Y & Y & N & N & N \\
+After 7 & Y & Y & N & N & N & N & N \\
+After 10 & N & N & N & N & N & N & N \\
+After 14 & Y & Y & N & N & N & N & N \\
+After 15 & N & N & N & N & N & N & N \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+After block 3: a+1 is Y (both C and D compute a+1); a+b is Y (instr 4 computes on all paths); b*47 is Y (instr 6). After block 7: a+1 Y (both branches); m-1 Y (block C). After 15: all N (nothing after return).
 \end{exambox}
 
 %% ============================================================
 \section{Compiler Optimizations}
 %% ============================================================
 
-\begin{exambox}[Worked: Quicksort Partition Optimization]
+\begin{exambox}[{Worked: Quicksort Partition Optimization}]
 \scriptsize
-Naive code computes 4*i five times, 4*j multiple times.
+Naive code computes \texttt{4*i} five times, \texttt{4*j} multiple times.
 
-\textbf{1. CSE}: 4*i computed in B2 as t2. Check: is 4*i available at other uses? i not changed between B2$\to$B5 $\to$ YES, reuse t2. Eliminates 4 multiplies. Same for 4*j (reuse t4) and 4*high (reuse t1).
+\textbf{1. Strength Reduction} (instruction selection): \texttt{4*i} $\to$ \texttt{i<<2}. Mul$\to$shift.
 
-\textbf{2. Move elimination}: After CSE, t6=t2 (was 4*i). Only reaching def $\to$ replace all uses of t6 with t2. Delete t6=t2 (dead code).
+\textbf{2. CSE} (Available Expressions): Compute \texttt{4*i} once as t2 in B2. Is \texttt{4*i} available at other uses? i not changed between B2$\to$B5 $\to$ YES, reuse t2. Eliminates 4 multiplies. Same for \texttt{4*j} (reuse t4) and \texttt{4*high} (reuse t1).
 
-\textbf{3. Reuse loads}: a[t2] loaded in B2 (into t3). No stores between B2 and B5 $\to$ reuse t3. B5 swap goes from 9 instructions to 3 (just stores + branch).
+\textbf{3. Move/Copy Elimination} (Reaching Defs): After CSE, t6=t2 (was 4*i). Only reaching def $\to$ replace all uses of t6 with t2. Delete t6=t2 (dead code).
 
-\textbf{4. Alias gotcha}: Can't reuse a[t1] (a[high]) in B6 because swap in B5 writes to a[t2] and a[t4] which \emph{might} equal a[t1]. Compiler can't prove they don't.
+\textbf{4. Reuse Loads}: a[t2] loaded in B2 (into t3). No stores between B2 and B5 $\to$ reuse t3. B5 swap: 9 instructions $\to$ 3 (just stores + branch).
 
-\textbf{5. Induction var elim}: i only changes by i=i+1 and only used as 4*i $\to$ replace with t2+=4. Similarly j: t4$-$=4.
+\textbf{5. Alias Gotcha}: Can't reuse a[t1] (a[high]) in B6 because swap in B5 writes to a[t2] and a[t4] which \emph{might} equal a[t1]. Compiler can't prove they don't alias.
 
-\textbf{6. Overflow caveat}: 4*i $\geq$ 4*j $\neq$ i $\geq$ j in fixed-width! But 4*i is an array index, so overflow would segfault first $\to$ safe to assume no overflow.
+\textbf{6. Induction Variable Elimination}: i only changes as i=i+1 and only used as 4*i $\to$ introduce t2 that increments by 4 each iteration. Replace 4*i with t2 everywhere. Similarly j $\to$ t4$-$=4.
+
+\textbf{7. Comparison Replacement}: Replace \texttt{i >= j} with \texttt{t2 >= t4}. WARNING: \texttt{4*i >= 4*j} $\neq$ \texttt{i >= j} in fixed-width arithmetic due to overflow! But 4*i is an array index -- overflow would segfault first $\to$ safe here, but ``something to be wary of in general.''
 \end{exambox}
 
-\textbf{LICM}: All defs reaching operands from outside loop $\to$ hoist.
+\subsection{Loop Invariant Code Motion (LICM)}
+All defs reaching operands of expression come from outside loop AND expression has no side effects $\to$ can hoist before loop.
 
-\begin{exambox}[Worked: LICM Danger]
+\begin{exambox}[{Worked: LICM Danger -- Zero-Trip Loops}]
 \scriptsize
-\texttt{for(i) for(j) total += array[i][j]}. array[i] is loop invariant w.r.t.\ inner loop $\to$ hoist to p=array[i].
+\texttt{for(i) for(j in 0..m) total += a[i][j]}
 
-\textbf{Danger}: If m=0 and array is null, original never executes array[i]. Hoisting causes segfault in working code!
+\texttt{a[i]} is loop-invariant w.r.t.\ inner loop $\to$ want to hoist \texttt{p = a[i]}.
 
-\textbf{Fix}: while$\to$if(cond)\{do-while\}. do-while executes at least once $\to$ array[i] is a very busy expression at loop entry $\to$ hoisting is safe.
+\textbf{Danger}: If m=0 and a=null, original code never executes \texttt{a[i]} (inner loop body never runs). Hoisting causes \textbf{segfault} in working code!
+
+\textbf{Fix}: Convert while-loop to \texttt{if(m>0) \{ do \{ ... \} while(...) \}}. Now loop body executes at least once. \texttt{a[i]} is a \textbf{very busy expression} in the do-while body (guaranteed to execute) $\to$ hoisting is safe.
+
+This is where Very Busy Expressions analysis is useful!
 \end{exambox}
 
-\textbf{Strength reduction}: 4*i $\to$ i$\ll$2. Mul by 3 $\to$ shift+add.
+\textbf{Strength reduction}: \texttt{4*i} $\to$ \texttt{i$\ll$2}. Mul by 3 $\to$ shift+add. Mul by 127 $\to$ shift$-$sub.
 
 %% ============================================================
-\section{Domination \& Loop ID}
+\section{Domination \& Loop Identification}
 %% ============================================================
 
-$A$ \textbf{dominates} $B$: all paths from start to $B$ pass through $A$. Self-dominates.
+\subsection{Domination}
+$A$ \textbf{dominates} $B$: ALL paths from start to $B$ pass through $A$. Every node dominates itself.
 
-$\text{Dom}(B) = \{B\} \cup \bigcap_{P\in\text{pred}} \text{Dom}(P)$. Entry: \{entry\}. Intersection $\Rightarrow$ greatest fixed pt (init universal).
+$\text{Dom}(B) = \{B\} \cup \bigcap_{P \in \text{pred}} \text{Dom}(P)$
 
-\textbf{idom(B)}: closest strict dominator. Dom tree: path root$\to$B = all dominators.
+Entry node: Dom(entry) = \{entry\}. All others: init to universal set. Intersection $\Rightarrow$ greatest fixed point.
 
-\textbf{Back edge}: $E{\to}S$ where $S$ dominates $E$ $\to$ natural loop. NOT a loop if target doesn't dominate source.
+\textbf{idom(B)}: closest strict dominator ($\neq$ B itself). The immediate dominator. Dom tree: path from root to B = all of B's dominators.
 
-\begin{exambox}[Worked: 10-Node Domination]
+\subsection{Back Edges and Natural Loops}
+\textbf{Back edge}: edge $E \to S$ where $S$ \textbf{dominates} $E$. Each back edge defines a \textbf{natural loop}. The destination $S$ is the loop \textbf{header} (entry point).
+
+\textbf{NOT a loop} if target doesn't dominate source: Two nodes with edges both ways but neither dominating the other = NOT a proper loop (no clear entry point). This pattern comes from arbitrary goto's, not normal for/while.
+
+The header dominates the entire loop body -- can't enter the loop without going through the header.
+
+\begin{exambox}[{Practice Final Q6 -- Domination (10 nodes)}]
 \scriptsize
-Dom(0)=\{0\}, Dom(1)=\{0,1\}, Dom(2)=\{0,2\}, Dom(3)=\{0,2,3\}, Dom(4)=\{0,4\}, Dom(5)=\{0,4,5\}, Dom(6)=\{0,4,5,6\}, Dom(7)=\{0,4,5,7\}, Dom(8)=\{0,4,5,8\}, Dom(9)=\{0,4,5,8,9\}.
+CFG: 0$\to$\{1,2\}, 1$\to$4, 2$\to$3, 3$\to$\{3,4\}, 4$\to$\{1,5\}, 5$\to$\{6,7\}, 6$\to$8, 7$\to$8, 8$\to$\{4,9\}.
 
-Back edges: 3$\to$3 (self-loop), 8$\to$4 (4 dom 8).
+\textbf{Dominator sets}:
+\begin{tabular}{@{}ll@{}}
+Dom(0) = \{0\} & Dom(5) = \{0,4,5\} \\
+Dom(1) = \{0,1\} & Dom(6) = \{0,4,5,6\} \\
+Dom(2) = \{0,2\} & Dom(7) = \{0,4,5,7\} \\
+Dom(3) = \{0,2,3\} & Dom(8) = \{0,4,5,8\} \\
+Dom(4) = \{0,4\} & Dom(9) = \{0,4,5,8,9\} \\
+\end{tabular}
 
-4$\to$1 is \textbf{NOT} a loop: 1 doesn't dominate 4 (path 0$\to$2$\to$3$\to$4 bypasses 1).
+\textbf{Key}: Dom(4)=\{0,4\} because two paths reach 4: 0$\to$1$\to$4 and 0$\to$2$\to$3$\to$4. Since 1 is not on the second path and 2,3 not on the first, only 0 (and 4 itself) dominate 4.
 
-idom tree: 0 root; idom(1)=0, idom(2)=0, idom(4)=0; idom(3)=2; idom(5)=4; idom(6)=5, idom(7)=5, idom(8)=5; idom(9)=8.
+\textbf{Back edges (loops)}:
+\begin{itemize}
+  \item 3$\to$3: self-loop (3 dominates 3 $\checkmark$)
+  \item 8$\to$4: loop body = \{4,5,6,7,8\} (4 dominates 8 $\checkmark$)
+\end{itemize}
+
+\textbf{4$\to$1 is NOT a loop}: 1 does NOT dominate 4 (path 0$\to$2$\to$3$\to$4 bypasses 1). Edge looks like a loop but fails domination test.
+
+\textbf{Immediate dominator tree}:
+\begin{lstlisting}
+         0
+       / | \
+      1   2   4
+          |   |
+          3   5
+            / | \
+           6  7  8
+                 |
+                 9
+\end{lstlisting}
+idom(1)=0, idom(2)=0, idom(4)=0, idom(3)=2, idom(5)=4, idom(6)=5, idom(7)=5, idom(8)=5, idom(9)=8.
 \end{exambox}
 
 %% ============================================================
 \section{Garbage Collection}
 %% ============================================================
 
-\textbf{Garbage}: unreachable memory. Undecidable precisely; approximate by reachability.
+\textbf{Garbage}: unreachable memory (safe approximation of ``can't affect future computation,'' which is undecidable).
 
 \subsection{Reference Counting}
+Each object has a count of incoming pointers. When count hits 0, free (recursively decrement children).
 
-\begin{exambox}[Worked: Code for p = q]
+\begin{exambox}[{Worked: Code for p = q}]
 \scriptsize
-(1) if q$\neq$null: temp=q.refcount; temp++; q.refcount=temp
+\begin{lstlisting}
+// Step 1: Increment q's refcount
+if (q != null) {
+    temp = q->refcount;
+    temp++;
+    q->refcount = temp;
+}
+// Step 2: Decrement p's refcount
+if (p != null) {
+    temp = p->refcount;
+    temp--;
+    if (temp == 0)
+        recursive_free(p);  // free p and its children
+    else
+        p->refcount = temp;
+}
+// Step 3: Do the actual assignment
+p = q;
+\end{lstlisting}
+A register-to-register move becomes: $\sim$3 branches, 2 loads, 2 stores, 2 arithmetic ops, 1 move. ``And a partridge in a pear tree.''
 
-(2) if p$\neq$null: temp=p.refcount; temp$--$; if temp==0: recursiveFree(p); else p.refcount=temp
+In multithreaded code: need atomic ops on refcounts ($\sim$50 cycles each). Overhead is huge for pointer-heavy code.
 
-(3) p = q
-
-One move becomes ${\sim}$3 branches, 2 loads, 2 stores, 2 arith ops. In MT: atomic ops (${\sim}$50 cycles each).
+\textbf{MUST increment q first, then decrement p}. If p and q point to the same object and you decrement first, refcount hits 0 and the object is freed before you can increment!
 \end{exambox}
 
-\textbf{Pros}: Simple, incremental. \textbf{Cons}: Slow (${\sim}$10x), \textbf{can't collect cycles} (A$\to$B$\to$A stays refcount$\geq$1 forever).
+\textbf{Pros}: Simple, incremental (no stop-the-world).
+
+\textbf{Cons}: Very slow ($\sim$20--30\% overhead). \textbf{Cannot collect cycles} (A$\to$B$\to$A stays refcount$\geq$1 forever). 1 word per object overhead. Python uses it.
 
 \subsection{Mark and Sweep}
-\textbf{Root set}: regs, stack, globals. \textbf{Mark}: DFS, mark reachable (mark bit=visited). \textbf{Sweep}: walk heap linearly using size headers; unmarked$\to$free list; marked$\to$clear bit.
+\textbf{Root set}: pointers in registers, stack, globals.
 
-\textbf{Pointer ID}: object header \textbf{bitmasks} (which fields are ptrs). Stack frame bitmasks. PC-keyed register bitmasks (table: return addr $\to$ 32-bit reg bitmask).
+\textbf{Mark phase}: DFS from root set, mark every reachable object (mark bit = visited set, handles cycles).
 
-Cost: $O(\text{live}+\text{dead})$. Stop-the-world.
+\textbf{Sweep phase}: Walk heap \textbf{linearly} using size headers. Unmarked $\to$ free list. Marked $\to$ clear mark bit.
+
+\textbf{Cost}: O(live + dead) -- must touch ALL objects during sweep. Must \textbf{stop the world}.
+
+\textbf{Space}: 1 word per object (size header / mark bit). Causes \textbf{fragmentation} (freed objects leave holes).
+
+Making heap bigger does NOT help much (numerator and denominator both grow in amortized analysis).
+
+\subsection{Pointer Identification}
+\textbf{How does GC know which fields are pointers?}
+\begin{enumerate}
+  \item \textbf{Compiler type info / bitmasks}: Object header has bitmask (1 bit per field: pointer or not). Stack frames have similar headers. Register file: lookup table keyed by PC (return address) $\to$ 32-bit bitmask of which registers hold pointers.
+  \item \textbf{Conservative collection}: Anything that looks like a valid heap address = maybe pointer. \textbf{Downside}: can't move objects (non-pointer integer treated as pointer would become invalid if you move the ``target'').
+  \item \textbf{Tagging}: Steal 1 bit per word (low bit: 0=pointer since pointers are word-aligned, 1=integer). \textbf{Downside}: reduces integer range by 1 bit.
+\end{enumerate}
 
 \subsection{Stop and Copy}
 
-\begin{exambox}[Worked: Stop-and-Copy]
+\begin{exambox}[{Worked: Stop-and-Copy Algorithm}]
 \scriptsize
-Heap split into active/inactive halves. Allocate via \textbf{bump pointer} (super fast).
+Heap split into \textbf{active} and \textbf{inactive} halves. Allocate in active half via \textbf{bump pointer} (just increment -- as fast as stack allocation!).
 
-When full: DFS from roots. Copy D to inactive, leave \textbf{forwarding ptr}. D refs B $\to$ copy B, leave fwd ptr. B refs A $\to$ copy A. G refs B $\to$ B already copied (fwd ptr) $\to$ link to copy. C,E,F are dead -- \textbf{never touched}.
+When active half is full:
+\begin{enumerate}
+  \item DFS from root set
+  \item Copy each live object to inactive half
+  \item Leave \textbf{forwarding pointer} in old location
+  \item When encountering an already-copied object (has forwarding ptr), just update the reference to point to the copy
+  \item Dead objects are \textbf{never touched} -- they just get overwritten when halves swap
+\end{enumerate}
 
-Swap halves. Dead objects cost nothing!
+\textbf{Example}: Roots point to D. Copy D to inactive, leave fwd ptr. D refs B $\to$ copy B, leave fwd ptr. B refs A $\to$ copy A. G refs B $\to$ B already copied (fwd ptr) $\to$ update link. C, E, F are dead -- never touched!
+
+Swap halves. Old half = meaningless bits.
 \end{exambox}
 
-\textbf{Pros}: $O(\text{live})$ only, no fragmentation, fast alloc, good locality.
-\textbf{Cons}: \textbf{wastes half heap}.
+\textbf{Pros}: O(live) only -- dead objects cost nothing! No fragmentation (automatic compaction). Super fast allocation (bump pointer). Good locality (referenced objects copied adjacent).
+
+\textbf{Cons}: \textbf{Wastes half the heap.} Copying cost (but most objects small). All objects move to new addresses (must update all pointers).
 
 \subsection{Generational GC}
-\textbf{Infant mortality}: most objects die young.
+\textbf{Key insight (infant mortality)}: Most objects die young. Long-lived objects tend to keep living.
 
-\textbf{Gen 0} (${\sim}$256KB, fits L2): stop-and-copy, very frequent, ${\sim}$95\% garbage. \textbf{Gen 1} (${\sim}$4MB): mark-and-sweep, less frequent. \textbf{Gen 2} (${\sim}$6GB): rare. Promote after surviving $N$ collections (2-bit counter).
+\textbf{Multiple generations}:
+\begin{itemize}
+  \item \textbf{Gen 0 (nursery)}: $\sim$256KB (fits L2 cache!). Stop-and-copy. Collected very frequently. $\sim$95\% is garbage $\to$ very fast.
+  \item \textbf{Gen 1}: $\sim$4MB. Mark-and-sweep. Fills slowly.
+  \item \textbf{Gen 2}: $\sim$6GB. Collected rarely.
+\end{itemize}
 
-\textbf{Old$\to$young ptrs}: mprotect() marks old pages read-only; writes trigger SIGSEGV to record dirty pages for root set during young-gen collection.
+Objects start in Gen 0. After surviving $N$ collections (2-bit counter in header, e.g., survive 3 times), promote to Gen 1. Similar promotion to Gen 2.
 
-\begin{exambox}[Practice Final Q7 -- GC]
+\textbf{Size Gen 0 to fit L2 cache}: If Gen 0 = 256KB and L2 = 512KB, all copying is cache hits.
+
+\textbf{Old$\to$young pointers problem}: Must find old objects pointing at young objects (they're roots for young-gen collection). Scanning all old objects defeats the purpose.
+\begin{itemize}
+  \item \textbf{Purely functional} (Haskell): Objects only point at older objects. Problem can't occur.
+  \item \textbf{Imperative}: \texttt{mprotect()} marks old pages read-only. Writes trigger SIGSEGV, handler records dirty page, marks writable. Dirty pages scanned during young-gen collection.
+\end{itemize}
+
+\textbf{Promoting referenced objects}: When moving D to older gen, also move B and A (objects D references) -- likely long-lived too.
+
+\textbf{Java permanent generation}: Class objects, method objects that never die $\to$ special region never GC'd.
+
+\begin{exambox}[Practice Final Q7 -- Garbage Collection]
 \scriptsize
-\textbf{3 advantages}: Fast alloc (S\&C), locality (S\&C), no double frees, no dangling ptrs, no leaks, reduced dev time.
+\textbf{3 advantages of GC}: (1) Fast allocation (S\&C bump pointer), (2) Improved locality (S\&C compacts), (3) No double frees, (4) No use-after-free/dangling ptrs, (5) No memory leaks, (6) Reduced dev/debug time. (Must specify which algorithm if advantage is algorithm-specific.)
 
-\textbf{Tradeoffs}: RefCount=high per-op overhead, 1 word/obj, can't do cycles. M\&S=$O$(live+dead), 1 word/obj, fragmentation. S\&C=$O$(live), \textbf{wastes half heap}, compacts.
+\textbf{Tradeoffs}:
+\begin{itemize}
+  \item RefCount: Very high per-op overhead ($\sim$20--30\%), 1 word/obj, can't collect cycles
+  \item M\&S: O(live+dead), 1 word/obj, fragmentation, stop-the-world
+  \item S\&C: O(live only), \textbf{wastes half heap}, compacts, fast alloc
+\end{itemize}
 
-\textbf{Pointer ID}: (1) Compiler type info/bitmasks, (2) Conservative (can't move objects), (3) Tagging (steal 1 bit/word).
+\textbf{Pointer ID methods}: (1) Compiler type info/bitmasks, (2) Conservative (can't move objects), (3) Tagging (steal 1 bit/word, lose integer range).
 \end{exambox}
 
 %% ============================================================
 \section{Compiling OO Languages}
 %% ============================================================
 
-\textbf{Polymorphism}: (1) Ad-hoc/overloading $\to$ name mangling. (2) Parametric: C++ specialization (sep code/type) vs Java erasure (compile as Object). (3) Subtype $\to$ vtables.
+\subsection{Polymorphism Types}
+\begin{enumerate}
+  \item \textbf{Ad-hoc / overloading}: Same name, different implementations. C++ name mangling (\texttt{add\_int\_int} vs \texttt{add\_float\_float}).
+  \item \textbf{Parametric}: C++ templates (specialize per type, separate code) vs Java erasure (compile as Object, type param not available at runtime, can't do \texttt{new T()}).
+  \item \textbf{Subtype}: vtables and dynamic dispatch.
+\end{enumerate}
 
 \subsection{VTables \& Dynamic Dispatch}
-Each obj has \textbf{one ptr} to shared class vtable. All instances share one vtable.
+Putting function pointers in every object: space = methods $\times$ objects. Too expensive.
 
-\begin{exambox}[Worked: Dynamic Dispatch]
+Instead: each object has \textbf{one pointer} to shared class vtable. All instances share one vtable. Space = objects + methods.
+
+\begin{exambox}[{Worked: Dynamic Dispatch Mechanism}]
 \scriptsize
-\texttt{v = load(p+0)} \quad\% vtable ptr
+Given \texttt{p->speak()}:
+\begin{lstlisting}
+v = load_word(p, 0)        // get vtable pointer
+f = load_word(v, offset)   // get method pointer from vtable
+a0 = p                     // pass 'this' pointer
+jalr f                     // indirect call
+\end{lstlisting}
 
-\texttt{f = load(v+offset)} \quad\% method ptr from vtable
+\textbf{Cost}: 2 extra load instructions vs static dispatch.
 
-\texttt{a0 = p; jalr f} \quad\% pass this, indirect call
+\textbf{Why C++ requires \texttt{virtual}}: In 1980s, 12 MHz computers. Two extra loads per call was expensive. Opt-in with \texttt{virtual}. \textbf{Danger}: If you forget \texttt{virtual} in parent but override in child $\to$ silent bug (static dispatch used, child's method never called).
 
-Cost: 2 extra loads vs static dispatch.
-
-C++ requires explicit \texttt{virtual}. Java: everything is dynamic (prevents forgot-virtual bugs).
+\textbf{Why Java makes everything dynamic}: By 1990s, HW faster. 99.9\% of time, not having dynamic dispatch with inheritance is a bug. Java removes the footgun.
 \end{exambox}
 
-\subsection{Sub-object Rule}
-Subclass must contain superclass at \textbf{same offsets}. Cat extending Animal: [vtable | name | age | laziness] -- first 3 fields = valid Animal.
+\subsection{Single Inheritance \& Sub-object Rule}
+Subclass must contain superclass at \textbf{same offsets}. Cat extends Animal: [vtable $|$ name $|$ age $|$ laziness]. First 3 fields = valid Animal sub-object.
+
+Animal code accessing \texttt{p->name} as \texttt{load(p, 4)} works identically whether p is Animal or Cat. Cat's vtable has same layout as Animal's for inherited methods, with overrides pointing to Cat's code.
 
 \subsection{Multiple Inheritance}
-Sub-objects stacked: [cat\_vtable | name | age | laziness | robot\_vtable | robot\_name | model]. \textbf{Two vtable ptrs}. Casting to non-primary parent: \texttt{f(p + offset)} (pointer adjustment).
+Sub-objects stacked: [cat\_vtable $|$ name $|$ age $|$ laziness $|$ robot\_vtable $|$ robot\_name $|$ model]. \textbf{Two vtable pointers}.
 
-\textbf{Thunks}: If CyborgCat overrides Robot::m2, secondary vtable entry points to fixup code that subtracts offset from \texttt{this} before calling actual method.
+\textbf{Primary parent} (Cat) at top: casting to Cat/Animal is free (pointer stays same).
 
-\subsection{Diamond / Virtual Inheritance}
-Two parents sharing grandparent $\to$ two copies of grandparent fields. Virtual inheritance: shared base at END, accessed via \textbf{offset in vtable} $\to$ extra indirection cost. Only one copy of shared fields.
+\textbf{Non-primary parent} (Robot): casting requires \textbf{pointer adjustment}: \texttt{f(p + offset)} instead of \texttt{f(p)}.
 
-\subsection{JIT (Java)}
-javac$\to$bytecode$\to$interpret first$\to$compile hot code to native$\to$profile-guided recompilation.
+\textbf{Thunks}: If CyborgCat overrides Robot's method M2, Robot's vtable entry for M2 points to a \textbf{fix-up thunk}: \texttt{this -= 24; jump to actual M2 code}. The thunk adjusts \texttt{this} from robot sub-object to full CyborgCat object. Non-overridden methods point directly to original code (no fix-up needed).
+
+\subsection{Diamond Problem / Virtual Inheritance}
+Two parents sharing grandparent $\to$ two copies of grandparent fields (bug-prone).
+
+C++ \textbf{virtual inheritance}: shared base placed at END of object. Only one copy of shared fields. Accessed via \textbf{offset stored in vtable} $\to$ extra indirection per access. Position varies depending on actual class of object, hence vtable lookup.
+
+\textbf{Cost}: Every access to virtually-inherited fields requires extra vtable lookup.
+
+\subsection{Interface Dispatch (Java)}
+Interfaces have no fields. First Java: \texttt{invoke\_interface} did linear search through vtable (O(n) per call, terrible).
+
+Better: \textbf{graph coloring on vtable slots}. Methods from same interface get same slot positions across all implementing classes. Easy because can always add more vtable slots (more colors available). Dynamic class loading makes this trickier.
+
+\subsection{Hot/Cold Field Splitting}
+Objects with many fields: put hot (frequently accessed) fields in object, cold fields behind a pointer. Much better cache locality. Accessing cold fields: extra pointer dereference + likely cache miss. Determine hotness via profiling / JIT statistics.
+
+\subsection{JIT Compilation (Java)}
+javac $\to$ bytecode (stack-based ISA for JVM) $\to$ options:
+\begin{enumerate}
+  \item \textbf{Interpret}: slow
+  \item \textbf{Compile everything AOT}: slow startup (huge standard library)
+  \item \textbf{JIT}: Interpret first, compile after seeing code multiple times. Only compiles what's actually needed. Gathers runtime statistics while interpreting, optimizes based on actual behavior. Can recompile/deoptimize at any time.
+\end{enumerate}
 
 %% ============================================================
 \section{Miscellaneous Exam Topics}
 %% ============================================================
 
-\textbf{procEntryExit 1/2/3}: prolog/epilog, JR RA (SOME([])), \textbf{view shift}: move args from a0--a3/stack into temps/frame slots IR expects (e.g., MOVE(t100,a0); SW(a1,FP$-$4)).
+\subsection{procEntryExit 1/2/3}
+\begin{itemize}
+  \item \textbf{1}: View shift (move args from a0--a3/stack into temps/frame slots IR expects) + save/restore callee-saved regs.
+  \item \textbf{2}: Sink instruction -- defines callee-saved regs + return-value regs as ``live at end'' so allocator doesn't use them for other values.
+  \item \textbf{3}: Assembly prolog/epilog: function label, SP adjustment, JR RA with SOME([]).
+\end{itemize}
 
-\textbf{Instr scheduling}: Reorder independent instrs to avoid pipeline stalls. \textbf{Loop unrolling} enlarges scheduling scope. Needs alias analysis to interleave loads/stores from different iterations.
+\subsection{Undecidability Pattern}
+Alias analysis, precise liveness, optimal register allocation: all undecidable/NP-hard. Approximate safely:
+\begin{itemize}
+  \item Liveness false positives: extra register pressure
+  \item Alias false positives: miss optimizations
+  \item Reg alloc failure: spill to memory
+\end{itemize}
+``The Turing cliff is always there'' -- trying to be perfect makes your analyzer loop forever.
 
-\textbf{CPS}: Confirmed NOT on exam.
-
-\textbf{Undecidability pattern}: Alias analysis, precise liveness, optimal reg alloc: all undecidable/NP-hard. Approximate safely: liveness false pos (extra pressure), alias false pos (miss opts), reg alloc may fail $\to$ spill.
+\subsection{CPS}
+\textbf{Confirmed NOT on exam.} (But: no function returns; every function takes continuation K. Tail call = pass K directly. Exceptions = two continuations. Used as IR in SML/NJ.)
 
 \begin{adjustbox}{max width=\columnwidth}
 \scriptsize
@@ -698,6 +1319,7 @@ Live range splitting & Reaching Definitions \\
 Register allocation & Liveness \\
 Code hoisting & Very Busy Expressions \\
 LICM safety & Very Busy + Domination \\
+Induction var elimination & Loop detection (back edges) \\
 \bottomrule
 \end{tabular}
 \end{adjustbox}
