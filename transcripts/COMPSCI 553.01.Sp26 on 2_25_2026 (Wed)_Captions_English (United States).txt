@@ -1,0 +1,1299 @@
+[Auto-generated transcript. Edits may have been applied for clarity.]
+Just want to hang out with us. All right. So, um.
+
+Today's Wednesday, right? Yeah, it's Wednesday next week.
+
+What's important? The midterm on Wednesday.
+
+And then after that I'm like fleeing the country this week.
+
+You got to take your midterms and stick them in my office and well, not quite as dramatically as that, but I'm going to France the next day.
+
+Um, so I'll start out, like, midterm grading sometime back.
+
+Um. Um.
+
+You need to write your midterm. Um, I need to double check the schedule, but I think they're on target.
+
+Where at least some of Monday we can spend some time reviewing for the midterm.
+
+So, basically, like, the way that I do a review is you will ask questions and I answer them.
+
+So please come with questions. There's some old exams on my website.
+
+Um. You can expect that generally, I will ask you a question where I ask you to write some SML code.
+
+A question where something is something. Regular expressions.
+
+If it is something, something like DFA.
+
+Maybe. Maybe regular or maybe your regular expression, you know, stuff like that.
+
+Something related to parsing. Maybe like an L.L parsing question and an LR parsing question.
+
+Or maybe not like just one of those and something with grammar or something.
+
+You know, some stuff about parsing, something about types.
+
+Like show me the typing derivation for law or something like that.
+
+Maybe some type inference. Um, so it shouldn't be like a surprise.
+
+Like those should all sound like, oh yeah, those are major topics we spend a lot of time on.
+
+Um, if you're worried about all the random trivia in the book, like the hierarchy of la,
+
+LR, k versus LR, k, and what grammar is strictly stronger than another?
+
+I don't know that stuff off the top of my head, so I certainly don't expect you to know that.
+
+Okay. Like the stuff that we spend a lot of time on class and that you've been doing will be the main, um, gist of all of this.
+
+Any questions about that before we continue on? Okay.
+
+Any questions about anything else before we continue on? Okay.
+
+We'll know everything. I have a question for you. All this is P equal to NP or not.
+
+I've always been wondering that. God has given that we don't have questions, doesn't mean we don't know.
+
+And we know everything. Um. All right, so what did we talk about last time?
+
+Even remember. Oh, Jack one.
+
+Okay. Why? We need a frame pointer. Why do we need the frame pointer?
+
+Uh, I just need, like, uh, the frame pointer is off the top of our, um, stack frame for a specific function.
+
+We went into one example where, um. It's often helpful for figuring out if we have a function.
+
+Nested functions? Yeah. We should because return.
+
+Uh, the. Sacked back to life.
+
+So there's kind of a handful of things in there.
+
+So one, having the frame pointer at the top of the stack frame gives us a very solid fixed location to reset the stack frame to.
+
+I think you're kind of mixing in the static link, which lets us find variables that come from other functions.
+
+And I think in Tiger that's not in C, but three.
+
+If the stack frame is changing sizes, offsets relative to the stack pointer will vary, but offsets relative to the frame pointer will stay the same.
+
+And for debugging reason, uh, we talked about like why we use an intermediate representation slash what that looks like.
+
+Yeah. We talked about why we use an IR. And there are kind of two big reasons right.
+
+What was the first one. Comments and times M is bigger than M plus m.
+
+Yes, for at least at least when N and M are both bigger than two.
+
+That was the condition I needed to, like, make sure thing I said be true. Um.
+
+Okay, so so if we had different languages and different ISOs,
+
+it would change it from multiplicative to additive in terms of how much work we need to do to support those.
+
+Ethan. Oh, that was what I was going to say. Okay. Anyone else want to go with the other thing?
+
+Comments, optimizations. Um, okay.
+
+We can do optimizations on the air and the like kind of affect any language and any, uh, backend, really.
+
+We need a bridge connecting the language specific stuff to the Issei.
+
+Huh. And what about this like?
+
+Is this big bridge? Big or small? It's kind of like in the middle.
+
+Right. Like, going from the AST to assembly is a really big leap.
+
+Right. And so I don't know if that works. I don't know if my question really got it.
+
+I don't know if my question asked while I was trying to get an answer.
+
+If we just went from the AST to the assembly, that'd be a big, complicated, nasty task, right?
+
+And so we can break that down into a smaller task by keeping some things more like they are in the u s t,
+
+changing some things to match how they look in the assembly and moving some things partway.
+
+And we kind of made a big table last time with all those things to see how we're making progress towards the assembly, but not all the way there.
+
+All right. Good review of Last time. Now everyone's brains are in compilers mode.
+
+I'm going to reassure myself. Yes, brain. You're in compilers mode, right?
+
+No. True. I want to go to sleep where you don't get any compilers. But, um.
+
+And so remember that we basically have this thing where you have some me and.
+
+And translate, right? And so this is what you're writing right now for your type checker, where you're recursing over the AST figuring out the types.
+
+And as we mentioned, you kind of have this data structured. It's like type equals whatever you're filling in now.
+
+And x equals unit.
+
+Um, and, and this is a placeholder for your er translation where you're going to do the type checking and the er translation in one tree walk,
+
+but you're going to go write the type checking without the er translation and then come back with the er translation.
+
+Right. Okay. So when we left off last time we were talking about what we passed back and forth across this
+
+interface and we were saying that our er has expressions and it has statements and we need to pick.
+
+But on the one hand we might need to pick one of those types of back and forth.
+
+But on the other hand we might just write a different type. All languages.
+
+Really? I want to talk. Who knows anything at all between.
+
+Right. We might write a different type that lets us, uh, pick what seems most appropriate.
+
+Like, here's an expression. I'll put it an X. Here's a statement.
+
+I'll put it in an in X, or I think this is something I'm going to do for control.
+
+I'll put it in a c x and we will basically pass these f x.
+
+Back and forth across this boundary. Okay, well, what is the explore?
+
+Or is this something covered in last? What is the X control.
+
+What's y x. What's the like.
+
+Why is it called c x? Yeah. Uh, probably a pal didn't just want it to be called like, S and C or something.
+
+Um, I don't know how he picked these names. This is just what you called it, okay.
+
+But X is expressions where we want to evaluate something for a value in X is for statements.
+
+Or we just want to evaluate it for a fact. And C is for control where we want to basically jump to somewhere is it, is there like, um, is uh,
+
+distinguishing between expressions and statements in the I are just like a choice that he makes?
+
+Or is that like a universally preferred way to do in here?
+
+Um, there is no universally preferred way to do an AI. Ah.
+
+Um, it.
+
+So I think it's one of those things where like that distinction lets us lets us avoid writing nonsensical, some nonsensical er, fragments where like,
+
+if you had the loss of a C jump and a C jump, that doesn't make any sense,
+
+because, see, jobs don't produce maps right now, you could say, oh, but true.
+
+Like plus of a job. That's kind of like adding a break, right?
+
+Like maybe that does make sense in some way.
+
+Um, but basically just dividing these into statements and expressions because we still are keeping expressions as a tree structure.
+
+Okay. So now you could make a completely valid er where you say, I'm only going to have statements because assembly is really only statements, right?
+
+Like Add takes two things and puts them into a thing.
+
+It's a statement. Um, you could say I'm only going to have statements and everything is going to basically have a location to put something in.
+
+And then, uh, two operands for where to get like we're going to have move.
+
+Thing. Operand thing. Right. Which moves us a little closer to assembly, but might also, uh, remove some, uh, some,
+
+some opportunities because like, memory addresses don't just need to be one register that can be register plus a bit.
+
+Um. Um. What's a fragment? What's a fragment?
+
+Oh. Good question. Um, a fragment is.
+
+So for those of you who, uh, need context for this question, are translations going to output a list of fragments?
+
+A fragment is a top level assembly entity, which is either a string literal or a function.
+
+So there's two types of fragments a string fragment and a function fragment.
+
+And so we're going to basically go through and output a list of these top level assembly entities to put in our 75.
+
+Right. Other questions.
+
+Okay. So the idea is with death sometimes.
+
+Uh, we are going to have something back this way in kind of the wrong way.
+
+Right. And what do I mean by that? Like if I have.
+
+Right. If I have this. If, then else. If, then Elton Tiger is an expression right?
+
+I would logically expect to go do some stuff and turn this into an ex of an expression, but I can also just use that as a statement by itself.
+
+Job by that. Like, I can just write this as a statement and ignore these values, even though if then else is kind of most naturally in expression.
+
+Yeah. Likewise x less than four.
+
+When I see that 99.9% of the time.
+
+That is something I'm going to use for control. I want to translate this into a C jump.
+
+So by that I mean like branch if less than or really branch of greater than or equal because we jump the opposition.
+
+Um, but I can also write.
+
+Y gets x less than four. And if I look at this in isolation, we'd be like oh yeah, that's a C jump.
+
+But now to fill it in on the right hand side of a assignment.
+
+And we were like, you know what? I wish that were an expression. Okay.
+
+And so the idea of how to deal with this.
+
+And there's going to be these three functions. That are called un, un in and un that you're going to.
+
+Right. And the idea is they take an ax and they give you back the inside of what you wanted.
+
+So like un x. The easy cases.
+
+Oh, you gave me an X. I'm just going to give you back the expression inside of it.
+
+Don't buy that. That's the easy case. The X.
+
+So what if I have something where I need to un x un in x?
+
+What does that even mean?
+
+That means what I actually have is a statement or something that like naturally looked like a statement, but I want to treat it as an expression.
+
+When could this come up? Um, yeah.
+
+Yeah. So let's say I wrote, uh, if x less than four, then.
+
+He gets a plus one else X gets X plus one, right?
+
+My if then else. Because it normally is an expression, it's going to say like I want this to be a c x, this to be an x, and this to be an x, right?
+
+But these are going to naturally be statements. I'm going to get an x and an index and a c x.
+
+And so any time that happens, I want to do this for its effect.
+
+Right. And then I should get a value that doesn't matter.
+
+Like if this value matters, something went wrong in my type checking, right?
+
+So I can say, oh wait, do you all remember what is our constructor?
+
+Let's just do a statement and then and be an expression. Say, oh, you're an easy.
+
+Where I say do s for a fact, and then we're just going to evaluate to zero because it shouldn't matter, right?
+
+What does it mean if I want to undo x r c x?
+
+That means I had, uh, something that I thought I wanted to do for control, but I actually need its value.
+
+Like I'm saying, a it's x is less than four.
+
+Right. So I look at that in isolation. I'm like, oh, hey, that looks like something that's a condition.
+
+Let's turn that into a six.
+
+But now I need to evaluate that either zero if x is greater than or equal to four, or one if x is less than four, go by that.
+
+Okay. And so how would I do that? Well.
+
+So first let's think about what this is. This is going to give me like six of some function.
+
+Right. Which is going to take a true and a false label. And it's going to compile into something like a C jump.
+
+Of less than. Uh, x for T?
+
+Yeah, right. That is it's going to be a function that says you tell me where to go if this is true and where to go if this is false.
+
+And I'm going to give you a C jump, that's going to say if x is less than four, go to the true label.
+
+Otherwise go to the false label. Right. You all go with that?
+
+So then. How would I turn that into an expression that evaluates to 0 or 1?
+
+Well. The first thing I need is some registers and some labels, right?
+
+So let's write a let. Okay, remember, registers are free at the moment.
+
+We have infinity of them. So any time we want a new register, we just say Newtown.
+
+Our register allocator will clean up our mess later. That's probably a foul smell.
+
+SNL. Uh.
+
+I realize I now have to s in scope, so I'm going to make this title for true label and file for false label.
+
+Right. Labels are also free. You can put as many of those in your assembly as you want.
+
+It doesn't cost you anything. Um.
+
+And now. And that's echoed.
+
+Every time I emphatically say something nice like this really drives me insane.
+
+Um. I'm already insane. Now we want to go and make basically, like, a little bit of, like, er, code.
+
+And before I do this, I'm just going to briefly say that our, our er has remember this.
+
+Which if you want to write like a whole bunch of statements, this is kind of a pain to write the mouse like as a tree of those things.
+
+So make your life easier. Uh, let's just say.
+
+Like why you yourself a confident little Sikh that takes a list and just turns it into however many of these things you need together.
+
+And I just put, uh, empty here for completeness.
+
+If we if we try to do an empty sequence of things, we're not going to do that, but rather happy X times zero will do nothing.
+
+Right. So now I write that because I want to write over here and EQ.
+
+I was going to say seek and pass in a list of things,
+
+rather than writing out all the different constructors that I imagine this function will take care of.
+
+Okay. I can go with that. There's nothing magic.
+
+It's just like, take a list of things and turn them into, like, seek of seek a seek a seeker.
+
+Seek of things. Um.
+
+So, uh, I'm going to make an EQ because this lets me do a sequence of statements or really a statement for the sequence of statements as a statement,
+
+and then evaluate to a value given that I have this register, what do you think my goal is to do with that register?
+
+Feel it. Mhm. Question that the result of the conditional.
+
+Yeah. I want to put the result of the conditional. And so I'm basically going to put either a one or a zero in it.
+
+And I can do that by um starting by putting a one in it.
+
+Right. Uh. Or as.
+
+You can do this either way, move to town or contest won, right?
+
+So that's a statement. Then I'm going to take, uh, this function here.
+
+And apply it to my true label at my false label. So that's basically going to take all raised it.
+
+That's going to take that function I had up here a while ago and give me the actual job inside of it.
+
+It's going to say, hey, if X is less than four, go to this, go to HTML.
+
+And if it's not less than four, go to file. And then I need to put an actual label in there like if it's file.
+
+This remember this says this label is here.
+
+If you jump to FL, jump to that spot in the program, and then if we go there, we're going to move.
+
+Okay, so here's a sequence of statements that says hey, start by putting one in to register.
+
+Ah. What is register. Ah I don't know new new temple.
+
+Just be like oh the next temp is register 418.
+
+Cool. Put one in to register 418. Then we're going to put whatever sea jump we have here.
+
+Right. And then um we're going to say the false label.
+
+So it's this if this condition was false, go here and put zero into that register.
+
+And if that condition is true, we'll go here. If we do this, we'll just kind of fall through to here.
+
+This is just a sequence of things. And after doing this, remember an exec says do this statement and then evaluate to a value.
+
+So what value should we evaluate to. Tamar.
+
+Yeah. Whoever said that? Good job. Right. Like.
+
+Uh. Right.
+
+Basically, after we do that computation for side effect to make our either have 1 or 0 as we want, the value of this expression is that temp.
+
+Ah. And now we have an expression that's either going to be 0 or 1 based on that condition.
+
+Even if we're just if we need to return R, then why do we also need to worry about which label we move to in this particular example?
+
+Like if we're trying to extract the expression, then why do we also need to worry about like.
+
+Statements. Um. So you can.
+
+So so let's pause here for just a second.
+
+And remember that in Tiger we can have expressions that have side effects right.
+
+Like we can have this expression x plus one.
+
+Comma semicolon semicolon x plus three.
+
+Right. So this is an this whole thing is an expression which has the side effect of first incrementing x and then evaluating x plus three.
+
+Right. And we could write something more complicated than that.
+
+Like this. We could write, um, our Jets one.
+
+If x greater than or equal to four, then are getting zero.
+
+Are. Right. This is still, uh, an expression, even though it has two side effects in it.
+
+This one and this one that's under this conditional, and it evaluates to R, and we can do whatever we want with it.
+
+You can say, hey, get that plus three.
+
+Okay. And so we're basically and note that if we just said r here, it would be very different.
+
+We wouldn't have put 1 or 0 in it. It would just be whatever value is in our.
+
+And so over here we're kind of doing the same thing right. This is like our gets one.
+
+And then this is basically kind of like this f where if the condition is false, we're going to go here and make it be zero.
+
+And we could change this. We can make this p zero and this one and this be the true label and this be the false label.
+
+We're going to say. And if not, we're going to jump down here to the true label.
+
+And this all makes sure that bar has the value we want.
+
+Before we say go use that value R okay.
+
+And also remember we're not actually evaluating this value.
+
+This is going to be a thing that this is a data structure in SML that we are eventually going to turn into a symbol.
+
+There seems a little because this is for anytime we use a comparison operator
+
+greater than this is going to be anytime we use a comparison operator for its value
+
+rather than for control seems a little inefficient to make each one of those a
+
+branch rep and like somehow turning that into like some sort of wacky bit like,
+
+um, I mean, okay, yes, this is a little bit inefficient.
+
+You don't actually need wacky bit math. You just need the, uh, SLT instruction.
+
+Right? Like, I mean, it has SLT, which I don't know.
+
+How do you guys pronounce that? So let's split.
+
+Okay, I, I don't know if I get in trouble if I say the slight instruction because that's how it reads to me,
+
+but like, um, like that's, this is uh, but anyways,
+
+especially when it's like SL2 for set less than unsigned, but um, anyways,
+
+set less than like if we wanted to be more efficient, we could turn this into set less than right.
+
+And we could make this more efficient at the expense of our compiler being more complicated.
+
+Right. So we could if we didn't want this, we could say, you know what?
+
+Every time we see something, we're going to say, uh,
+
+I'm going to give you back a three tuple that's like an expression, a statement and a control flow.
+
+Right. And then we could basically build up from there, where at every point we could say, here's a three tuple expression statement control flow.
+
+You just pick the one you want to build. But then at every step you're building up all three of those, right.
+
+So you might be like, oh, I've heard the expression about the expression for the control flow on the control flow or the control flow.
+
+I want to put that right. Okay. Don't make your compiler this phase a lot more complicated for like little tiny gains in
+
+performance that you're not going to see anyways because you're going to run it instead. Right.
+
+And so, um, a pick something that's kind of simple.
+
+And the cases where this particular ickiness comes up are very rare.
+
+Like not like it's never going to happen.
+
+Rare, but like how often are you writing.
+
+This in your Tiger coach, right? Like you're going to ride it because you want a test case for this.
+
+But other than that. Okay, so if we were doing like a really big fancy compiler that was going to like optimize a lot more.
+
+I'd want to do something else. But that's not going to be that where we're going to focus our.
+
+Billy. I was just gonna say a print statement. Huh? Probably write a print statement or something like that.
+
+Right, a print statement? Yeah. Print X listing information.
+
+Oh, yeah. Like, maybe you're debugging and you want to print X less than four.
+
+Um, in which case it's actually going to be a little more complicated because in addition to that,
+
+you're going to have to turn x less than four from a 0 or 1 to a string.
+
+So you're going to need a function that's like going to turn a number into a string. Right.
+
+And at that point, you probably actually if all you want to print is x less than four, you probably want like.
+
+Oh. You know that anyways, right?
+
+So, like. Yeah. Okay.
+
+Um. All right. But this is like what we're going to do, uh, for an X and you're going to right on and on.
+
+But the important thing is that we can use these to take the incoming f x and then produce an x
+
+and as a statement or a label cross label the statement function based on what we want and good.
+
+And then we return back. And x and x are based on what's most natural for what we have.
+
+Everyone happy so far? All right. I really need to get new markers.
+
+You just keep forgetting it, all right? Like, I remember it as I walked into the room at 120.
+
+Um. And that's not a good time to remember.
+
+The truth. Yeah. How do we know if we want an f, x and x?
+
+Or is that just based on during the tree traversal we're like okay I want.
+
+I was telling us this. So we're going to write a function for each type of thing.
+
+We're going to translate like translate been up translate.
+
+It's been up. It's got to give back an X. Because A plus B is usually an expression.
+
+It doesn't have to be an expression. Right. Like I could write f a plus b and something, but like please just write.
+
+If a plus b is not equal to zero, write like explicit.
+
+But you can write this. This is legal Tiger. This will give back an X because it's kind of the natural thing for a plus B.
+
+But we will unselect that right.
+
+Which we could do. Right. If you think about uncoiling an expression,
+
+we're going to have this expression and we're just going to generate a C jump that if it is not zero goes to the true label.
+
+And if it is zero, it goes to a false label because it's implicitly if that's not equal to zero.
+
+So that's that's part of your UN function. Right.
+
+Um. So each of the things that we're, we're like trans like,
+
+just like if naturally gives back an expression translate assignment that naturally gives back a statement, translate inequality naturally gives back.
+
+I see it in someone. Okay. Okay.
+
+So speaking of translating f, let's translate an f.
+
+So how many parameters do you think translate if it's going to take.
+
+I was a post graduate. Three three. All right.
+
+Because it's gonna be like, yeah, some expression. So like, yeah.
+
+Like conditional. Uh, then you can just have then.
+
+Is that the keywords I'm gonna keep in mind? Now let's actually do this, uh, and.
+
+Oh. So these are all going to be fixed.
+
+I'm going to take one for the conditional. One for the then clause.
+
+The body of the then and one for the else clause.
+
+Whatever's in the else. And what do you think that's going to be the first thing I do to them.
+
+They're coming in. Is that sort of X organics or six?
+
+Which I can't do much with. But I can say, man, I really wish that conditional weren't a.
+
+Lot of things. So the first thing I'm going to do is let.
+
+Conditional on. You see that?
+
+Right. What if it's not a cat? That's okay.
+
+UN will take care of it for me. Like if it's an ex like we just talked about.
+
+If it's a plus B, it will said, oh, I need to turn this expression into a C jump that evaluates this expression.
+
+Compares it to zero. Right.
+
+What do I want this to be? Yeah, yeah.
+
+So I'm going to unpack it. To get back an expression.
+
+Right. So this has type label cross label to statement. This has type expression and this has type.
+
+Oh, my heart is beating. That's A1I could switch to.
+
+Two. Sometimes this works. I can centrifuges things down too fast.
+
+Sometimes it makes a giant mess. All right. Um, so now I have a label cross labeled a statement.
+
+An expression, an expression. What do I need next? It's like a sequence of expressions.
+
+What? Crush some registers.
+
+Okay. How many registers do I want? Three.
+
+Two one. If you need a conditional branching like you want registers or labels.
+
+Labels are. Oh, yes, I do want more than than, uh.
+
+I do want more than one label.
+
+But we said registers. So how many registers? Thomas. Three. One.
+
+One. Two. I'm basically going to count with one result in right now, but you're not going to really have until what?
+
+I'm going to show the results. Of the same insurance laws.
+
+Well, I'm going to store them in the same register. Oh, as in the result?
+
+Yeah. Like I'm going to either go to do one of them and stick it into a register, and the other is to get into a register.
+
+So, uh, pretend I wrote down one of these.
+
+Okay, so I want to register to stick my result in because at a high level,
+
+I'm going to make an exec that's going to either jump off and move this into R or move this into R,
+
+and then it's going to evaluate to R in the end because that's where my result is going to be.
+
+Yeah. Um, and then the question you all were, uh, trying to answer was, how about labels?
+
+I'm going to want to I'm going to want more more labels, because I'm going to basically need a true and a false label for my jump.
+
+And then I'm going to need a label at the end to jump to. Right.
+
+So I'm going to have. L t equals a new label.
+
+Well, f equals a new label. Al e for n equals a new label.
+
+All right. I think that's all the stuff I need to let. Right.
+
+I'm going to right over here. You're going to see a blue is happier, right?
+
+Oh, yeah. Blue is happy. That you're out for the day.
+
+So how would I how would I turn this if in the air?
+
+I already said we're going to want an EQ, right? And you can guess that I'm going to want like a big sequence of statements.
+
+And I'm going to write this up here. Because I'm running out of board space.
+
+Uh, actually, what I'm going to do is I'm going to say this sequence of statements out there, and then my expression.
+
+It's going to be the temp art. So our goal for the sentence is to move the result of this into, um, into art.
+
+Yeah. I feel like these are like two arc branches that you've drawn up where we were going over the control flow,
+
+surrounded by arc, like you said, that we're doing like some, like, halfway approach between um, if else while for and like.
+
+Uh, yes. So remember our C jumps in this.
+
+Take two labels. They take a true label and a false label. So they have no follow through.
+
+You can make it look like a follow through by putting one of those labels right after.
+
+But the C jump is basically going to say like if X is less than four, go to label 42.
+
+Otherwise go to label 53 and they may not be right after.
+
+There may be no follow through. Okay, so what are we going to do in the condition?
+
+Yeah, we're going to start by saying let's take our condition.
+
+Oh. Right.
+
+So that's going to generate a sea jump right.
+
+If that was x less than four it generates the sea jump zone four.
+
+It could be a much more complicated sea jump. Maybe there's like an and or something in there.
+
+Who knows. But it's going to generate whatever condition it's going to say go here.
+
+If the condition is true go here. If the condition is false.
+
+So what should I do next, huh?
+
+When you first enabled me to open.
+
+Sure I can put the. I can put one of those labels next because I don't want to do anything else.
+
+Next. I can just jump there like you are.
+
+That's right. Sure.
+
+All right. So that's going to say whatever then prime is that the expression that is the body of the.
+
+Then go compute that and stick its result into all.
+
+Okay. What if we're doing like an if then else for side effects.
+
+Well we're going to have maybe yes which is going to do those side effects and come up with zero.
+
+But that's okay. We can take a zero into R and like you know, maybe we have a useless move, maybe later phases the compiler clean that up crash.
+
+You don't need like a jump to. Yeah.
+
+Then we want an unconditional jump. Okay.
+
+And remember, our unconditional jump takes an expression to say where to jump to.
+
+And then a list of possible targets. And I told you that most of what you're going to do is name off a label and the list having just that label,
+
+because that's the only place this jump can go. So far, so good.
+
+That basically says if it's true, compute that, then put it into this register.
+
+Jump to the end. Then what do I want after that?
+
+They left. Yeah. Label false. And then what do I want to do?
+
+Temper is fine. Yeah. Thomas, you can't read like this is a condition of commonality.
+
+Uh, this is Condition Prime. This thing right here.
+
+Um, lt and out f. Okay.
+
+That effort distinct enough now. So basically over here we.
+
+Start condition to get a label cross label the statement function.
+
+And we made two. Well we made three labels one for LP, one for Lf and one for Lee.
+
+That's out of the middle one. Hang on. This is l.
+
+T. This is l. Yeah.
+
+And this is l t. Right.
+
+And here we have an l t.
+
+An l l. And this.
+
+All right. Hopefully that helps decipher my horrible handwriting.
+
+Even so, labels basically just serve as statements that are targets for jump locations.
+
+Yeah, they are going to turn into a symbol that's like. Just like a like a literal label in the program.
+
+So every time you say new label, it's going to be like L 14 al 15 al 16.
+
+And when you output those into a sample, they're just going to be that label colon okay.
+
+Um, so in label, like if somebody said what we want to do is move in the temp.
+
+Or. Else I don't need a jump here.
+
+I just need to have. Oh, I don't need this.
+
+I already have the square brackets over here. Right. So that's my 12345123.
+
+The seven statements that I need to put in this, this list, um, to sequence to make an if then else happen.
+
+Okay. The.
+
+What does a room do? What is it? This is a move.
+
+Move to Mars Z Prime. Does it move?
+
+Does it execute Z Prime? And then there's all two. Yeah.
+
+It says take this expression, evaluate it to a value, stick it in this location.
+
+And last time we talked about how a pal basically has this B move of expression cross expression,
+
+but says that first expression can only be a temp or a million.
+
+Because it means right into that register. I mean, stored it into that memory location.
+
+And I said, uh, dude, what are you doing? We have a strong type system.
+
+Use it. Don't have things where you say, this can only be these things.
+
+Encode that in your data type. Um.
+
+You can tell I have strong feelings about how some of these things are up. Why is it bad?
+
+Why is it bad the way he did it? Because basically.
+
+Like so. So this is not legal. Right?
+
+Like you can't move to a better. The tight system does not rule that out, which has been off as an expression.
+
+Right? Which means one if you make a mistake where you accidentally do something like this, like you're probably not going to write this down,
+
+but maybe you have a function and you move to whatever some function returns,
+
+like a smell function, not a tiger function, and it accidentally returns been off into a move.
+
+You now have this particularly bogus um, by.
+
+Ah. Right. Where? If we said move.
+
+Uh, location. Cross expression. Right.
+
+And a location was either a temp or a memory. We could not write this down because the type system would say, hey, that's not a location.
+
+I rule that out, right? We like our type. Just a second error.
+
+We'd like our type system to catch our bottlenecks. So it's going to be Eric and then Chris after I finish this rant.
+
+But also this means that when you are processing this earlier in later phases and you write like, you know, fun.
+
+My function, uh, move temp.
+
+T whatever or my function.
+
+Move. Know I'm adder.
+
+Whatever. Right? That smell is gonna say.
+
+Whoa. That mouse was non-exhaustive. You left out. Move of move of Ben up.
+
+Move of name, move of function call. And you guys, you know what I.
+
+Yeah. No, those are not legal. Right? Because the type says they're legal, but you know they're not.
+
+And so you're going to go, yeah, it's a non-exhaustive match.
+
+But like I know it's not. And that's bad, right?
+
+Because that warning is there for a reason. And having set this up means we're not using the type system as well as we can.
+
+But you're going to have to do it anyway because the Pal code that disputes it.
+
+Yeah, I'm not saying to fix it right. I'm saying that like, if a Powell had asked me when he wrote this book,
+
+which he wasn't going to because I was like in high school or maybe undergrad, and I wouldn't have known at the time,
+
+but if I could travel back in time and go back to, you know, 1999 or 2, that whenever I'd be like,
+
+dude, make a data type for location, have read of location, be an expression, move to a location.
+
+Also, I'm going to go buy some Nvidia stock in Bitcoin back to 2026.
+
+Life is good now. Uh, Chris and then Billy, can we like, just put some restaurants in there?
+
+I mean, yeah. So you can write, you know. My phone move.
+
+Anything else? Anything else equals res fail.
+
+Blah blah blah blah, blah. You know, some meaningful error message where you're not ignoring that,
+
+but like the fact that you have to do that means that something bad happened in the design of this data structure, right?
+
+Like, I would rather we just designed the data structure right in the first place.
+
+Really what you do is temporary receive after the then or the else like like if we have like
+
+some good charitable stuff like we change within it then like how do what is that value.
+
+So remember this is an expression. It's like x plus seven.
+
+Can it also be a sequence of expressions. Sure. So if it's like this.
+
+If x less than four then and gets a plus one, B gets b minus one b times a plus three.
+
+This whole thing is an expression.
+
+That expression is going to be an EQ that's going to do this statement and then this statement, and then evaluate to this value.
+
+And so since this is the value of this expression, that's what's going to go into R after those side effects happen.
+
+So specifically in Tiger this is the case where like we're dealing with R then in our else is evaluating to a value.
+
+I wonder if like isn't that like not the case in some other languages or is that always the case.
+
+We just like I'm like blind to it. Um, okay.
+
+So in something like C if then else is a statement.
+
+And so it would be a little different because we wouldn't be moving these into a register,
+
+we'd just be like, we would um, index these, we just do those statements and then we, we done.
+
+But C also has. Question mark.
+
+Colon operator which for some reason intro programing classes like like, oh my gosh, don't use that is terrible.
+
+Look, don't use it for everything. But it's great when you need it, right.
+
+It is. If then else the expression just like we have in SML and Tiger and this we would compile exactly like this.
+
+Right. And in the same way, like you could have, you see an equals x less than four here.
+
+Question mark was one who was more willing to speak.
+
+Right. You could have like a big nasty comma operator which says like,
+
+do these expressions for a fact assignment is an expression in C, it's a statement in Tiger.
+
+It's an expression in C. Yeah. Were you shocked by that, Thomas? Why?
+
+Because it's like that has to go this way. Left. That's right. So in C you can write this, um.
+
+Yeah. And as being evaluate B equals c that evaluates to the value that got assigned.
+
+And then assign that to any. Okay. You most often use the fact that assignment is an expression when you write something like, you know, while.
+
+But I ran out of space. Like you're reading something from a file, and you're assigning it to a variable and comparing it to end file or something.
+
+That's when you most often see that in C. But any expression, any assignment is an expression.
+
+So back to your question. Um.
+
+Different languages have different rules for if the announces a statement or an expression, but kind of anything where it's an expression,
+
+the then in the listing to be expressions, they can produce values, and one of those is going to be the value that the if the announcer produces.
+
+Okay.
+
+And if we have three states and then statements in the in the dem part and it would just a security change and that's to help get you to one step.
+
+Okay. So if your if the then part was something like this, right.
+
+When you go do that this is going to be an X. It's going to be like this colon like when you do.
+
+Sequence like this is a sequence expression, right? So when you say translate sequence expression,
+
+you're going to make an EQ and you're going to get back an X of an EQ that's going to do this statement.
+
+Followed by this expression. So this is still going to be an x of this expression.
+
+It's just that that expression is going to have side effects. And that's fine because those side effects are going to happen in here okay.
+
+Now I will say this here's here's one little pitfall.
+
+Um, be really careful to only use sub pieces of your ear one time.
+
+Okay, what I mean by some piece of your ear is like, this is like some other chunk of air.
+
+It might have side effects here.
+
+It's kind of obvious, but like if you needed to use this multiple times, you want to evaluate it once and put it in a register.
+
+Because if it has side effects, you don't want those happening a whole bunch of times, right?
+
+So I had one group who had some very strange air bugs, because they use the same sort of piece of the air like two times.
+
+And so one, whenever that had labels in it, they were getting duplicate labels in their assembly.
+
+Like if this if this has an if then else inside of it.
+
+It has Latin and we use this twice. We're going to have Latin and Latin.
+
+And that's not going to work. Right. And so they're having like all these weird problems.
+
+And I was like yeah you're doing that two times. You got to put it in a register and do it one time.
+
+Okay. All right, everyone, good on that.
+
+Okay. Uh, where are we? 222. Wow.
+
+Do. You'll ever like it when you like look at clocks and there's like interesting number patterns like 222.
+
+What a great time to look at the clock or like the numbers like it's like, oh, it's a multiple of nine because the number I don't like birthdays.
+
+Uh, sometimes it's birthday. Oh, your birthday or I mean, you know that I'm like a geek with not much exciting in my life when I'm,
+
+like, driving and, like, my odometer is a palindrome.
+
+How exciting. Food.
+
+Okay, so that's so. So first, this is like ifelse, but this is also kind of the gist of how we're going to play the game.
+
+Right? Like we're going to take in some arguments for whatever we need the piece of the West.
+
+And we're going to say, do we want to un on x or un x them.
+
+We're going to un whatever them into the pieces we want.
+
+You going to make some new tents and new labels and then we're going to, oh I left out one thing which is we'd better x this.
+
+We're going to make an expression or a statement or a label cross label the statement function.
+
+And we're going to x in X or Z and give it back to whoever called.
+
+Okay. All right. What?
+
+Some. About violence for a minute.
+
+You all good if I raise this? You.
+
+So I'm really disappointed by Bovver move that table over there, which like, I guess I could fix.
+
+But like when you all are asking lots of questions, it's so nice to just sit on that table if maybe you're tired because, like you do.
+
+All right. So how many parameters do you think we need for a while?
+
+Loop. 2 to 2.
+
+The condition of the body. I think.
+
+And what do I want to on the conditional?
+
+On site. I want that to be something I use for control.
+
+What about the body? Ultimately I want to un.
+
+Enacts right. Because the body of a while loop is just a statement.
+
+While loop is not going to produce a value. Right.
+
+And so we are going to produce a statement because a while loop a while loop cannot possibly produce a value.
+
+You can't say like x equals y else something, something something.
+
+Okay. Um. How did they teach you to write while loops in 250?
+
+Oh. Just to like, let's say I say like with the jump at the bottom while X less than four.
+
+Yeah. Crash.
+
+All right. You're going to say like, I'll start and then we'll to stop.
+
+And you just do it all. I can tell a story.
+
+By Billy, who even I'll start in the name of it all end.
+
+And then, um. I'm pretty sure it was on the computer.
+
+It is true. Uh. Keep going as far as control and.
+
+Wow. Okay, so hang on. This is this is assembly.
+
+So I can only fall through. So what do you want me to write here.
+
+Let's do specifically x less than four or let's say x less than y.
+
+Since we want those two we don't have like branch less than two.
+
+We have range less than I can't remember. Yeah. You need a jump before the.
+
+I'll start actually to make sure that your conditional is true before you run anything.
+
+So what do you want here? Um, you want to jump?
+
+Conditional jumped x I don't know. I don't remember the assembly code, but you want me to jump if X is what is less than.
+
+Well, yeah, you want me to. You want to jump if x is greater than Y greater than equal to y.
+
+Uh. To end. Okay.
+
+And then what? And then, you know, the good stuff is between.
+
+What? Just do the stuff between l l stuff to the body and stuff.
+
+You're. Thing.
+
+YouTube put that batteries and statements out there. Other than.
+
+Else. That's okay.
+
+Bill. He's gone. No no, no, don't do that. No. And you want me to put I'll start up here.
+
+You you need your conditional initially to be true. To run the body first.
+
+If you don't want it, you don't want to do a iteration. And like you have to, you have to check the wall first.
+
+And then to keep running, you took the wall again. So you need to have a branch of less than right before the end.
+
+Uh, which goes to l start. Yeah. And we jump up to the condition.
+
+Yes. When you have to jump to some level. At that level, have to before that.
+
+And in general, you can have a statement.
+
+What? You generally only have one branch statement. Yeah.
+
+So you and I'll start with chest uh, the uh.
+
+Yeah. So you so you put the conditional branch between l start and stop.
+
+And so that's going to get evaluated every time the loop. That's like, uh, the bottom use unconditionally jump to the top of l start.
+
+And so the idea is if we run the loop, we jump back up, reevaluate the condition.
+
+And maybe for you stuff you want building, you don't like this.
+
+Oh yeah. Yeah, I do like this. Yeah. That works.
+
+Do they pass 250. You know, it took us like ten minutes to sort that out.
+
+Okay. Uh, see, I was all excited because I thought the building was coming up.
+
+Would be better than to see you were like, knew it or something.
+
+Um. This works. This is like the 250 way to do these kinds of things, but we can actually do, um, better.
+
+Can you? By turning it around like this.
+
+Where we get here, we jump down here to this branch of less.
+
+Then and then that jumps up here and we do this stuff.
+
+Right. And why is this better? Well, let's just suppose that this executes, uh, 1 million times, right?
+
+Over here, we're going to do 1,000,001 of these branches.
+
+1 million that are true. And one that's false. 1 million stuffs and 1 million of these branches right over here.
+
+We're going to do one of these. 1 million of these and 1 million of these.
+
+Uh, 1,000,001 of these.
+
+So we're going to end up with basically 1 million minus one fewer branches, because we're not going to do two branches every iteration.
+
+We're going to do one branch every iteration, one extra one on the start.
+
+And I thought Billy was like, like going for that and ready to just like, no kids.
+
+You're so inefficient. 250 lied to you even.
+
+What's the cost of doing a branch? And I'm laughing because that's a really complicated question.
+
+So I plan to follow it. So it's like, yeah, all right.
+
+The first question is what's your processor look like in 250?
+
+You all learn about in order to processors I think you learn five stage pipelines.
+
+Or do you learn that in three 5250?
+
+Okay. You learn five stages in order pipelines that are like FDX and uh, yeah, FDX, AMW and they're um,
+
+the cost of a branch is one more instruction going through the pipeline, right?
+
+Which takes up, uh, an issue slot. So if I just get that out and have fewer instructions, I can just go through my whole execution more quickly.
+
+If a branch is mis predicted, there's that penalty where it has to get to execute and then redirect fetch.
+
+That is a very simplistic view of a processor.
+
+That can happen.
+
+You can build processors like that. Many real processors are both wider, meaning you have more instructions per cycle.
+
+You have like four instructions going through like four instructions and asked for in the four and X and so on,
+
+which means a mis predicted branch costs you more. Um,
+
+in some ways it means that doing an extra instruction costs you a little bit less
+
+because it's like a quarter of a cycle instead of a whole cycle of your bandwidth.
+
+But. Branches have to be predicted, right?
+
+And even in most real processors, even a correctly predicted taken branch has some small penalty.
+
+Because it's not just. F t x m w.
+
+Its like f f f d, you know, more complicated and um,
+
+it takes some time to read the branch target buffer and the branch predictor and realize that you have a prediction,
+
+a take and prediction and redirect fetch. To that target.
+
+Okay. Separately from that, when you're fetching multiple instructions in a cycle.
+
+If you have a taken branch, you generally can't fetch the taken target, like if you're fetching these for instructions.
+
+And this is a branch, these three just go in the trash if it's taken and then you're out in the branch target a couple cycles later.
+
+Also many real processors,
+
+but not all do out of order execution where they're not actually executing the instructions in the order the programmer wrote,
+
+which makes this even more complicated to discuss.
+
+This is not an architecture class, although I am an architect and I love talking about this kind of stuff.
+
+Um, so the answer is it's really complicated, but in general, fewer instructions is going to help.
+
+And even if it doesn't have that much impact on performance, it does have impact on energy.
+
+Right. Which is something that we care about more these days than we used to.
+
+Like when I went to college. Back in the good old days, Pentium four was like Intel's flagship processor.
+
+Pentium four was a ridiculous microarchitecture.
+
+That was the end of the era of pushing clock frequency at all costs.
+
+Right. So basically in the 90s, Intel made money by going, oh, you have a 500MHz processor, wouldn't you like a 600MHz processor?
+
+Give us money and we'll give you a 600MHz. Oh, that's so yesterday.
+
+Now we have a 650MHz processor. Don't you need to upgrade everything?
+
+And, um. The general public especially,
+
+was like more megahertz equals faster because you have to be fairly computer
+
+architecture sophisticated to know that more megahertz does not always equal faster.
+
+And so when the first Pentium threes came out, the clock frequency was higher,
+
+but the actual performance was lower because of like pipeline depth and all this stuff.
+
+But people were just like Intel, take my money, give me a Pentium three, 700MHz.
+
+Oh, my God, it's gonna be great. Um, and Pentium four was the pinnacle of this where, like, they were pushing clock frequency.
+
+The architecture was highly inefficient in a lot of ways.
+
+Um. I worked. I interned at Intel a couple of years after that, and like some of the the people I worked with were like,
+
+yeah, Pentium four was like ridiculous in so many ways, but it made a lot of money, right?
+
+Um, and then there was this big shift.
+
+So Pentium four was clock frequency, clock frequency, clock frequency, and was really power and energy and efficient.
+
+And then there was this really big shift.
+
+Around the early 2000, where the main customers for Intel stopped being like me and you and started being like Google.
+
+Where they had lots of like, I mean, Google, Amazon, etc. where they were like, we actually care about real performance and not just clock frequency.
+
+Also, our power bill is in the tens of millions of dollars a year.
+
+So we care about energy. I don't actually know what Google's power bill is.
+
+If I didn't know, I couldn't tell you. But you can guess that it's opposite, right?
+
+And so, um, for for big tech companies, especially that run massive data centers, if you do this transformation, even if the performance is the same,
+
+but you're saving a couple of million joules every loop, or micro joules every loop iteration by not batching this extra branch.
+
+Whichever. This one's extra, this extra branch, decoding this extra branch, executing this extra branch,
+
+etc. those million joules add up real, real fast into real money.
+
+Okay. Yeah, it's our topic.
+
+What's the trade off between the frequency and the performance there?
+
+Um, so one way to basically increase cloud frequency is put more pipeline stages, right?
+
+And, um, I don't know if they taught you this into 50, but basically as you put more pipeline stages, you get diminishing returns,
+
+both because if I want to take D and split it up into two D's, I probably can't split it exactly 5050.
+
+I'm going to get like 6040, right?
+
+But that means that even though I have this extra stage, my clock frequency can only be like can't quite be doubled.
+
+It can only be, you know, whatever, whatever math.
+
+That would be 1.8 or something.
+
+But then you also have this extra latching or the flip flop pipeline latch.
+
+And so that adds overhead, which means instead of, you know, 1.8 you're getting 1.7.
+
+But as you get more and more stages right here, our brands miss prediction penalties three cycles.
+

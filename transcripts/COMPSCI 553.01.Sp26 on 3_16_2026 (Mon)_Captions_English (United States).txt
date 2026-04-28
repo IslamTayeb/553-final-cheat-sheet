@@ -1,0 +1,1255 @@
+[Auto-generated transcript. Edits may have been applied for clarity.]
+Uh, I know it's been a while. We've had your midterm.
+
+Uh. Stop yawning.
+
+Um, we had your midterm before the break.
+
+Um, my plan is to grade those on Friday, so.
+
+We'll see. Sometimes plans don't work out, but I'll try and grade those.
+
+Getting them back to you. Um, before the midterm.
+
+Who can remind me? Or who can remind me what you're planning about before the midterm?
+
+Uh. Uh. Dear.
+
+Okay. And why do we want the ire? It's hard to translate.
+
+Okay. It's hard to translate to assembly directly, Chris, to do something incremental.
+
+It's a good incremental step. And so what kinds of things did we talk about with IRR?
+
+Chris. Translating for an while. Loops. Uh.
+
+Switch statements. Yeah. We talked about how to translate various things, because that's what you need to go do.
+
+Um, and so coming out of, er, you have a tree based structure that, um.
+
+Has moved you one step closer towards, uh, something you can translate to assembly workers.
+
+This. Okay.
+
+All right. Um. And so. UN cannot stop yawning today.
+
+Okay. So the next thing that's going to happen.
+
+What we're going to talk about today is actually something that you don't have to do.
+
+I don't know why people decided to like, just do this for you.
+
+But he's like, here you go. It's not that exciting.
+
+Here's the code that does it. Um, but we're going to basically do two things.
+
+So one. Is we're going to purify expressions.
+
+Actually, when I say he does this for you,
+
+there's like two little bits that you have to do because for some reason he thought it was important that you do something,
+
+but they're really not that exciting. Uh, is to.
+
+So when I say purify expressions, what does it mean for something to be pure in the context of computable?
+
+I say that's a pure function. Yeah, yeah.
+
+It's going to have no side effects inside our expressions.
+
+And the other thing that we're going to do with this, uh, is bring function calls to the top level.
+
+What? Which also like they could have side effects.
+
+We're not going to distinguish between whether or not they, um.
+
+Are pure functions, but just calling them has side effects in terms of moving things to and from various registers to meet the calling convention.
+
+And then when I say linearize the code, remember that R has branches that can go is a tree and it has branches and can go to two places.
+
+Right. But assembly doesn't look like that. Assembly is a sequence of statements.
+
+And so this linearization is going to pull the ER into a sequence of statements.
+
+And not just any sequence of statements, but every branch is going to have the false case fall through.
+
+Right. So it's going to be branch of equal to somewhere.
+
+And then the false label will be right after it okay.
+
+And so this is what is going to kind of come next.
+
+Um, and then after that.
+
+After that is going to be instruction selection, which will be the next phase that you have to do a significant amount of stuff with.
+
+All right. With that in mind.
+
+Um. How? Let me ask you all this. How can expressions have side effects in the tiger er that we have?
+
+Crush any print. Uh, I can print them. Um, I mean, what I, ah, construct allows expressions to have side effects.
+
+Well, the only one I like jumping outside of the function body.
+
+I mean, I've. So jumps are statements right?
+
+So remember we have I'm not going to write the whole thing up here.
+
+But remember we have like a statement which has things like jump c jump etc. right.
+
+And so anytime we have a move that's a side effect because we're going to go right to some location.
+
+And then we also have expressions which have things like been up.
+
+And so on and so on and so on. Yeah. Uh, easy.
+
+Yeah. Right.
+
+So remember that it's easy to have an expression that has a statement stuck inside of it.
+
+And so that statement can have, um, side effects.
+
+Now before I go any further. This is one of those things where I actually I hold them.
+
+So what we want to do is basically get rid of all of the E6 out of our expressions.
+
+All right. We still need to keep their effects,
+
+but we want to kind of bubble up those effects to the top level so we can have statements and then expressions that don't have, um, these things.
+
+So this is one of those cases where it would be great if the code that did this transformed it from this, err,
+
+which has an ethics into something else that doesn't have x,
+
+so that the type system could help us ensure that we got rid of all of our X and didn't make any mistakes.
+
+Right? Because if the output type doesn't have that constructor, we know it's not in there at all.
+
+Um, but again upheld didn't quite do that.
+
+So. Oh, well. Um, but how can we get rid of x.
+
+Well the first so let's say we had an EQ.
+
+That's one one. Okay.
+
+I'm sorry. What could we do to, uh, reduce the number of E6 and this, um.
+
+In this, uh uh uh, express. Chris, uh, would you like.
+
+Would you do like, um, see s1, s2 and then you.
+
+Sure. All right. So basically if we have an aecaec whose expression is also an EQ,
+
+we can sort of squish those statements together because this says do this and then
+
+evaluate this expression which says do this and then evaluate this expression.
+
+And this says do this, which is this, and then this, and then evaluate this expression.
+
+And so those would have the same effect. And we've gotten rid of one of our x.
+
+Right. And if we can uh, basically we want to keep getting rid of E6 and pushing E6 outwards.
+
+Right.
+
+Because if we end up with, uh, a statement that's like of the form eq s e, then this, this, this statement happens kind of at the outside of things.
+
+Right? And we can just do that first. Uh, and then if this expression is pure.
+
+We don't even need it if we're not using it, right? Okay.
+
+Um, but more, more often than not, what we would end up with is something like, you know, move back.
+
+Move to somewhere aecaec.
+
+S e where we can basically do s first and then move.
+
+To wherever we need to put something like that, where we can, we can push.
+
+Once we get up to the top, we can push that statement to the outside. Yeah.
+
+So once we, uh, try to get rid of the easy but safe seat, like a seat on our, uh, defense seat.
+
+So seat just says, do one statement, then another.
+
+This is a statement. We expect it to have side effects, right?
+
+And basically in assembly, we're going to have a list of statements.
+
+Right? So we want our expressions to just be things that we compute for values with no nasty side effects lurking in them, and also no function calls.
+
+Um, and then we want to just have a bunch of statements that we do.
+
+So for sake, we expect to have started best for you.
+
+Well, we want to take one of our goals, which I always throw up here,
+
+is to make it so our expressions don't have side effects in them anymore than pure expressions.
+
+I guess, yeah, I guess I'm just confused.
+
+The whole goal of it. Um, so I guess our goal is to just push statements up to the function level.
+
+And so. Um, I think I'm tracking now.
+
+I wasn't five minutes ago. I don't know.
+
+Okay. Yeah. So we just like in Tiger, our expressions kind of have side effects.
+
+So in our IRR we kept it where our expressions can have side effects.
+
+Which was both useful for not trying to take those out of the tiger expressions.
+
+And also sometimes we wanted an expression with side effects in it.
+
+Right. Like when we initialize a record that's an expression.
+
+But it has a bunch of side effects like. Kamala can put the result in this register.
+
+Um, store, this store, this store, this store, this evaluate to that register.
+
+Right. But we want to basically now that's not like that's kind of a weird expression, right?
+
+We want to turn that around. So that's going to be, you know, some easing with a big sequence of like move whatever.
+
+Right. Uh, another move to me.
+
+Um, I never write a whole bunch of moves.
+
+And then this is all going to be after that, it's going to be some temp with our registration.
+
+Right. And what's going to happen with this? Well, we probably did something like this.
+
+Right. So we're going to end up with like a move and whatever that location is.
+
+And so we're moving into whatever that variable.
+
+Like if we're doing x equals allocator record, we're going to say move into wherever that record is going to be stored.
+
+Let's just say x this aecaec because this needs to be an expression.
+
+But that's kind of a weird expression, right? We want to just turn this around into a sequence of statements that do this move,
+
+do this move, do this move, do this, move to this move, move this into that.
+
+Right. Like we want to basically all of these things, let me get a different color.
+
+We basically want to pull all of these things out and do them and then turn this just into move that into that.
+
+Right. Because that like looks more like assembly and makes a lot more sense.
+
+Right? It's just that when we're coming up with this in isolation, we need all those side effects packaged up inside that expression.
+
+Yes. Okay. So you can do that in Tiger because everything's in expression.
+
+But in assembly we have to have an explicit separation between the things that we're doing for side effects and then expression.
+
+So that's what we're doing here is we're pulling the side effects out. Right.
+
+Because we want our assembly to just look like do this move, do this move, do this move, do this move, do this right okay.
+
+In a nice linear sequence. All right. And so back over here.
+
+One thing we can do is when we have E6. When e6 we can squish those together into one.
+
+Don't you think that reduces the number of E6.
+
+And in general, we're trying to find ways to get rid of E6 and to push them outwards,
+
+because when they get to the top level, it's it's easier to figure out how to sequence these things.
+
+Okay. And so if I had something like this. All right.
+
+I have a been up. Well, I'm going to say we're going to add an exec that does.
+
+Um s1 e1 and then e2.
+
+What can I change this into creche.
+
+Um, I could do an EQ of like a sequence of script, like S1 are just S1, and then, you know, if you wanted to open up, plus you want.
+
+All right. We can do that because this says, uh, you're going to evaluate this and then add these together.
+
+Right. And this says you're going to do this and then add those together.
+
+Now does this work? If I do. So um, does this thing thing work?
+
+Here, and I turn that into this.
+
+Is that okay or not okay.
+
+You know, is there an issue with like maybe the statement affected someone and so then you can that may be what maybe the statement s affected E1.
+
+And so you don't want to add. Yeah. So that's why I said question marks here.
+
+So maybe write if if s can change the value of E1 then moving this over here will change how this evaluates right.
+
+Do you all see that. So this depends.
+
+On if yes. And E1 are independent.
+
+All right. So if they're independent, we can do that.
+
+And if they're not. What can we do?
+
+Come back in a second. If they're not independent.
+
+We still we're still going to do something right. Let me just erase this part.
+
+Can we make them independent? What if we do something like move into some new town E1?
+
+Right. And then we can do s e c um, each.
+
+And then we can do a bean. Uh. Um, plus, uh, our town.
+
+To. All right, I can go.
+
+We can go. If if they're not independent, we can go evaluate each one first.
+
+Stick it into a tent. Do this. And then we can evaluate that job by that.
+
+So how could we tell? Tell.
+
+Well, so first of all, which of these do we prefer? What do you say?
+
+I think you first do. You do you want first, you second and duty.
+
+Is that an S? Yeah, this is s okay.
+
+This statement. And then T and T plus and teeth.
+
+Yeah that's a plus. And then I know my handwriting is not great but yeah.
+
+So then so basically we can just evaluate this into just a register.
+
+It's a new register that we haven't done before. So we know it's independent of anything else.
+
+And then we can do that. Now do you have a like we could just always do this to a by that.
+
+Like this is safe in all cases. Do we want to just always do this.
+
+No. Why not. Uh. It's slower.
+
+How much slower? And you about this too?
+
+Okay, well, this isn't a real processor register.
+
+This is, uh, infinite register. We've got plenty of those.
+
+Huh? Eventually you have to. Okay. Eventually we have to turn them into real registers.
+
+And this is going to be live across this statement, the evaluation of this.
+
+Right.
+
+And we may also have an extra register to register move, but maybe our register allocator can clean that up, so it might be a little bit slower.
+
+It might cause some register spells. We would prefer not to do that if we don't have to.
+
+Okay. So. How do we know if we have to?
+
+Thomas E1 uses a different set of registers in S.
+
+If E1 uses a different set of registers, then S um.
+
+Graduate. You know that. That's that's pretty strict. Uh, that's too strict.
+
+Is both too strict and not strict enough. So if if e1 and e2 or e1 and s don't involve memory at all.
+
+Then it's actually pretty easy. We can see what sort of registers this reads.
+
+What sort of registers this right. See if they overlap at all and make a decision.
+
+Right. That's kind of what you were going for. That's great.
+
+If we don't involve memory at all. But if this is like, you know, uh uh uh uh uh, ma'am, at 42.
+
+Right. So that's E1 we're looking in there and S is move into mem.
+
+At 17 something.
+
+Uh. Are those independent or not?
+
+So our expression is go read memory at T 42 and our statement is go right into memory.
+
+Go write something into memory at T 70. Pete.
+
+Maybe. Maybe. How would you know?
+
+You do? Well, we're like, this is the compiler.
+
+We can't tell what values are there until we run the program. Right? Even.
+
+Is it like the order? Well, what do you mean, the order?
+
+Like, if you were to read and then write.
+
+That seems more fine than writing.
+
+Than reading. Because you might have changed. Well.
+
+So I mean, that's basically the question is can we do this reordering here where this comes before this.
+
+Right. Um, and know that we basically need to know if these two things are different, which is undecidable.
+
+You guys remember I talked about undecidability. So asking the question are these two registers always different values.
+
+Is in general undecidable. Well do you guys remember my Turing class?
+
+Y'all remember this so we can start, like, way back over here with just like.
+
+I always do the same thing. We're just going to say that any statement and any expression might interfere with each other, right?
+
+You can go, like, really not that much further.
+
+Uh, if I just say like, it's actually like, you can't draw these each other, you can get a little bit more complicated with, like, a track register.
+
+Independence. Any mem might be cited as an even fit in my speech up here.
+
+Hey, I, we could just say, hey, look, if, if, if one of them writes a memory and one of them reads memory,
+
+I don't know if we're going to treat them as the same. If only one of them messes with memory, or neither of them mess with memory,
+
+we'll just check register independence like Thomas was putting out there, and we can do a little bit better, right?
+
+Now for this particular problem. Stopping here is probably fine, right?
+
+Because it's it's safe. If we do the thing that I just erased and it's probably not that big of a deal for our performance.
+
+If we do it sometimes and we don't need to. But as we'll see later, like next time,
+
+there are other times when we would want to answer this same question of do these two pointers point at the same thing?
+
+And if we can do better and better and better at that, we can do better instruction scheduling also.
+
+Right. And this is basically called alias analysis.
+
+And basically it is calling is a process. Asking the question do two pointers point at the same thing or not?
+
+Right. And you could have answers of yes, they definitely always point at the same thing.
+
+No, they definitely always don't point at the same thing, or they never point to the same thing,
+
+or sometimes they point at the same thing and sometimes they don't.
+
+Right. They may. Areas. So asking the question for two pointers may they alias is undecidable.
+
+Um, proof is left as an exercise to a theory class.
+
+But if you're curious, you can swing by my office hours on Thursday and I'll show you.
+
+It's not that complicated, but that's not the point here. Um, and we can do a variety of things for this.
+
+And in fact,
+
+like I'd say there's a kind of a theme in compilers research where there's basically papers that are like my slightly better alias analyzer.
+
+Right. Like, here's the way to do this to get slightly better results in the last thing.
+
+Um, and so what are some things you might think to try to if, if I was like, quick, write me an analysis that figures out an alias.
+
+So first, since it's undecidable, what do we have to do?
+
+We have to be wrong sometimes. Well, what? We have to be wrong sometimes because otherwise we fall off the cliff.
+
+Okay, so anytime you have an undecidable problem, you can go approximate it.
+
+You have to accept that you will be wrong sometimes, unless you want to be able to go in,
+
+unless you unless you're willing to accept going into an infinite loop sometimes.
+
+Okay. Um, but you have to pick how you're willing to be wrong.
+
+Okay. So let's just look at this one. This guy is like, yeah, any time I see two things, they might they might mess with each other.
+
+Is he wrong? Sometimes. Yes, he's wrong sometimes.
+
+Is it okay that he's wrong? Sometimes? Yes, because he's wrong in the safe way.
+
+He's standing like way back here. He's not getting near the cliff. He's going to be wrong a lot.
+
+Okay? But the way he's wrong is safe. He's picking the now erased slower, but always right.
+
+Translation when he doesn't need to. Right.
+
+If you're wrong the other way. And you picked this one when it wasn't okay, that would break your compiler.
+
+Right. So our May alias analysis can be wrong sometimes.
+
+It just has to be wrong with false positives.
+
+That is, it says these two pointers may alias when they actually might not.
+
+Okay. If it ever says nope, these two pointers definitely don't alias when they might,
+
+then we have a problem because we're going to break our code when they do it.
+
+All right. So, uh, given that they even have some thoughts on how you might do alias analysis.
+
+It's okay for the answer to be no. I just want you to think fast because, you know, you guys don't.
+
+You guys don't get enough, like, hard thinking, right? Awesome.
+
+Well, well, I thought, like, I was thinking of, like, checking the ordering of instructions that you're not like.
+
+They're not interspersed. You're always like. The atomic in the sense that you can't touch it can't touch, you won't be in the middle of this.
+
+So like you're saying. So the ordering doesn't matter.
+
+So if it helps, you can think about this just in terms of like tiger code rather than like I.R., which is I have two variables.
+
+P and Q. They're some kind of pointer type.
+
+I want to figure out could ever be equal to Q. What if he'd?
+
+Like I said, in a very concrete way, if you could somehow recurse through how they got their values in,
+
+check those and see if they could do the same thing. Okay.
+
+And I feel like you could like sansome for like, maximum depth and say, okay,
+
+let's go like five steps down that recursion tree or something like that and be approaching close for that.
+
+Um, you are on a good path.
+
+I'll come back to it in a moment. You kind of went to like, so like, there's kind of like a guy here and you kind of went to like a guy over here.
+
+We'll come. We'll come back to pizza guy over there for a moment. Uh, how about types, right.
+
+If P is a linked list pointer and Q is a binary search tree pointer entire, can those ever be the same pointer?
+
+No. Right. So we can say, hey, you know what I'm going to do?
+
+I'm going to just look at the types, like any two pointers of the same type.
+
+I'll say those may alias, but any two pointers of different types I know those will never alias.
+
+Right. Uh, does that work in all languages that work in C?
+
+Huh? No. And in fact, GCC has an optimization flag, uh,
+
+f strict aliasing or f no strict aliasing that controls whether or not it gets to assume that types are sufficient to determine aliasing.
+
+Right. Because in a lot of code, a lot of code that you write,
+
+if this is an int pointer and this is a binary search tree pointer, they should never be the same, right.
+
+Um, and so it's easy to see led to and I believe by default it has that or actually, you know,
+
+by default it has a hunt because I know it's compiled code that did not follow that rule.
+
+And it broke. And I had to go turn that flag on to make it work.
+
+Um, but then no version of it.
+
+So it all assume that that's the types are fine unless you're using unions, and that kind treats those explicitly differently.
+
+But for a lot of languages we can look at the types.
+
+Um, so Peter had this this sort of like, hey, can we kind of like, look at where values come from?
+
+And, um. I'm going to.
+
+It's okay. I didn't have all the details. Kind of a vague idea.
+
+We can say, hey, you know what? We're going to look at allocation sites over here.
+
+You said new binary search tree node.
+
+And over here you said new binary search tree node. And even though those are the same type,
+
+if I know that P is pointing at something that came from this allocation site and she was pointing at something that came from this allocation site,
+
+then they are not the same thing because they're from different places that we called new in our program.
+
+Right. Or malloc or whatever. Um, and doing that requires some data flow analysis.
+
+We're going to talk about data flow analysis in a couple of weeks. But uh,
+
+and you can you can basically take this idea and keep moving this guy closer and
+
+closer and closer to the edge as you refine it with various things of like,
+
+oh, this allocation site, but called by this function versus this allocation.
+
+So we're called by that function and so on and so on and so on.
+
+You have sets of allocation sites because P might come from this one, this one or this one.
+
+As long as that disjoint from Q might come from this one, this one or this one.
+
+You know they don't have this okay. So, um.
+
+And it's analysis. It's a thing. It's, um.
+
+It's a big challenge for compilers. And like I said here, it's not a super big deal.
+
+But when we come to instruction scheduling, uh, we're going to talk about that with instruction selection next time.
+
+Um, we're going to find that knowing if we can reorder a load in a store is kind of a big deal, right?
+
+But by the way, I'm a hardware person, too. Whoo hoo!
+
+Here's taken 552. So you guys know that in hardware, we can speculatively reorder loads of stores and just squash things if we're wrong.
+
+Right. So out of order execution can do things where the compiler may not be able to sort things out effectively.
+
+All right. Oh, yeah. So. Oh,
+
+what are the things that a pal wants you to do for this is basically write a little function
+
+that takes a statement and an expression and figures out if you can swap their order,
+
+like if you if you can do this thing, or you have to do the thing that I erased.
+
+Right.
+
+So it just takes a statement and an expression returns true if you can reorder them freely and false if you have to do this more complicated things,
+
+you don't need to do anything that sophisticated for it.
+
+Um. I. If you just write return false, it will.
+
+Well, it's that simple. So you don't write return but equal. So it won't have that big of an impact on your compiled code.
+
+Upheld gives you, like, I don't know, some very ad hoc heuristic.
+
+Uh, I don't remember what it is in in the book of like, oh, well, if it's a const, we know it's fine.
+
+And if it. I don't remember something. Um, if you want to do a pause ad hoc heuristic, that's fine.
+
+It's actually not that hard to do Thomas's thing because, like, we've got sets, you can, like, make a set of what this one reads in the set of what?
+
+That one. Right. And see if they're if they're, uh, intersection is not empty.
+
+Uh, but you just need to fill that function in some way.
+
+Okay. Just give you all a moment to process that, will I?
+
+All right, everyone, good on that front.
+
+Okay. Um.
+
+What was our other task? Jack player.
+
+Yeah. So we have some code that we can basically think of as there's some, you know, statements.
+
+And then the branch over here.
+
+We can branch over here, and maybe this can branch over here and then over here.
+
+And this one goes on and goes here, and this one goes here.
+
+This goes around here or that.
+
+Okay. These numbers. All right.
+
+So. Um, when we have something like this.
+
+Uh, what's your first thought on how to linearize it?
+
+You're all brilliant young software engineers.
+
+Yeah. Huh? BFFs.
+
+Well, okay, we could do BFFs, but do we want to do BFFs?
+
+Thomas. Yeah, but I wouldn't want to do that.
+
+Right? Because I don't like if I do BFFs.
+
+I'm going to have, like, one, two, three.
+
+Four. Seven. Five.
+
+Six. Eight.
+
+Right. And that's going to kind of have jobs that look like us.
+
+Uh. Right.
+
+It's just a graph, but, like, you squished it sideways. Uh.
+
+Um. So I can write the code down in this order.
+
+I was just putting the branches on there to show that, like, seven is now not going to be the fall through of anything, right?
+
+So four is going to have to branch to either 5 or 6.
+
+Neither of those is going to be the fall through case,
+
+which means that I'm basically going to have to insert how how would I do that in assembly if I need to jump where neither of my branches,
+
+neither target is my follow through? What instruction when I put at the end of four.
+
+That jump to whatever. Like people think it's like sex.
+
+In this case, that's the. Yeah, I basically have like a conditional branch to five and then an unconditional branch to sex.
+
+I would definitely prefer a linearization.
+
+And I may not always be able to get this, but I would prefer linearization where five and six, 5 or 6 comes after four,
+
+right where I don't have to insert another jump to get to the other case where I can use my fall through.
+
+Yeah. So then would this be like a topological sort of sentence?
+
+Um. Oh, this is.
+
+Yeah. So we can't do topological sort. It has cycles. Sometimes we're going to have to jump around because that's how programs work.
+
+But if I do DFS I get like a much better result right.
+
+12378.
+
+Uh, for. Five. I've already done seven.
+
+Six. Right. And so now four is going to just fall through to five or jump to six.
+
+Five and six both have to jump up here to seven. That's kind of unavoidable because three's going to fall through to it or what.
+
+Three not only falls three to it, but now since that's an unconditional jump, it doesn't even jump at all.
+
+And like one, two, three, seven, eight.
+
+How do I get to four? Okay. Right.
+
+And so notice that over here my arrows are all like a big tangled mess, right?
+
+I'm jumping all over the place here. I'm executing straight line code until I get to this condition on branch.
+
+One of them falls through, the other has to jump away. I'm executing straight line code here.
+
+Uh, when I get to eight, I'm done. All right, so this is going to be, like, done.
+
+It's fine. And then when I get to four, I have to branch either 5 or 6.
+
+And those have to jump back up to 70. All right. And so DFS is going to work a lot better than BFS in this case because our execution kind of
+
+keeps going down a path rather than BFS would kind of jump it back to where it was right.
+
+Okay. So we can do DFS. We can write down all these blocks.
+
+Um, is there anything that we should care about beyond just like again,
+
+this is one of those things where we could just take a regular DFS, throw it at it and it's fine.
+
+And that's what the [INAUDIBLE] does.
+
+But are there other considerations that if you are writing a big, powerful compiler to make actually fast code, you would want to put into this?
+
+Jack Reed. Sorry, this is just a question about. Sure. Is the connection from send it back to to just not draw on our right hand side or right.
+
+Just remember. Which, I mean, since that's a loop, we're going to have to jump there anyways.
+
+Um, but it's nice that we're exiting the loop here.
+
+We can just fall through the eight versus over here,
+
+where we would again have that same thing where we'd have to like loop or exiting the loop, have another jump down.
+
+This peaked. I'm watching this in a compiler, but you could do some like profiling to see whether you go to like 3 or 4 more off of two.
+
+Okay. From there, decide which one you want. Okay.
+
+So piece point is, hey, uh, this branch may not be 5050.
+
+And in fact, branches in general are not 5050, right?
+
+Even even like, oh, this is a loop branch.
+
+So what do you expect it to be taken. Taken.
+
+But since it's a loop we're kind of out of luck. Right.
+
+But other conditional branches, uh, are generally pretty heavily biased.
+
+That's why branch prediction works so well. Right.
+
+Um, and so we would really like to know, you know, if this is 95 five, do we want this order of to our code.
+
+No. We basically want our DFS to go this way, right.
+
+But it can still be a DFS. It doesn't have to just pick, uh, the successor in the order that I drew it on the board and we would rather have 1 to 4.
+
+And then maybe, you know, if, if this is the most common thing here.
+
+We might want six over there, right? Um, and so can our compiler tell that?
+
+Probably. Sometimes. Probably. Sometimes.
+
+What a great answer. I feel like.
+
+I feel like there's some, like, jokes about, like how politicians answer questions.
+
+Right? Probably sometimes we can do that. How might our compiler be able to tell that?
+
+Yeah. Prioritize like a true. Um.
+
+So, I mean, we could just arbitrarily pick prioritize.
+
+True or false, but there's not a very strong heuristic, right?
+
+Like, um, what would make us think that truth is more opposite?
+
+Thomas? Uh, like, I only know how to do this.
+
+And like, if you push it down to, like, runtime level, I can't I don't know if you can do a compile time because you could just like.
+
+So you want a profile? What? You want the profile?
+
+Oh, yeah. Exactly. So the profile, if you also know profile is where you say, man, I'd really like to know this, but I don't.
+
+So I'm going to run the code with extra instrumentation or go slower to gather data on how each of the branches goes.
+
+And then I'll feed that back into the compiler again to optimize based on the actual grant job context.
+
+Krish. Just like, is this one just in time?
+
+Uh, okay. So if you're doing just in time compilation, then you can profile as you go and recompile on the fly.
+
+Um, and do a whole bunch of other stuff that doesn't come up in sort of normal compilers.
+
+Utah. We can do static checkouts of constant conditions like comparison variables.
+
+Uh, so if I have. What do you want to do with that?
+
+I don't know. I don't know. I don't know either.
+
+Um, so there's a couple a couple of things.
+
+So the first is, you know. What should our compiler guess if that is the case.
+
+Obviously don't want to be like you. You're probably not going to take this very often.
+
+You're going to take it at most ones, right? Um, so we can look maybe at some things that happen there.
+
+If they're if there are indications that the program will exit.
+
+We can guess that loops are most often going to loop.
+
+Um, but many compilers and languages and or languages will let the programmer provide hints.
+
+Right. So, uh, in GCC it's built and.
+
+Where basically this says evaluate this, but expect that the outcome is most likely to be one.
+
+And you can put zero there people on. Yeah. Yes. Uh, I think she sees zero cards.
+
+Uh, um, he would likely put up beside the brackets and that's.
+
+Yeah, I mean, they may have other ways to do this too, but same idea.
+
+Yeah. So you can base it like some compilers will let you, the programmer who knows what's likely to happen if it hits.
+
+And if you're wrong, your code will be correct, but slower.
+
+And if you're right, your code will be a little bit faster. Right?
+
+Um. Oh, yeah.
+
+So let me ask you all this. Uh, so, so one of the things we would like is basically to have not taken branches wherever possible.
+
+Right. Um, is there any other consideration we might like?
+
+Yeah. By offering a function quote. By putting the quote function into the.
+
+We have. Oh, inlining. Yeah. So inlining is very different from this right.
+
+So this is just saying. Given this graph let's go put it into a linear sequence.
+
+Inlining is going to say um. Somewhere in here there's a function call like maybe inside here we're going to replace that.
+
+That might complicate this graph a bit. That is an optimization we can do.
+
+Um, but we need to it's like separate from this thing.
+
+Comments. I like it if you do it, lady.
+
+Oh, yeah. It's. Uh uh uh.
+
+I also want to believe you. Um. Really?
+
+Okay. Um. So, uh. Okay, so loop unrolling is another thing that we can do it again, different from this linearization, right?
+
+About loop unrolling. Uh, and we'll talk about that next time with instructions.
+
+Scheduling would be to put like multiple copies of this body.
+
+The reason we want to do a loop unrolling is to have a bigger scheduling scope for instruction scheduling,
+
+and also just to remove the two loop overhead instructions.
+
+Um, but it's slightly different from this. So we've got the the branch predictor right.
+
+That's not really the branch predictor but the taken branch penalty even if we predict branches correctly.
+
+That's what we're trying to optimize with this. What else might uh uh our code layout.
+
+Yeah I remember in five, five, two there was talk about, um,
+
+combining like execution paths into larger blocks to just have less branches in the code overall.
+
+Um. Can't exactly remember what the technique was, but it was like, uh, like a super block or hyper block or something like that.
+
+Yeah. So um, that again goes into like kind of the instructions scheduling piece.
+
+Um, where we want to we'll talk about this next time.
+
+But basically the more instructions we have to schedule with, the better we can do the scheduling a Thomas.
+
+And then back to Eric. Can you do like a critical logic where you just go down both ways.
+
+You just put them both there and then multiply by like. So you want to do like predicates instead of branches?
+
+Uh, many. I said I support predication in some way.
+
+Um, they like, if five and six are both very short blocks, then it might make sense.
+
+If they're big, we probably want to branch. Right. Because if we have, let's say this is 20 instructions and 20 instructions,
+
+we'd rather just have a conditional branch than 20 instructions that are falls on their predicate that we're not going to do.
+
+Eric. Completely unrelated.
+
+Um, are we assuming MIPs has the branch delay slot?
+
+Um. For what you all are compiling for spam doesn't do branch delay slot, so it's fine.
+
+Okay. Uh, branch slot is really nasty.
+
+Which is why I did this. Um, it's one of those things that, like, when they first came up with it, it seemed like a great idea.
+
+But when you think about things like out-of-order execution, it's really, really nasty.
+
+Um, and, uh, I have a student who's working at an independent study,
+
+and she came across the whole branch delay thing, and I was like, oh, that's what they were talking about 250 years.
+
+It's awful. And it it's. Uh, you know, as soon as you have a little, uh, column, I can see that up here.
+
+That X plus something that tells y something.
+
+And we want you to put, uh, x plus of the block closer to the French.
+
+The condition. Sorry. What? Do you like to have a statement.
+
+That's better than. Harder than to ask for something else.
+
+Like here. You want this? He is something like that.
+
+And else why love love love so.
+
+We want you to put, uh, excuse us to closer to the ranch.
+
+What can one. What do you mean, closer to Y?
+
+Big X plus two. Possibly about a little, because it's concerned about, uh, operating on the same register.
+
+We're going to have to move the value from that.
+
+So one, if it's in a register, we don't move a value from memory at all.
+
+Two in terms of the dynamic instruction sequence, whether this is the fall through or the take and target,
+
+it's the next instruction, so it won't make a difference.
+
+Alex, I one of the things we have several different, uh, DFS rules that we just to put everything inside and pick the one that is most at home.
+
+Pick the one that's most common. Uh, most frequently, for example.
+
+But in this case, we choose the right ones. That'll.
+
+But so this is basically saying if you have some heuristic or profiling information or something that tells you that one of these is more likely,
+
+you want that to be the follow through case. Yeah. Okay.
+
+Yeah, but maybe in the beginning we have both of the two sides.
+
+We have what? The outcome. The.
+
+You want to, like, compile this. Like into several different versions and choose the one that I like.
+
+So first there's like eight different versions of this. This is a pretty small function, right?
+
+Like, okay, I guess you can do that. Um, but now you need something at runtime that's counting these and changing what to wear and so forth,
+
+which if you're doing git, you have kind of that infrastructure naturally.
+
+But if not, it might get a little complicated again. Um, so what?
+
+I was a, uh, interesting discussion when I was hoping you all would think about was, uh, the cache.
+
+Right. So let's suppose eight is really big.
+
+How many times am I going to execute block eight one time, right?
+
+So does it really matter if I fall through here or if this is far away?
+
+And let's also just suppose, you know, maybe if, uh, if this is very common and this is very uncommon.
+
+Right. Like. Um.
+
+Numbers are hard. There we go. All right. Then I might not only want for to be right after two.
+
+I might want things like eight and three to be kind of far away.
+
+Right. Like I might want. 1 to 4.
+
+Six. Seven. Five. But.
+
+With three and a kind of either at the end or possibly even further away, so that they're not polluting my I cash.
+
+Right? Because, uh, uh, you know, aid is kind of maybe taking like, well, we're prefetching.
+
+You guys know how we eventually work. We're just doing that. Those a question you.
+
+But just like prefetching along and we start prefetching and that's going to waste some cache space.
+
+Well, we might rather just have that off in the end for later.
+
+Okay, so there's some, um, there's some things that can happen in the linearization.
+
+They don't happen in your Tiger compiler. Um, we don't generally have the hotness of the paths available in your Tiger compiler.
+
+So even if you wanted to do this, be a little tricky. You'd have to like profile and or, uh, add, um, hints or something like that.
+
+Um. The one thing you have to do on this front.
+
+And again. I don't know why.
+
+Um, I don't know why I thought this was important, but, uh, you have to write.
+
+So, like, if we, um. If this is a conditional branch like branch of equals, and we decide that, um, for comes like I'd say this is the true case,
+
+that this comes next for whatever reason, maybe because this is already put somewhere else or something.
+
+We might have to change a branch of equals into branch if not equals, right?
+
+So Apel decided it was very important for you to write the like thing that takes equals
+
+and turns it into not equals and less than and turns it into greater than any equals.
+
+And like that's the other function it's called like not real or something.
+
+Um, I don't know why he thought you should write that about all the things in this vein, but just to give you something to do.
+
+Um, okay. Oh, yeah.
+
+One other thing. I won't go with that.
+
+Um, the last thing I should have mentioned this when we were talking about making, uh uh uh uh, expressions all pure, but it slipped my mind.
+
+Um, it's just that we also move all the calls out to the top level, which makes your life easier.
+
+Okay, so, um, why is it important that the calls come out to the top level?
+
+Well, let's say that we have f of g of x, uh, and then h of y plus.
+
+I don't know. Factorial of 37.
+
+Right? Um. This is something we could write in Tiger, and we want to basically change this into something like, uh, ten 1X2 each for.
+
+Three equals factorial of 37, and Tim four equals half of one.
+
+Okay. And this is what I mean by pulling all the calls out to the top level,
+
+is that we've taken this column, moved it up here in this column, moved it out here.
+
+And so these are now at line kind of the top level where we're just moving their results into a register.
+
+Why do we want to do that. Eric.
+
+Does it keep us from, like, putting too much stuff in our call in the stack?
+
+Not so much the stack, but let's just imagine that we were just trying to translate all of this, right?
+
+So put your put your small head and brain on.
+
+You're going to say, oh, I need to like, translate, um, uh, an IR chunk into some instructions.
+
+Right. So I'm going to say like, oh, I need to translate a call into the instructions that go with it.
+
+Right. So I'm going to say, oh, well take each of the arguments and put them into the like.
+
+Evaluate each of those and move them into the A0, A1, etc. registers and then do a jump in link.
+
+Right. Does that make sense. So oh I need to do this okay.
+
+The first thing I'm going to do is recurse on this thing. All right. Well to do that I'm going to move.
+
+Uh, X and A0 jump in language and that's all good.
+
+Okay. So now we're going to say like okay, move uh into A0 from b0.
+
+All right. So far so good. All right.
+
+Cool. Now we need to process the next one. So this is a plus. So we better do this one okay.
+
+Move. It's going to be low to medium, low to medium in zero four.
+
+Anybody see a problem? Like we were relying on this already being there.
+
+Right. But now we're overriding it because we've come across another function call.
+
+And so that's nasty. And if we keep doing this, we're going to basically see that,
+
+like we're going to call this and expected to result in V0 and call this and it to result in v0 and add v0 plus v0.
+
+But that's not going to be what we want. And then stick it into, you know, a one and so on.
+
+And so having these functions nested inside of each other is going to be a mess.
+
+If I do this here I'm in good shape right. I'm going to put x into a0, call g, move p0 into t1.
+
+But four a0 call h would be zero entity to put 37.
+
+And uh and then this will work just fine. Okay. Well guess what.
+
+It's like one of those. What if we have like a break expression somewhere in between that because.
+
+And what if then factorial does like 12,000 side effects like print.
+
+Hello. What happens? And the correct thing would be that the printing doesn't happen because the breaks reached.
+
+Like, how do we handle that? Um. Because then we move all the functions to the top level.
+
+So you're saying like what if. What if it, like, exits the program?
+
+Or like, what if instead this is an expression. What, like if something didn't break?
+
+Uh, well, technically break can be an expression.
+
+I'm thinking explicitly like g of x, and then maybe it's like break plus print high,
+
+or like something really stupid like that where it's theoretically possible, but.
+
+Well, okay, so so like this expression here has break in it somehow.
+
+Yeah. So I'm still gonna, uh, like to do this and evaluate g of x first and then this expression.
+
+Mhm. So I still evaluate g of x and then uh you're.
+
+Yeah. So you're saying like this?
+
+Yeah. And I need to watch a fact to print the.
+
+Yeah, I think I. Yeah. Okay. That the like.
+
+The fundamental question is, if we're moving everything to the top level, how do we know?
+
+And we shouldn't move to the top level because that's never going to actually make all the.
+
+So. But I'm basically thinking between like, okay, the way I wrote this here, you need to change this into something like this.
+
+Right. I kind of evaluate them. They to keep the order of evaluation.
+
+I would have to check. Like I said, a pug gives you this code.
+
+I'd have to check exactly what he does. And it would be interesting to just to like, test something like that and see if it's his code gets it right.
+
+But yes, you would have to be careful, uh, to maintain the order of, um, evaluation.
+
+Right. Because you would basically want to. Get get all arguments to just be a register by pulling all those things out.
+
+Um, you want. If you were to leave, the arguments to the function are getting be violated.
+
+The the. You want the arguments to the function to be registers.
+
+Yeah. Like how do we know which order to type?
+
+Um, left to right. Yeah. Yeah.
+
+And in some languages that leave this kinds of things a little bit undefined.
+
+But in Tiger I'm 99% sure that the function arguments are evaluated left to right.
+
+Um, and so as long as you pulled this out and then this out in something where you can evaluate this first, um, it would it would work fine.
+
+I'm a little curious now, but I'm not going to check right now.
+
+But like, you can you can put this into random little tiger code and see if Apple's translation does that right or not.
+
+Um, a good point. But setting that a setting that aside, not that we want to ignore it because it's an important point.
+
+Once we've moved all of the functions out to the top level, uh,
+
+we don't have to worry about the fact that we'd be kind of tripping over ourselves with the registers we want to use as we try and put things into,
+
+um. Into the conventional registers for calling a function.
+
+Any other questions? All right.
+
+We'll wrap up like five minutes early today. And next time we will do instruction selection.
+
+Um, which is the next phase of the compiler that you need to do non-trivial work on.
+
+And then we've just got, uh, liveness and register allocation and you all know, all the stuff you need to do to finish your compiler,
+
+and then we'll swing back and do some, like, data flow analysis and optimization stuff.
+
+And then the semester will come to an end. All right.
+
+Are ready. I mean, I'm excited.
+
+Oh, I don't know if I told you all. I got my offer for Google this summer, so, like, that's all set.
+
+Wait. What? I thought you were, like, kind of like a monthly employee.
+
+Like seasonal. Um, I get a new, like.
+
+You have to put in a proposal for me to be a visiting researcher, and it has to get.
+
+I think the approval is straightforward, but I don't know.
+
+But it gets approved, and they give me an offer, and then, like, I turn all my stuff in at the end of the summer and so on.
+
+So it's fun. You're also getting internships? Yes.
+
+I got my internship. How about you all? Okay. Actually, most of you are senior, right?
+
+Uh huh. Whoa. Wait.
+
+Okay. How many of you are not a masters without a master's degree?
+
+How many of you are a junior? A sophomore? Okay, well, I have no trouble finding a T.A. next year.
+
+Uh, last year, I didn't actually have a to choose like I was.
+
+It felt like three people who had graduated. They were like.
+
+One was a Ph.D. student whose advisor wouldn't let them. T.A. one was undergrad who was teaching something else and didn't want to change.
+
+And one was like a CFP. Mr. Junior knew. All right, I know.
+
+All right. I'll see you all on Wednesday. Or it was probably good for him.
+
+Yeah. Uh huh.
+
+Theoretically. So maybe you're making it easier for them to like a.
+
+Little things like that or some. Of the other.
+
+So, uh. Yeah.
+
+All right. And, like you say, custodial sentence, and then you work until I work and you get another set.
+
+Yeah, DSA was in DSA. Yeah.
+
+Oh, wait. You. Oh. I thought you said this was a DSA class.
+
+So, you know, I was to get into music.
+
+It's fun. Right? Oh, I can get some go to code up because you guys both have class.
+
+Yeah, it's just like two files I was reading the book about basically just like, uh, statements and.
+
+Yeah, just like statements. Okay. That. Okay.
+
+I feel like this is going to be like, sort of. Like, it's like just a little bit.
+
+We have a little bit of. It's like, this is like one phase, which is kind of hard to verify if it's correct or.
+
+Oh, no. Oh, it's, uh, Mr. Allocation. That's what I do.
+

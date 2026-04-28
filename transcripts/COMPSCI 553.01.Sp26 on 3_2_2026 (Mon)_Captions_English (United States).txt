@@ -1,0 +1,1265 @@
+[Auto-generated transcript. Edits may have been applied for clarity.]
+We're like half a day behind. So we should be able to do kind of like finishing a PR and, um, whatever review for the midterm,
+
+you want to ask you questions because the midterm is on Wednesday also.
+
+I will not have office hours this week on Thursday.
+
+I will be going to the airport to get on an airplane in France.
+
+Um, well, technically to Charlotte and to London and to France.
+
+But, um, that's why I'm going to the first weekend of spring break.
+
+My wife's going somewhere the second weekend of spring break. And so she was like, just taking their first weekend.
+
+And so that's what we do. Um, so. And just no office hours.
+
+I assume none of you are going to want to come to office hours on Thursday anyways, like you're going to be,
+
+like on your way out of here to I don't know where where do all the cool kids go for spring training these days?
+
+Um. Oh, I'm sorry I said the cool kids.
+
+I got to go hang out in my parents basement for a week.
+
+Guys, what are you going to say?
+
+Probably. Isn't it cold? Like, I was like, I'm getting more people, like, you know.
+
+Yeah, we're Rico Cancun, the Da of that Florida beach.
+
+That seems that's been something that might be risky. All right, um, so who can tell me what we talked about last time?
+
+You don't remember still, uh, fishing while loops, and that's okay.
+
+And more broadly, what were we doing? Um, translating.
+
+Yeah, we were translating, uh, our, um, ast into the ER.
+
+And so we were seeing, you know, a few different, um, bits of how that works.
+
+Uh, one thing I'll throw out there is that while we're on the subject of loops,
+
+which is kind of where we left off last time, we were actually part of the show.
+
+We did wire loops. What else did we do? It felt, um, we talked about some of the kind of the er, big picture of stuff.
+
+Um, and so, um, loops, you know, break can happen inside of a loop.
+
+Right. And so when you're going to translate a loop, right, like, you know, or you know that you're like.
+
+Track spinning whatever. And you're like, oh my gosh, it's a while loop.
+
+Um, when you go do that body.
+
+Right before you're completely done with the body, you may encounter that break.
+
+Right. Which means you basically need to go ask like, hey, can you just give me a break?
+
+Target? Like, give me a label. To your translate at the start of this, and then pass that down into the translation of the bottom right.
+
+And you probably are already like passing a boolean down to say if you're inside a loop or not,
+
+because you need to check if a break occurs outside a loop, or you can just turn that boolean into basically a label option where it's none.
+
+If you're outside of a loop, and some of the label if you're inside of a loop and just kind of like repurpose that parameter to wedge this in.
+
+And so when you get to a break, you're just going to say like, oh, hey, here's that label.
+
+Like, just give me a jump that label to the break. Make sense?
+
+Okay. Um, so I just wanted to mention that about for you.
+
+They're not super complex or interesting, but let's talk for a minute about arrays.
+
+All right. What do you all know about, uh, a that might be relevant to biology?
+
+What can we do with arrays? Integer. It's kind of this kind of two things you can do with them, right?
+
+You can. Okay.
+
+You can read. Well, if you want to break it down into reader. Right. There's three things you can read them.
+
+You can write them and you can okay. Create.
+
+Yeah. Allocate or create. Right. So we've got creation and we've got use.
+
+So let's talk about use first. So we're going to like you know translate.
+
+Array indexing I don't know. So we're going to need our array x.
+
+And remember these come in as like these f x where uh uh we're going to want to on this thing.
+
+This one. Would like us to be an expression, a statement, or a conditional jump.
+
+Yeah. Probably an expression.
+
+Yep. And how about the index expression? Also an expression.
+
+So we've unpacked both of those right. And I'm not going to like write all this up there.
+
+Um and then remember. So we remember we have mem.
+
+Right ma'am. Uh. Expression which is the adder under us.
+
+Can we just add this and this to get the address we need to access?
+
+I see like a yes and no. What do we need to do to survive?
+
+Uh, yeah. We basically need this thing. Times four plus this.
+
+Right. Um. And then what else might we want to do as we're generating this array to access?
+
+Crush downstream. Check. Yeah, we might want bounce checking.
+
+Right. Because in see where like, you know, do do whatever access any memory you want.
+
+But in lots of languages. Since then, we've realized that that's a pain.
+
+And we want, um, balance checking. Right.
+
+And so basically we're going to end up with an EC. Right.
+
+Where our statement is going to do some things. And I'm not going to write those all out that basically do our bounds checking.
+
+And then our expression is going to be mem.
+
+Uh. Brain plus index times four.
+
+Now, if we need to use index multiple times in here, as we likely do,
+
+we're going to want to move that into a register in case our programmer writes something wild and crazy like array at.
+
+X. Yeah, it's x plus one x so that we don't end up doing that side effect multiple times.
+
+Right. Like you wouldn't want to increment it for your balance check and then increment it again when you actually index things.
+
+Um, and so I'm kind of writing this a little. Like you all work on the details.
+
+Um. So, uh, for bounds checking in, Tiger.
+
+Uh, all your accesses should be in bounds on all the, like, test cases you have.
+
+You don't need to do anything too fancy. Like we don't have exceptions, right?
+
+If you want to put in exceptions, that's a whole other can of worms.
+
+But you need to get this out of the way for you. It's better.
+
+Okay. I. Sometimes I'm wondering.
+
+I'm actually wondering now if we should move class over to bear, like in the future, but I don't know if we can.
+
+But then the camera won't be on us very well. Or maybe awkwardness. Um.
+
+And, uh uh uh, so you don't need to do anything fancy about checking fails.
+
+Like, you can just jump off to an error label that exits the program, or print an error message that exits the program or something like that.
+
+You don't need to do any kind of recovery. You just just fit.
+
+Um, and so bounds checking in the air that you have is basically just some C jumps.
+
+Right. Because what do you need to do to bounds check. You want to check that index is.
+
+Yeah, it's less than the size of the array. It's less than the size of the right.
+
+And it's also possibly or not greater than or equal to zero.
+
+Right. So both of those are just um, some, some C jumps.
+
+But that implies that we need the size of the array. And so if this is so let's actually go over here to array creation.
+
+Let's say I want an array of five events.
+
+How much space should I allocate. Or what it's worth.
+
+He is 20. Who says 20 bites?
+
+One person, two people. Three people. Who says? 24 bytes.
+
+Ethan Y. Why 24? Jack.
+
+You mean like the Terminator? You're right. I need something to tell when the array ends.
+
+A terminator is kind of like a C string thing, where we have a special character that goes at the end.
+
+If we have an array of ends, do we have a special value we could put at the end?
+
+No. And it's also like this is one of the the downsides to see strings is to tell their length is oh of the length of the string.
+
+Right. Put the length in the first okay.
+
+So we're going to put the length in the first thing. So you want it to look like hey we're going to allocate some memory.
+
+Uh we'll say there's five things in them and there's, there's five spots we can write.
+
+What does this make. So if we were to do this we'd basically take this number, add one, multiply by four and then passed out to malloc.
+
+Right. Like we we would basically, you know, have some some stuff.
+
+And we're going to end up with like move some to this.
+
+My result call the palette.
+
+Size where up here we've basically done size was original size.
+
+So I'm not going to write out in like air because you all can do that. And now we have this result.
+
+And then we can go fill that in. Because in Tiger recreation we specify a value to put in each element of your ride.
+
+And we can pick all of that where that result is, is what we get.
+
+But if we do that, what's going to be awkward about using this array?
+
+Jack. All the links are. It's kind of nice, though.
+
+You know, all our indices are messed up. And by the way, this is why Pascal has like one indexed arrays.
+
+Because now like zero is for the size. Uh, and so if we wanted to do that, we'd have to kind of come over here and make this, like, index plus one.
+
+Yeah. Is there a way we can fix that? You guys know the answer is yes, because I wouldn't be asking if it wasn't Jack.
+
+That. I don't know what that would look like if we put the length at the end it.
+
+So if you put the like, then you have a little bit of a profit on it. Like how do I tell how long this is.
+
+Well, if I knew how long this was, what if I go through and look like okay, an index five is there a five is an index six.
+
+Is there a six. You have, uh, can that be addressed to the two?
+
+Not. And somewhere else. Like, you want to pull this out into some other data structure where I have like a hash table.
+
+And so my bounds check has to take this address and, like, go look in this hash table or something.
+
+We could do that. But out we want to make things simple.
+
+Yeah. Maybe we just have like a sub function or something where we hand it like the direct address of the first index.
+
+And then that's where we do all of our a array like indexing because we give it like
+
+a size or something like we have a function that like we give the exact array,
+
+uh address and the size. You know, Eric, you just put up like.
+
+Yeah, we just like, right. Like we do this Malik.
+
+And then like we increment this pointer by one or by four here.
+
+And we return this as our array. And now our bounds are just at array index negative one.
+
+Right. So over here we're going to look at you know mem at array minus four to get the bounds.
+
+And now all of our the rest of our indexing is just very natural. Okay.
+
+I like that better than a hash table or whatever. Okay.
+
+Um. Yeah. So from there, like, I don't know.
+
+That's that's pretty much, uh, erased in a nutshell.
+
+Um. Records are, um, basically simpler, right?
+
+So when you have a record, you know how many fields it has to create it.
+
+You know the value to initialize each field. So you're basically just going to malloc how much space you need fill in each field.
+
+Um, and then return that pointer and then record use like my records dot x.
+
+You just need to know the offset of X within that record to generate a reference.
+
+Right. That's all pretty, um pretty straightforward.
+
+And that record creation is again, just going to be like a big EQ, right?
+
+You're going to make a temp. You're going to call malloc to move into that temp.
+
+You don't need to do any of this like you just want for records because we don't need bounds checking.
+
+And then you're just going to put like moves to memos to initialize each field.
+
+And then you can write your E in the EQ is just whatever malloc return.
+
+I briefly want to mention for loops. They are a little bit weird in Tiger because their bounds are inclusive, right?
+
+So like if I wrote a for loop. If I wrote a for Loop and Tiger that was like for I equals max and minus three to max and.
+
+Do whatever. And I compile that naively.
+
+Uh, what's going to happen? If you just kind of grab a 250 student and tell them to like, translate for loops.
+
+Well, first is probably going to go badly in a lot of ways, right? Okay.
+
+Things that make sense.
+
+But, um, but kind of the natural way you do this, where you're going to like, uh, you know, put, uh, put this into a register for the.
+
+Whoa, put this into a register for the high initialize x y.
+
+You don't even do this. You put this directly into the register for I, um.
+
+Have a test that because this is inclusive, you want to say basically do the loop if I is less than or equal to this bound.
+
+But that's always going to be true, right?
+
+You just do it that way. But what should this for loop do in Tiger?
+
+To do max at minus three, max and minus two, Max at minus one and max end and not being infinitely.
+
+Don't buy that. And so we need to do something a little trickier.
+
+And what might that be? Anyone have thoughts? Now I'm going to write this out not as like air, but just as kind of like pseudo assembly ish.
+
+Right? So we're going to say I gets the low bound.
+
+Um, so this is going to be, you know, whatever our low bound is, uh, um, yeah.
+
+Not bound. We're going to say, uh, you know. I you're not going H gets our high bound.
+
+This is going to be the expression here, expression here.
+
+And then what we're going to do is basically say uh, sometimes for loops can go no iterations at all.
+
+So we want to say, yeah, I is less than or equal to H.
+
+Then we're going to um go to uh L2.
+
+Otherwise we're going to jump to L3. Else.
+
+Um, and then we're going to have one or we're going to increment by.
+
+Right. We're going to have L2 where we do our body.
+
+And then we're going to basically say like, yeah, um.
+
+I is strictly less than age. Then we're going to go back up here to L1 to do one more loop iteration.
+
+Otherwise we're going to go to L3. I know.
+
+Yeah. These things are. I'm not sure if that meant I.
+
+Oh, gosh. Well, I don't know if that made it better or worse, but it also seems to turn it off or something.
+
+Right. So basically when we come in, we're going to check if we're if we have no iterations or not and then jump down here and do the body.
+
+And then we're going to check before we increment so that we don't ever run into this wacky edge case.
+
+It's it's one of those things that I think upheld put into Tiger to, um, just annoy you all.
+
+Right. Oh, one thing I forgot to mention for balance checking it's not that important.
+
+But like if you know, you know, I keep telling you guys, if I were to do this, I would have done it differently.
+
+If I were to do this, I would have put explicit bounds checking primitives in the air.
+
+Right. Because bounds checking, unlike everything else in the program, you want to get rid of it if you're single.
+
+And so if we just compile this into a bunch of C jumps, like you're going to do later,
+
+phases of the compiler have no idea that you'd like to get rid of those.
+
+But if you had explicit bounds checking primitives, later phases of the compiler could go, oh, hey, here's a bounds check.
+
+Can I get rid of it? Like you said, I equals zero to n.
+
+I can get rid of this, uh, this this lower bounds check of is it greater than or equal to zero?
+
+Because I know that from the for loop structure, you know, whatever else you want to do.
+
+It's not that important. Adding them would be a pain because there's some stuff from Opal coming up that wouldn't have them.
+
+But just in terms of like things that I would have done. All right.
+
+Yeah. Because you described that like the education. This wacky edge case.
+
+Yeah. So if you just write kind of like a normal, like a normal for loop where you're going to say like, do the body write increment.
+
+Ah, check if I is less than, uh, high.
+
+Right. Uh. Less than or equal to hi.
+
+Because. That's right. Because this. Who makes inclusive bounds on both sides rooms.
+
+Um, then you know, go back and do this again.
+
+Well, if you're bound is Max and that condition will always be true.
+
+And you now have this compiling into an infinite list.
+
+It always be true that it just stays max. Because.
+
+Because like, if I as a 32 bit integer and high as the maximum value for an end, there's there's no way you can have anything bigger than that.
+
+And so if this was a half open interval meaning inclusive of the low bound, exclusive of the high bound,
+
+as all sane people should write for loops, then we wouldn't have that problem.
+
+Because if the high bound where max end. That would still be fine, because if I get some accent, we'd stop, right?
+
+Um, but because it's inclusive and we have to allow for a programmer to write anything there.
+
+And I mean, how often do programmers write maxent as their upper bound for a for loop?
+
+Like, not often, but if you're the programmer and you write that in, you're like,
+
+compiler spits out an infinite loop, you're going to be real annoyed, right?
+
+Yeah, I spent like eight hours debugging. Uh oh. It's a compiler bug.
+
+Uh. They told me those don't happen in all my CSS classes.
+
+Sometimes. Um, and so basically because this is inclusive of this bound, which could be the maximum,
+
+and we have to compile them slightly awkwardly, and we're okay to just technically be correct in all cases.
+
+Okay. Other questions before I proceed.
+
+Um, the last couple things I wanted to mention on the air before you all go forth and do it.
+
+One doesn't really come up in Tiger. Uh, but just because you all might want to one day compile other languages.
+
+And I don't know. You can put I mean, you can put this into Tiger if you want.
+
+Not that big of a deal. But like a lot of languages, I'm going to write on this side of the board.
+
+You know, um, like in C, we have a switch.
+
+Case. Okay, so what's the easy I.
+
+If you are 250 student, how would you compile switch case into assembly.
+
+Eric if all else fails you're.
+
+Yeah. You'd basically just turn it into like if x equals zero do this.
+
+Else if x equals one do this out of x equal to do this. Right.
+
+Um how efficient is that.
+
+Thomas. No it's not. It's not. Well it depends.
+
+So, as with all things, it depends. If I only have case zero in case one, it's probably pretty efficient.
+
+Really. It's like, oh, event for the number of cases. It's open for the number of cases.
+
+How often do all right switch cases with like I don't know, 2000 cases.
+
+All the time. I'm a I'm a computer architect.
+
+So the the core of my simulator is switch opcode case.
+
+Every opcode in the x86. Is that right.
+
+And no I don't write that by hand. I like generate it from a big table of like all the instructions that, you know, see macro stuff.
+
+But like when that happens I do not want that to compile into uh, 5000 if elses.
+
+So, given that we might need to compile many cases into something more efficient.
+
+What other strategies could you think of? Really like a interesting hashing strategy.
+
+Okay. You could come up with an interesting hashing strategy.
+
+Uh, so say a little bit more. Um, so let's say our cases are like primitive types or something like that.
+
+Or let's just say our cases are just integers. Yeah, there's just integers.
+
+Then like, I don't know, they're not organized, but um, but you would just like take X,
+
+you take your cases, put it in a map of mapping like the integer to whatever.
+
+We'll have a pointer to whatever it has to do. Um, and then just like plug in X into that map and see what you get.
+
+I'm going to just hear a bunch of people's ideas and then say, more generally,
+
+we like looking through all our different cases and like make a list of them, like binary search through the list.
+
+Okay. We could do binary search. Sure. Eric, I've heard the word jump cables be thrown around.
+
+Good. That's like I assume that you multiply, you jump by some amount, and then that gets you like an offset into a table of instructions.
+
+And then you break out that. Okay. Jump tables I'm going to get Pete and then I'll say more about these things.
+
+So binary search. Okay. So one option is binary search right.
+
+That's that's like if it's if these were cases 0 to 10,000 instead of saying if x equals zero I
+
+can just start with if x is less than 5000 and then if x is less than 2500 and so on and so on.
+
+And it will take me log n jumps right now, Eric and Billy, uh, we're kind of arriving in sort of a different,
+
+different bit where if my cases are truly 0 to 10,000, why don't I make an array in memory?
+
+Right. We're basically like an index zero. You know, I have some label.
+
+999,011. Right.
+
+And labels are just numeric values of the PC to jump to.
+
+Right. And so what I could do is after bounds checking back to make sure it's not negative or past us, I could take x.
+
+Index into this. Like basically temp equals my array at x.
+
+And then I can just jump register to tell. Okay, so this is what Eric was saying with a jump table.
+
+It's basically like a big array. This works great if the cases are dense.
+
+01234. If my cases are zero 9000.
+
+I don't know, 20,000. 57,000. This does not work, right?
+
+Yeah. Uh. And can you like?
+
+I guess saw the cases and then just, like, populate the jump table.
+
+Uh, I guess I can. Or you have like another table that maps x to the index and then you jump to that index.
+
+Well so so I can certainly sort the cases. That's what I'm going to do.
+
+Um, if they like, if they're not dense, if, if they're like zero and then 20,050 thousand and 1,000,002 million, then like my, I could still do this.
+
+It's just my table is going to mostly be like default label, but for lots of things.
+
+Yeah.
+
+I guess what I'm saying is, like, you have another table where you have like zero maps to zero, and then the next one is like 57,000 that maps to one.
+
+And then you have like 60 million and that maps to three.
+
+And they're like in order. So you want to basically binary search that table.
+
+I guess I would like. I want there to be almost like a, I guess a double look up for you.
+
+First look up the index of the jump table. You want to go to, and then you use that index to look up the actual jump.
+
+Okay, that makes sense. Like, you wouldn't be able to do the first thing with an array you would need.
+
+Uh, a table or some sort of. Yeah, but that's my idea, though.
+
+Okay, let me come back to that. I'm Ethan and then Thomas. Well, I think it sounds like you want to use it like hashing, which I feel like.
+
+What if I don't know if we have access to hashing in this setup, but, like, you could just any assembly instructions you want on,
+
+but then you could solve the density issue because you could just hash the values from zero to whatever you're willing to use.
+
+Yeah, yeah. So that's why I was saying, like, you know, Billy and Eric's idea, we could do some kind of hashing on X.
+
+How much hashing you want to do is a little bit of a trade off, right?
+
+Because like, oh, we're going to compute this 4000 instruction hash function like or we could just do something else.
+
+Right. But but unlike most hash situations, we know exactly all the values we care about up front, right?
+
+I mean, like most hash tables, you need to just give them any value and they need to do their thing.
+
+In this case, we know that we care about zero, 20,000, 40,000, you know, whatever whatever whatever.
+
+And so like we can work with the compiler and think if we want to think really hard about what small bit of mathematical operation we want to do,
+
+like maybe, you know, maybe our cases go one, two, four, eight, 16, 32 something and we realize there's a mathematical pattern.
+
+We could do that. Yeah. What if you create another array that's double the length of cases that you have.
+
+And then in each every other spot you put a case and then in the spot next to it, you put the index of the jump table that is associated with it.
+
+So then whenever you want you have a case. You look in the first array and go to the next spot.
+
+And that's the index of the jump table that you want to use.
+
+And then you put that into the jump table and then use that.
+
+So okay first having an index into another table where we just do this double thing.
+
+I don't think that helps us at all right. Because we may as well just put the label directly in there instead of the index.
+
+And the labels are just as big as the indices would be.
+
+Um, but, uh, the main thing with that is if we have to search the structure, like we don't want to turn,
+
+we don't want to turn this switch case into like a loop that searches the structure.
+
+Right. We want to turn it into like do a little bit, maybe do a little bit of math on X and then index something and then maybe a branch or something.
+
+Okay. Okay.
+
+So. So we might I mean, you might have these, you know, if you want to do some kind of complicated hashing thing with like a tag that says what it is,
+
+I would be intrigued is this is for 42,000 and this is where to jump.
+
+Um, most of the time, what you're going to do almost like a binary tree.
+
+Well, so we already had binary search. So if these are sparse, binary search is great.
+
+Right. If they're dense, a jump table is great.
+
+If there are lots of little discrete, dense ranges like I have 0 to 150,000 to 60,001 million to 2 million,
+
+and I don't know, 10 million to 11 million, whatever. Then I could binary search into different jump tables.
+
+Right. And once you've done that, like maybe you want to do some complicated wacky hashing thing,
+
+but you're probably doing a pretty good job, um, with those.
+
+Um, and so, you know, this, by the way, is why your earlier has jumped.
+
+Uh uh. What is that? Expression cross label list.
+
+It's like if you're making a jump table. You know, when you make that array that it's going to be level 135, label 136, level 137, whatever.
+
+You can put those all in this list. But when you later are looking and your expression is, you know me, I'm, uh, I times four plus table.
+
+Uh, then you're not going to easily be able to figure out the control flow graph from that.
+
+To tell where that can go. Okay.
+
+All right. You don't have such case.
+
+But just, you know, a thing that you can know it is. It is different from writing.
+
+If else if else if else. I mean, a smart compiler might might figure that out.
+
+Uh, anyways, with adding a switch case, um, you just point to what I mean in the, in like a very tiny way.
+
+Right? Like that there's like, what do you have to do to add switch case?
+
+You have to go put switch and case into your lexer.
+
+You have now a new switch case expression, right.
+
+Because in Tiger we're probably going to want this to be more like case zero goes to expression.
+
+Case one goes to expression. Right. And then I can say like something like that you know.
+
+So you're going to need a little bit of syntax. You're going to need a little bit of typing rules right where um.
+
+Uh, there's a little bit of a question of how you want this.
+
+Like, do you allow switch on strings? Okay.
+
+Like, you know, uh, in which case you probably only want to let string literals be here, right?
+
+That's a little more complicated because now for strings, you're not just comparing equality.
+
+You really have to do. Either if else if else if else or a um.
+
+Like. Look at the first letter. Figure out what cases it could be.
+
+Look at the next letter. Like kind of a tri almost data structure in your your branches.
+
+Um, and then you're going to need so you're going to need to say, you know. This can only be an inch or this can only be an interesting.
+
+We don't want to do switch case on records or something crazy like that.
+
+And then you're going to need to make sure that these these all have this type.
+
+These all have um. The same type.
+
+Uh. You might. You might have a little extra work to make sure these are all literals, right?
+
+Because that doesn't, um, like you could do that as a syntax rule where you can only syntactically write those there in the parser,
+
+because we don't get that information down to the type checker of like, is this a literal um, and then a little bit of, a little bit of,
+
+of er translation maybe be a little more extra credit if you do something cool with strings where like, you know, you have like Chase,
+
+Apple, a case, aardvark, etc. and like you're, you're basically compiling it into the assembly equivalent of a tri that's like BigQuery.
+
+But it's not super complicated, but, you know, a little bit like make sure you tell me, do the pattern match?
+
+How do you do the pattern matching like in small.
+
+Well it's just take case. Um, okay.
+
+So first, uh, empty list is a little bit special because it's just kind of a syntactic shorthand.
+
+But basically when you make the data type form an option, right, it's going to compile into a struct with an int for the tag.
+
+So like zero is none. One is some.
+
+Right? And then a union. For whatever needs to go inside that data type.
+
+Right. So so in the case of an option, it's either that type or nothing.
+
+But other types might have more conflict. Like basically this union holds all of the others.
+
+And this tag tells you which kind of this. Okay. And so for this you would basically say okay is it zero or is it one.
+
+Right. And then if it's one, you need to go inside of here and pull out the data.
+
+And then that is also a data type.
+
+So if it's a list right it's got two constructors nil and cons.
+
+And so you look at that and figure out which of those it is. If it was an integer or something you'd look at the integer.
+
+If you had a pattern there and you'd bind all the variables appropriately.
+
+Right. So it's basically just a bunch of if elses on tags and values.
+
+Okay. All right. Um.
+
+Thus endeth ur translation. Any questions?
+
+All right. So we have 35 minutes, which is basically going to be whatever you all want in preparation for your exam on Wednesday.
+
+Um, so you ask questions. I will answer.
+
+Um, if you all run out of questions. You can grab on early or you can be reading written in a wild or crazier question.
+
+So it makes it. Or I can ask you a question I don't know.
+
+That's the wild and crazy question in my mind. All right.
+
+Okay, Utah, we'll start there. We're just going to go this way. Since I saw a bunch of hands.
+
+Utah go to the. Okay. What do they all like?
+
+I'm not going to just take an exam and do every question, but you can ask me a specific question that you like.
+
+Nothing that's important. What about it? Like, um, do you have any kind of questions asked about, uh, not about the expression of, you know, someone?
+
+Yeah. And, you know, terms of consequence. One one thing was covered, followed by one.
+
+Okay. So that one ended up being a little harder than I meant it to be, or just longer.
+
+It's not that hard, because all you have to do are, you know, the easiest way to do this is to say.
+
+So do those questions. Uh, what this question is what happened?
+
+I mean, for that one. Yes, I would do that.
+
+It ended up being a little bit harder than I meant it to, because it's not easy to just write the regular expression down.
+
+Yeah, but I would just do this.
+
+Uh, and then turn that into a regular expression. So if you have multiple and then how do you.
+
+Get. Now we have.
+
+Now we have one start state and one instead of up to that.
+
+As long as your epsilons don't have.
+
+And then you basically just like go through and remove.
+
+Remove all the states and end up with kind of a complicated regular expression. All right.
+
+Uh, Ethan, uh, that's a quick question, but is Tiger, uh, like syntax, semantics, knowledge going to be required for the midterm?
+
+So, uh, I'm not going to ask, like, I, I don't have plans to ask you, like, I don't even know what you or what you want.
+
+Like what you fear of. Like, what is the exact syntax for array creation?
+
+Like, I don't know, you wrote a language reference manual for that.
+
+That is not.
+
+That's like if you come out of this class knowing how to write a compiler, but not remembering the tiger syntax for a recreation, I'm happy.
+
+Right? Um, you should understand things well enough that if I ask you like, oh, what is the typing derivation for r dot x?
+
+Get f of array three times two, two times two plus g of y dot x.
+
+Like. I mean, it doesn't compute anything useful, right?
+
+Like, you shouldn't be like. Okay, drew, what are these square brackets here.
+
+What does this equal sign. Right. Like. You should know enough, Tiger, that like I can put it there and you can type check it or something like that,
+
+but I'm not trying to quiz you on the inner workings of Tiger.
+
+Okay, Thomas, I think you're next. Uh, so you said that we can bring notes.
+
+Yeah, if it's handwritten notes, please. What if it just looks like it's handwritten?
+
+Like. It's like. What do you mean, like? Like it looks like it's handwritten.
+
+Okay. Like, I have no idea. Is that it?
+
+Look like you want. You want your iPad written notes printed?
+
+Yes. Yeah. That's fine, because you still wrote that one.
+
+Can I like type it in? Hundred and 20. Right.
+
+It does. Okay. Are you going to entrance in something? You're right.
+
+I, I wanted to be something that has been processed through your brain.
+
+I don't want you to go and say like, hey, ChatGPT, can you give me 37 pages with everything you might think I want to know about a compiler.
+
+I'm going to print that out and bring it home. Or I photocopied my book.
+
+Those are my notes. Okay. Like, I want it to be something where you have synthesized and processed information.
+
+It has been created by your hands and your brain.
+
+And like you have interacted with this in some way.
+
+There should be nothing in your notes where you're like, ooh, who knew?
+
+I think rules have a horizontal light in them. And there's the rule for functions.
+
+Oh, I wonder what all this means, right? It should be like things you've, you've you've done okay.
+
+And and you know, the contrast to this is like in my programing class,
+
+when students show up with their notes that are I printed before I limited pages.
+
+I printed out every man page for every C function.
+
+Like that's not your notes. That's like you just try to information dump a bunch of stuff in the hopes that maybe you can,
+
+like randomly find some tidbit that's useful and like, don't.
+
+Next question. Theo. Can you walk through a quick typing derivation?
+
+Yes, thanks. Uh, do you want it to be that one?
+
+Yeah. That works. I need more space on the board.
+
+You have to. You have to take it off. Uh, you don't have to do a whole thing if you take a while.
+
+Uh, I can do it fast. And like do typing derivations in my sleep.
+
+So let's just say that we're going to have. Okay.
+
+Humor is going to be. Uh are is uh record with acts as an end are up here somewhere else in there.
+
+No, uh, and I don't I don't care what other fields. Uh, um, uh, had better be.
+
+To. And it just takes one, two and three to get the function.
+
+G had better be like to say a string to end function.
+
+And why? You better be recorded.
+
+Where X. I don't care about the other fields you have.
+
+Oh, and I had better be in array events. That covered all the variables I used.
+
+Okay, so. Gamma says our x, it's F of A.
+
+It's three times to constancy of y dot x.
+
+What type is that going to have. Unit.
+
+To tell that this is true. What two things do I need to know?
+
+Gamma says, what part of our lives in our hands feel like having a having a, uh, you know,
+
+a first grader who's in all the, like, whatever that game that says why you should be some sort of like gamma says, what?
+
+Uh, you're all typing. You're all sense of, uh, type assumptions.
+
+Um. I don't know what that means, so.
+
+But you're all going to remember that, like gamma says.
+
+All right. And so this is going to just be the, uh, gamma, uh, says um, ah, has time record.
+
+X is an ant. Uh, um, you know, it's technically best if you write this part on there of, like, r, uh, maps to this.
+
+Right. It's in gamma, but I don't care.
+
+So I'm like, this is an obviously true statement. And although a lot of these are obvious interest you.
+
+So over here we need to show that gamma says F of A three times two is an and and gamma says G of X, isn't it.
+
+And for this to happen we need gamma says that uh,
+
+he has type and and and gamma says and three times two is and and and so gamma says a three is an and gamma says choose and and that's an axiom.
+
+Gamma says a has type and array.
+
+Gamma says three has type. And that's an axiom.
+
+That's just you know, again I could write write this thing on top, but I'm not I'm not going to.
+
+And you don't need to either. Gamma says G has type string to and gamma says point X has type string.
+
+This one. We're done. Unless you want to write about the things up there in this interesting gamma sense, why has time recorded like.
+
+There you go. So good thing we have a big whiteboard.
+
+That's awesome. I have a question.
+
+How do angular like. Do we have to?
+
+Do we have to like. It's like. That granular.
+
+So like every one of these is like a specific typing rule, right?
+
+So like if I were to want to write the rule names on there or like what this is, but you don't have, you don't have to.
+
+This is the rule for assignment. Right.
+
+This is the rule for floss. This is the rule for record fields, right?
+
+This technically is the rule for variables. Um.
+
+This is the rule for function application. This is the rule for multiplication.
+
+This is the rule for array indexing. This is the rule for function application.
+
+And this and record fields. Right.
+
+So like every one of those is a typing rule.
+
+And if you were to run this through your type checker, they kind of be one recursion for each of those, those things.
+
+So like when we think about it, we just think about our compiler.
+
+We try to think about like how many trans translations we call on like this.
+
+Um, that thought process doesn't go through my head at all when I do this.
+
+But if it helps you, that's fine. For me, it's like if I think of this as an AST, this is the root of the AST.
+
+It has a rule assignment which says, I got to do this and I got to do this and I get unit.
+
+Once I do this the root of the AST is this dot operator.
+
+So what's the rule for a record field that this is a half now on this.
+
+Well it's plus and so on and so on. And so you can ask. Okay.
+
+So just to make sure I understand like the written question set up, we'd be given this environment.
+
+And then this expression that we have to make sure is like valid. So I make no promises on what I am going to do in the future.
+
+Sure. But if you look at past exams, there are questions that say given gamma equals this, show the typing derivation for this.
+
+And so then you would draw this out and I would check that you did all the rules right.
+
+Okay. And then my other question is I feel like everything above the first line makes sense.
+
+But that first line like how do you know that you want the left and right to be an end?
+
+Can there be any two matching types or are we just looking at the environment, say, hey, we know that all derive.
+
+Yeah. So those could be any two types. Like if this was a string and a string, that's fine because the typing rule for assignment is.
+
+Gamma says, uh, the standard gamma says he has type to these.
+
+Gamma is terrible. Gamma. Uh.
+
+Right. And so, um, any valid application of that rule would work.
+
+Uh, looking at this and thinking about what types these would be said, uh, this is going to be.
+
+Yeah. So I'm going to right now. Right. And if you didn't know, you could like, kind of leave those blank and like come back and fill them in.
+
+Once you've, you've sort of sorted it out because you'd basically like in your compiler,
+
+you'd basically go up with the rules and then come back down filling in the types.
+
+Right. All good questions.
+
+Utah. In my life I have had.
+
+You all tell me if lion is a subtype of cat is a lion. Ralph a subtype of cat.
+
+Ralph. But. If a lion is a subtype of cat, is a lion Ralph a subtype of a cat?
+
+Ralph Nader Ralph being just like a smell.
+
+So Ralph doesn't make any difference. What does that doesn't make the difference.
+
+Still, Sabra, uh, lion wraps. There's still the septum.
+
+No, Jack. It should be invariant like me.
+
+Yeah. So graphs are both readable and writeable.
+
+So they are an invariant type constructor. Right.
+
+And so the answer is no because Ralph would be an invariant thing.
+
+So the only the only way you could have some other type of Ralph that's a subtype of cat Ralph is if that type is exactly equal to.
+
+Only something that could be a subtitle a rat.
+
+Yeah. Others have it because like it does this readable, readable.
+
+It has both the rules for write and read which is subtype and super type.
+
+So there's only 40. Yes. Because basically like because you can read it.
+
+If I were to let you put in a frog, then you pull out a frog when you expect a catch.
+
+Right. But because you can write it, if I let you treat that cat ref as an animal ref, you can go put a frog in.
+
+Utah. So you have a call to that. So that'll be a cons draft meaning you can only read from it.
+
+Then this would be true. So in C plus. Plus can you do that for councilor.
+
+So. Or the mountain close of.
+
+Um. So is C plus plus.
+
+A reference is very different from an SML brand because in C plus plus, once you initialize a wrapper, you can't change what it points to.
+
+It's just another name like that. It's very difficult to confess to something inside.
+
+Is that like a constant ref? Just is like it's an int.
+
+It's just another name for it is like most like drafts are.
+
+So you know. Okay. Thank you. All right.
+
+Next question. The test is already written and sent off for copying.
+
+So you don't have to be scared that if you ask something and you like, sneak it on to the test or whatever.
+
+Ethan I guess we were just kind of wondering, like, as far as the typing rules go, is there a reference for that,
+
+or is it good to just like kind of follow the intuition of like, like, I mean, looking at it, it makes sense.
+
+Like we have something plus something, isn't it? We obviously need both sides to be and like.
+
+Is there a kind of a concrete like list of things that we should use?
+
+Um, so most of them we wrote down in class, write some of them, like we didn't write time separately because it's the same as.
+
+We didn't write minus separately because it's the same box. Um, and.
+
+It feels pretty intuitive. Yeah, I think we wrote them all down.
+
+Like some more complicated ones where, like, function declaration and stuff.
+
+Um, but, you know, if you're, if you're looking at your notes and you're like, oh my gosh, what's the typing rule for something just to ask, you know.
+
+Uh, Thomas, did you have your hand up? Uh. Maybe not.
+
+Okay. Somewhat. Yeah. Oh, yeah.
+
+Right. Uh, Jack. And then. Eric. Okay. Um, for you, sort of like granularity goes like this.
+
+This would be described for, uh, vision like this, but for type inference, like, um, would you like unifying over in your current granularity?
+
+You want us to be, if you like things like or something. It's like pretty obvious controls, right?
+
+Yeah. So do you want to specifically write unifying these? Um.
+
+So the first thing is a general rule of test taking is the more work you show, the easier it is to give you partial credit.
+
+Right? So it's like you're just like a cross B cross a b function, cross a list to B list.
+
+And that's not right. Like well there are A's and B's in the type.
+
+But I don't know where you went wrong. Right. If I can look through and go, oh,
+
+you misunderstood how to do this one thing or you just made a careless mistake where you wrote this type down or missed changing like you unified C,
+
+B came in, but you didn't change this one C to an int.
+
+And that's why you came with this extra C. That should be an int. It makes it easier to.
+
+I think you're right. And so if you just kind of go up the AST and they're like, this is a this is an A and this isn't yet and this is a plus.
+
+So A has to be. And then it becomes much easier to understand this.
+
+Eric, uh, you've mentioned that there we may be tested on a small on this test.
+
+Yes. Like, what does that you are we just like, surely not just syntax, right.
+
+Like, I mean, I think if you look at some of the old tests is like, right, an SML function that takes a list and blood and applauded the blahs.
+
+Okay. Um, and, and or like takes and word map and, and or it's, uh, and something, something, something and makes an ordered map or a sat or whatever.
+
+Um, like. Right. Write me a little functor. So it's not I'm not going to say like.
+
+What's the, uh, like what's the keyword for an anonymous function?
+
+I'm going to ask you, just like do a little like coding mostly because.
+
+So most of this class, you're doing your project, but there needs to be some individual accountability.
+
+Right.
+
+And so like you should all have spent some time writing SML by now and shouldn't be surprised by like take a list of integers and something something,
+
+something. Okay. Other questions.
+
+We're happy. We can wrap up ten minutes early to thank you all.
+
+Don't have any questions? Oh, Jack. Looking back through, um, one of the major courses.
+
+Most of them, uh, just like we go over again.
+
+I think we talked about, like, closures and computing, the closure where the dot was, like, the first thing.
+
+Um, I don't remember, like, getting a closure of the dots.
+
+Like an arrow. Um, one of the tools. We just erased that.
+
+It just happened. Yeah.
+
+Why don't I go to the gym when I can just read the whole typing derivation of the whiteboard?
+
+Geez. Get five minutes of cardio and erase the board.
+
+Oh my goodness. Wondering if I should have been using my left hand if I wanted to compensate for it.
+
+Gosh. Okay. Um. Oh.
+
+Okay, let's do, um. All right.
+
+Uh, this is going to be the grammar of, like, numbers inside of balances.
+
+Parentheses. Right. And I don't know, off the top of my head if it's ambiguous or not.
+
+So we're going to start with ask goes to dollar sign with the dot right here.
+
+And the rule for a closure. It doesn't really matter where in the rule it is.
+
+Just if the dot is before non-terminal, we have to just take all the rules for E.
+
+Not at the start. And I don't need to do anything else because even though it's here, we've already got all the rules.
+
+Uh, and so from here, you know, if I were to do this one.
+
+Oh, presidency, I couldn't get enough wood. It was supposed to be busy with my dock right here.
+
+And since this dog is before an E, that means that I might need to do another expression.
+
+And so I'm just going to basically put all these things in here again, like. And that state would lead on a pregnancy.
+
+Right. Because we basically just keep keep doing that. But if we see an E from this state, we are going to go to this state.
+
+Right, which basically is going to be. Um, here, if we see a close parentheses.
+
+We're going to reduce by this rule. And if we see an E.
+
+We're going to do this rule. And oh wait, I messed up because I was going, how will we get an E here?
+
+But I forgot to take the closure because the dots right before an E, so I better go stick all those things in there.
+
+Right. And I break my grammars.
+
+Probably because I'm pretty sure my grammars ambiguous.
+
+I know my parameters that they give us. Okay.
+
+Because this dots before an E. So I need to do this this.
+
+And. This. Now, if I see any of this.
+
+Actually may not know I'm. Open French shift known shift E reduce or close brand reduce.
+
+Um, and I mean, I can keep doing this.
+
+It's going to take like a while if you want, but basically just look for the before something before a non terminal and then go away.
+
+All the rules for that non-terminal and put the dot at the start and then repeat the process until you don't have any change okay.
+
+Utah. Uh, he goes to do you think you can expand expanding that to do something that.
+
+Nothing is ever infinite in this if I like.
+
+But, uh, I think that southern last.
+
+Yeah. So you have the it goes to the, uh, the first.
+
+Yeah. But so the dot is before an E, uh, and so when I add these rules in, I've already got this one.
+
+I've already got this one. I've already got this one. I feel already that it's a set.
+
+So if I add something a second time, nothing changes. Okay.
+
+Okay. Other questions.
+
+I am feeling good about the test. You're like, it's a test.
+
+Well, I mean, sometimes, sometimes you're like, oh my God, professor Evil Pants is going to go in.
+
+The test is brutal. In other times you're like, yeah, I got this.
+
+So like, I hope you all are like, yeah, I got this. All right.
+
+Any other questions? All right. Cool.
+
+Well, no office hours on Thursday. Test in here on Wednesday.
+
+I'm pretty sure that everyone can have their own table read about right to.
+
+Yeah, we have something like 42 tables in 25 people.
+
+So you all can, like, spread out real far.
+
+Yeah, like I have lots of space for 15 people.
+
+Yeah. So past Wednesday and spring break and have fun in your parents basement.
+
+Everyone say like. And then after we get back, we will continue with the rest of this room to the studio.
+
+Right. That's what I want you to do.
+
+Because I don't think that we can do it.
+
+Right. The first time. So. Yeah.
+
+Okay. Well, I didn't answer. So I'm here to know if I have everything going on.
+
+Oh, yeah. I'm gonna need to let you know, um, how many people you have.
+
+Right. Yeah, I think about. 20.
+
+Okay. So. Uh, I mean, if it helps, you probably get it right.
+
+I feel like it's a study in, so it's more than just going to shoot it.
+
+It's almost like writing right now.
+
+There's no one, right? There's no other app. And we just write the tree.
+
+Right? I don't know why you would want to do this,
+
+but I feel like I think there's gonna be something in the next five years so that I can live up to your code, not studying how much is okay.
+
+I just like if you're not so, like, I mean.
+
+It's kind of the easy way. Early rechkarhine like.
+
+Yeah, okay. I still don't know, but.
+
+You can think about things like. Yeah, I mean, you can.
+
+So what are you trying to do? Like, you're just like, unwrap, like five options.
+
+Yes. Oh, um. Five options.
+
+Yes. I mean, so so don't forget that you can have cases that are like, oh, I don't know why you want what, five option.
+
+You mean like five options nested like case. Some of the. Yeah. That's like oh I got that.
+
+What's that. It's like you got the you got to search this map and you search this map.
+
+This map that he told me. So you can write I mean, you can write something like case.
+
+Find in this map. Comma. Find in this map of some x sub y goes to this some x.
+
+None goes to that. None of this.
+
+None, none goes to. So you can like squish that together into into how you have your map.
+
+Otherwise I might just try finishing things out. Yeah.
+
+Or like, I mean maybe not this Thursday, but come, come show me or post on air discussions in private posts of like,
+
+here's what we're trying to do and I can give you some thought.
+
+We're trying to do the fun, functional way we're using refs for that is it tries not on is what wrong.
+
+Pretty simple wraps for the functional languages for the functional like the the
+
+get rid of refs uh get rid of like the name type of yeah you shouldn't have refs.
+
+Shouldn't have refs at all. I don't know why you would want them.
+
+Like mixing for declarations and references because we like maximally unreadable that code.
+
+I think I see a narrow path. 99% of people who.
+

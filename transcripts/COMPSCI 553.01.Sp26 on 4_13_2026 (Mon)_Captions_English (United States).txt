@@ -1,0 +1,1231 @@
+[Auto-generated transcript. Edits may have been applied for clarity.]
+Very formal. When is the final? When is that right?
+
+I think it's 2027. April 28th. Thank you.
+
+Uh, it seems that this class starts at 1:00 on Monday, Wednesday, Friday.
+
+Tuesday, 2 to 5. Thank you.
+
+Welcome. It's. The Tuesday the 28th.
+
+2 to 5. That's awesome. Yes.
+
+Thank you. Can I ask why? That's awesome.
+
+Well, prior to that, I was going to. I had in my skills wrong.
+
+And I say, come after class and ask you if I can move it because I want to go to Philadelphia that weekend,
+
+but now I can just go to Philadelphia that we can play. Okay. This is great.
+
+What are you doing in Philadelphia? I'm going to go visit some friends.
+
+I met some friends last semester. I was studying abroad and they said I should come up this one weekend yesterday.
+
+So. Okay, so I used to live in grad school.
+
+Um, if you can get a reservation, I would strongly recommend going to the Harvard c a h n b.
+
+Okay. It is a really delicious Middle Eastern restaurant.
+
+Um. But, like, book your reservation right now if you're lucky.
+
+Okay. Like.
+
+There was there was one point a couple of years ago where we had kids, where Margaret was like, Zahav is having a month, we should go to Philadelphia.
+
+And I was like, okay, sure. And she's like, okay, I've made our reservation.
+
+Now I'm going to find plane tickets. Uh, Margaret's from Philadelphia also, so I would recommend that.
+
+Um, and, uh. Okay. Yeah.
+
+Anything else? Um, I've heard bad things.
+
+Otherwise. Very kind of gross. Bad things about what? Philly.
+
+Well, okay. Where in Philly are you going to be? Um.
+
+Villanova. And then I don't. Okay.
+
+Villanova is kind of like here's Philly and there's no oh really okay.
+
+That's kind of like if you were like oh I'm going to Durham.
+
+Where are you going to be in Durham like uncW. Okay.
+
+Um, so. Like you're not going to be like in Philadelphia.
+
+You're going to be out in the suburbs. Um, you can get to the city on the train.
+
+Uh, it'll take you a little while. Um, but, yeah, you should go into the city and, like, eat some good food.
+
+And, like, if you're in the historic stuff, there's, like, the Liberty Bell, but, like, kind of downtown Rittenhouse Square.
+
+All the city. Good places to be. I wouldn't, like, go with the train.
+
+Like to the far north. Okay. Something like something.
+
+All right. I teach you all. All the important stuff. Right.
+
+What to do in Philadelphia and compilers.
+
+How's everyone doing today? Yeah, yeah.
+
+Uh, Matt, you're. Matt. Matt. Matt.
+
+Oh, I thought you said Matt at first, but I mean Matt. Um, yeah.
+
+So today we're going to talk a little bit about, um, compiling.
+
+Oh, languages. Also, if there's any other things you all want, um,
+
+I'm going to try and give you all some time at the end to fill out course evaluations because, uh, you know, they're open now.
+
+Um, one of the course evaluations, people are like, what?
+
+Course evaluation? Um.
+
+You know, I don't know if you know this, but they are an important thing, especially for me since I'm teaching faculty, so they like.
+
+Look at those and like big deal.
+
+But also I look at them. And if you have constructive feedback like if you're just like this class was hard.
+
+Like what? I told you this class was hard. What do you expect? But if it's like, oh, if you do this, it would make things better.
+
+Then I can think about that. Um, or if you just describe concrete issues, I'm always trying to make things better.
+
+So I'll try and give you all some time for that at the end of class. Uh, so what did we talk about last time?
+
+Back to the point. Continuation. Passing. And did your heads explode?
+
+Okay, good good, good. You need to. I need you all to think about something artificial.
+
+Um, what else did we talk about last time? So, collection?
+
+Yeah, we finished off garbage collection. With what kind of garbage collection?
+
+Stop and copy. Yep. Uh huh. Generational and then generational, where we kind of mix, uh, the best of all, all worlds together.
+
+Um, and then today, I was going to talk a little bit about compiling object oriented languages.
+
+Um, and then Wednesday we will review whatever topics you all want to review.
+
+And then next week is just compilers hacking time.
+
+Like, basically I'll be here in you come with your group work on your compiler.
+
+I can help you with whatever questions you might have that you need to get it over the finish line to where you want it to be.
+
+And, uh, pretty much wrapped up this semester.
+
+And good to everyone. All right. So, um, what is special about object oriented languages?
+
+All right. Uh, polymorphism. Polymorphism?
+
+Yeah. So we have a couple different types of polymorphism. What are the three different types of polymorphism?
+
+I know. Jack. Uh, this, uh, professor sometime ago.
+
+Very good. Yeah. And ad hoc is the one that generally people forget about the most.
+
+So ad hoc polymorphism is just overloading. That one is pretty easy for the compiler to deal with.
+
+It's just to get stuff with what's called name mangling.
+
+So basically, if you compile C plus plus code and you go look at the object file,
+
+the function names won't just be like they'll be like foo CM87I something like that.
+
+I don't actually know how to make one names off the top of my head. Um, and those just encode the types of the parameters.
+
+And also the namespace are class of the ten.
+
+So that different parameter types and things in different classes and different namespaces all have different names in the object files.
+
+And it's done in a deterministic way. And so that's not super interest right.
+
+Um ad hoc. We've got parametric.
+
+Which is why I'm glad to see plus Plus for generics in Java.
+
+And we've actually talked about this a little bit back in type checking land of how we can compile this.
+
+There's a new I think we talked about the two ways of doing that. Um, so one what C plus plus does is it basically brings a specialization.
+
+Where when you do, you know who? Um. And it goes and it takes the code for a few, whether that's a class or a method,
+
+drops it in for its particular type and compiles it into a very specific, you know, uh, like air and then assembly for and and for.
+
+Uh uh. Goes through its own thing and then just end up being two different functions or classes in the object file where it specializes that template,
+
+uh, in particular. Okay. And so that's also not super complicated to do.
+
+Like that's not the hard part of parametric polymorphism. The harder part is things like type checking.
+
+Um and the other one is. Erasure.
+
+Java does. Right. So in Java generics, especially because everything is a subtype of object anyways, it will just compile.
+
+Full of object and only have one copy of the Java byte code for um, or whatever the type bound is.
+
+We don't have tight bounds. It'll be object. If it has a tight bound like compatible, it'll compile it as if it was comparable.
+
+Um, and and it's called erasure because basically Java uses the parametric polymorphism
+
+in the typing at the compile time to check that you're doing things that are valid,
+
+and then it throws that all the way in the object file. And you only have two of objects.
+
+The one we're going to talk about today is subtype polymorphism, where you can treat a pointer to a cat as if it were a pointer to an animal.
+
+Right. And this is probably the type of polymorphism they talked about to you the most in like CSE 201 because like Java,
+
+um, and what's one of the things that's interesting that goes along with this is dynamic dispatch.
+
+Right. So remember that if I have a cat polymorphic as an animal,
+
+but I call a method that cat has overridden in Java, I will always get cats method in C plus plus.
+
+As long as animal declares that method is virtual, I will get cats.
+
+All right? And there's like no way around this.
+
+Even if I put like extra casts or whatever that gets dynamically dispatched to the the actual object that we have, uh, implementation.
+
+Okay. So any questions before we dive into how this works.
+
+Right. And I think there's like one of you who's taken 551 and so this might be a little bit familiar,
+
+but that's okay because we like touch on this briefly is the point 51.
+
+All right, so let's start with, um, animals.
+
+We're going to have a class animal and it's going to have two fields, uh, a string for its name.
+
+And I can't refuse. Okay.
+
+And so in memory. All right.
+
+And first approximation this is going to look a lot like a record does in Tiger
+
+where we're going to have two fields that are one right after the other. So far so good.
+
+Now let's also give this a method and let's say this is either Java or we put virtual on here, I don't know, uh, speak.
+
+Okay. Dress code? No. And we need.
+
+To be able to, um, dynamically dispatch this method.
+
+Our first thought might be to put a pointer here.
+
+To the code for that method. Okay.
+
+And if we only have one method that needed dynamic dispatch, that would be great.
+
+But the space that we need for this is going to scale with the number of methods in each object, right?
+
+So methods times objects which could if we have lots of methods and lots of objects like if,
+
+if animal has 20 different methods, that's a big space overhead on our otherwise to field object.
+
+So what we're going to do instead. We're going to put.
+
+We're going to put a pointer to a table and all instances of animal.
+
+Point at that same table. It's called the v table or virtual function table because C plus plus got to name it a long time ago.
+
+Um, and so in the object we're going to have one pointer no matter how many methods we have.
+
+And it is going to point at a table of function pointers.
+
+So each of these is going to have a pointer to the relevant code.
+
+And so now we have basically objects plus functions instead of objects times function space overhead to store the dynamic dispatch.
+
+Because every object is going to have one extra pointer. And then we're going to have one table with a pointer for every function.
+
+So far so good. All right.
+
+So what do we need to make this interesting. Yeah, it's some class, A subclass.
+
+Very good. You sounded very tentative about that. But yes, a subclass.
+
+So let's have class capped. Right.
+
+And I don't know what should our cats have that animals don't have?
+
+Uh. Maybe, um.
+
+Oh. Uh uh.
+
+A lazy nest. We're going to give each cat a laziness on a scale of 100 to 200.
+
+Um, and then it also overwrites each. You know, it's something that's going to, you know, and maybe it adds another method per.
+
+Okay, so if this is what an animal looks like.
+
+What do you think? We need to make sure we do. When we make a cat. Humans make an animal.
+
+Okay. Well, or we need to make an animal as well.
+
+But the important thing is we need to make sure that our cat is laid out so that it's compatible with the animal.
+
+Right. So we're going to have to follow the self object rule.
+
+Which is going to say that inside of our cat, there has to be somewhere that we can point and say,
+
+this looks exactly like an animal, so that when we polymorph it, we can point at that object.
+
+And for this particular case, that's pretty straightforward.
+
+I mean, not just cats and animals, but a single inheritance.
+
+Right. And so if we look at this, if my red marker here, this part.
+
+Looks exactly like an animal, right?
+
+And by looks exactly like, I mean that if we take animal, if we take a code that expects an animal and say,
+
+oh my gosh, I want the name for, that's going to be if my pointer is P.
+
+So I have an animal. RPE.
+
+I do he game. This is going to compile into basically like load word or store word or whatever.
+
+Uh p plus for RB table pointers for a bunch right.
+
+And if I do p h. It's going to be load word p plus I don't know for let's say that this field is itself quite big because it's a string.
+
+So it's got to have some more stuff. You know P plus 12 right.
+
+And so that same format works if P is pointing at A capped.
+
+So far, so good. And then what's going to happen if I do Eros Inc.?
+
+How would we make that happen? Well, if Q is pointing at this object, what's the first thing I need to do?
+
+You know the Vtable address? Yeah, I need to basically.
+
+So like PS pointing here. I need to basically say oh I want to be pointing here.
+
+So v equals load word from p zero.
+
+Okay. And then what's the next thing I need to do. He'd just, like, jumped in.
+
+Well, not in, not yet, because I'm basically pointing like I've got this pointer right here.
+
+I need to get this pointer here. Right. So I need another load word.
+
+Right. So in this case it's going to be zero off V. But this this offset is going to depend on which v table entry I want.
+
+And that's going to give me f pointing to this code. And now I can.
+
+Jump on link register F right where app is p0 or whatever register.
+
+Now the other thing in here, which isn't quite as related to the object layout, is that I.
+
+I need to actually put P into A0 here.
+
+Right? Because even though this looks like it takes no parameters, how many parameters does it take?
+
+One, which is that this pointer to draw learned about that this pointer.
+
+In 201. I'm not going to end up in some class.
+
+Yeah, okay. They don't teach you about that. This pointer into a one man.
+
+What kind of Java class is that? Okay. So we also need like a zero equals P to pass this.
+
+Okay. And so if we look at this object here, if I want to do speak now,
+
+if P is instead pointing at this object, I'm going to get v pointing here, f pointing here.
+
+And now when I jump in link register to F I'm going to go execute this code, which is exactly what I want.
+
+That's how dynamic dispatch works. All right. Do I like it?
+
+No. You do not like it. Do. What's wrong? Didn't we overload the speaker?
+
+Yes. And so, so this code here is animals and this code here is cats.
+
+Right. And so if I have actually an animal this process takes me to this code.
+
+And if I have actually a cat this process takes me to this country right here to separate the tables.
+
+Right. Yes. So this V table is for cats and this V table is for animals.
+
+Okay. And that's how we get this different behavior. So far, so good.
+
+You happy now? Yeah. Isn't that. Isn't there like, the still the methods times objects complex or like space usage?
+
+Is it to make a new V table for every. We only make one of these for every class.
+
+Does that make sense? Yeah. So every cat is going to point here.
+
+And in fact, if we wanted to tell if two things are the same types, we could just compare their be table pointers.
+
+Um, we may actually encode some other information in the table to um, give us runtime type information.
+
+But this is going to be for cats. All cats have this code which meows.
+
+All animals go to this which has this code which says hi, I'm an animal.
+
+Okay. I very happy now. Anyone look happy?
+
+Okay, so, um, if you look at this.
+
+Well, if we didn't do dynamic dispatch, if we just did static dispatch.
+
+Right. We still need to.
+
+All right. Uh, we now have the dynamic dispatches coming at a cost of two extra load instructions.
+
+Right. We have to go get this, and then get this before we can jump in, link to it.
+
+So when C Plus plus was made, you know, when C plus plus was made in 1990, but nope.
+
+In 81. Uh, it depends on exactly what you mean by C plus.
+
+Plus was made. But yes 70s too early 80s for C plus plus.
+
+So there was kind of the original C with classes,
+
+which I think was like 73 and then like C plus plus I guess sometime around the early 80s, um, got standardized into a, into a thing.
+
+How fast were computers in 1980? This.
+
+They were all really slow. So what?
+
+Uh, yes. Megahertz. So when I was a kid, and I think about 1987 or so, I was in first grade, so maybe.
+
+Yeah, 1987 or so. I was in first grade. We got a computer.
+
+It's exciting. It was 12MHz.
+
+That was really fast.
+
+Um, I don't know how big the hard disk was when we got it, but that disk, like, died after a few years and we upgraded to a 64 megabyte hard disk,
+
+which had to be partitioned into two logical drives because DOS 3.1 couldn't handle 64MB all at once.
+
+Um, and, uh, yeah, we had a green and black monitor.
+
+We didn't have a mouse. Um, you know, but it was really exciting because you could play hack 1.0.3.
+
+You know, the games of my childhood. Um, and so the point is, back in those days, right?
+
+Oh, my gosh, you're going to pay two extra load instructions like, that's going to make function calls so slow.
+
+So what did the C plus plus language designers citing. You only pay this cost when you want it.
+
+Which is why you have to explicitly write virtual.
+
+Up here in the parent class or whatever. Whatever class you're polymorphism into.
+
+Um, to say, look, it's worth it to me to have this dynamically dispatched.
+
+Okay. When was Java made? Yeah.
+
+Uh, May 23rd, 1995. Um.
+
+Though its development began June 1991. And what else did Jim and I have to say about the creation of Java?
+
+Uh, the key development timeline. It dates the phase I a lot.
+
+Okay. Um, so by the 1990s.
+
+Computers were a little bit faster, right? We had like 386, four, 86 Pentium somewhere in there.
+
+I don't remember the exact timeline for all of these. I know that in like 1994, we got we upgraded from our 286 to a Pentium.
+
+Wow. Um, and so, uh, both the, the, the cost equation landscape had changed,
+
+but also I think people were realizing a little bit more that software engineering
+
+time matters more than necessarily those couple load word instructions.
+
+Right? So Java made a different decision and said you only get dynamic dispatch.
+
+Why is that? The the I don't want to say the right decision,
+
+but the the decision that says we care more about the software engineer time than a couple of low grade instructions.
+
+What's the software engineering advantage of everything dynamically dispatched?
+
+Like the programmer that keep track of, like, every footprint. Well.
+
+It also means that the programmer doesn't have to keep track of memory footprint.
+
+It's that the programmer doesn't have to worry about what is and isn't dynamically dispatched,
+
+because 99.9% of the time when you have inheritance like this and you don't have dynamic dispatch, it's a bug.
+
+Or at least going to cause a bug, right? Because you're expecting this to be called, but you're calling this one.
+
+And, um, and the fact that if you write it here.
+
+If you just put it here, it silently doesn't help you.
+
+Is like extra frowny face. Right.
+
+Because you, the programmer, are writing Cat and you're like, oh, I need this to be dynamically dispatched.
+
+I better put virtual here. And I mean, if you're a really good programmer, you don't make this mistake.
+
+But letting programmers make mistakes is a bad idea, right?
+
+Because when the compiler is compiling this code, it's going to say, hey, this is an animal.
+
+I need to look at animal and see if it's virtual here.
+
+And if it's not virtual here, it doesn't look at its subclasses to figure out if that's virtual or not.
+
+It just compiles static dispatch. Right.
+
+And then you have strange bugs where unless you are good enough C plus plus programmer, you have to put it up there.
+
+You're like wondering why you're not getting your dynamic dispatch, especially if you're Java.
+
+All right. So that's the basic stuff.
+
+So far so good. Now what if.
+
+As in C plus like Java's Java says no multiple inheritance by the way in C plus plus.
+
+We can complete this virtual. Now this is going to be seamless for the virtual.
+
+Some things, like we can say, um. Oh, yeah, actually, hang on, let me leave in the stands.
+
+Make important homework in them all.
+
+Then we're going to have class cyborg cat Borg cat, which extends both animal.
+
+And robot. And it's got, you know, whatever field.
+
+Let's give it a field here. It's got a class robot up here.
+
+Let's say our robots also have a name. And I don't know, a model number.
+
+And, uh, our cyborg chap has, I don't know, uh.
+
+And laser power. Because if you're a cyborg cat, you want a laser.
+
+So you can, like, choose your own laser beam, right? And I don't know how it's going to override speech and purr.
+
+It's going to have, I don't know, some other method. It's that laser beam something.
+
+Okay, so we've got our animals, we've got our cats.
+
+Let's, um, we're going to erase the code bits here, so we've got some more space.
+
+We can just imagine the code. And we're going to have our, uh, robot.
+
+So robots are going to look like this. They're going to have.
+
+A literal pointer. Um, a name.
+
+Model number. Is it going to point that something?
+
+I don't know, I didn't give any robots any method of it, but it's got a couple of methods.
+
+And it being a robot has methods M1 and M2 because, hey, it's a robot, right?
+
+Okay, so how can we lay out our cat?
+
+What does the subject rule say about laying out the cat? Oh my gosh, everyone.
+
+You think, uh, it needs to, um.
+
+We. Sorry for Cat or for cyborg? For cyborg cat? Yes.
+
+Um, it needs to be a cat or anything. It needs to be a cat.
+
+But what else does it need to be? An animal? Well, a cat to be a robot.
+
+So it needs to both have a cat subject or a cat sub object and a robot sub object.
+
+Okay. Does anybody see a problem with us? Well, we need two vegetables.
+
+We need to be tables. Why do we need to be tables? And we need to like put cat, or we need to put cat laid out some way for the vegetables at the top.
+
+And then robot also has to be table at the top. So we need to like somehow like have them share fields or something.
+
+Okay. Very good Christian. If you try to layout the cat one needs like the table name use.
+
+Like model name on other ones that can't both be on. Yeah.
+
+If we just try to do this in the most straightforward way, we went into the problem that this and this kind of conflict on one goes second.
+
+Right. And so Will kind of jumped ahead to the answer.
+
+Pete, did you have a thing. Oh yeah. I was saying like, do you need two tables.
+
+You can just have two different table points. Um.
+
+Well, like.
+
+You mean these tables over here, like this part of your sideboard can have two different table pointers to, like, different parts of the table.
+
+Yeah, but we're going to need two different. We're going to basically need to layout this and then this.
+
+Right. So we're going to have um the table.
+
+Name. Age.
+
+Uh. Pardon me. Uh, laziness.
+
+And then we're going to need another v table pointer. Another name.
+
+Model number. And then this is going to point at.
+
+Speak her.
+
+Uh, this is going to point at M1, m2.
+
+And then we can stack them on. Okay, so there's our cyborg cat.
+
+All right, Jack, did we want. Did we want some more cat to expand?
+
+Animal or cat? Oh, cat. Sorry. Yeah.
+
+It's like a cat and you are loved.
+
+And so if we look at our sub object rule, we're going to say, hey, right here.
+
+It's a cat. And right here.
+
+And that. Is a robot.
+
+Okay. And so we followed the subject rule by making two different parts that don't overlap after it was supposed to go wrong.
+
+Oh, yeah. It's the point.
+
+Mhm. The very proudly drawn field at the end.
+
+Yes. Thank you for catching that. You can stick that on the end there.
+
+This part of the part of our our cat's object here.
+
+Laziness is part of the cat. There we go.
+
+And now we have a cat sub object and robot sub object.
+
+And we can stick all the new stuff on after them. Now.
+
+Why do we want this subject rule in the first place?
+
+Well, we're going to pass like a cat pointer, potentially to a context where it's expected to be an animal pointer.
+
+And if it's laid out differently, the code that's expected to work on the animal will run into bugs, right?
+
+And so with this, if I want to pass our cyborg cat to code, that's expecting a robot.
+
+How is our subject cruel. Helping us? Right. So I have this pointer here, and I have, you know, f that takes a robot pointer and I call f of p.
+
+Is that going to not run into problems? Because I need this code.
+
+Expects a robot which is down here. So what do we have to do. You can skip the pass P plus some offsets.
+
+Yeah. We basically have to like correct this.
+
+Just when we convert to something that's not our primary parent type, we're going to pass.
+
+The appropriate subject instead. Right. So we're going to pass, uh, that pointer right there.
+
+And um. That gives us a robot subject to work with.
+
+Do you all see that?
+
+So that means that, um, conversion to your non primary parent is not just like a register to register move or use of an existing register,
+
+it's an add eye operation where we're going to have to add 24 or whatever to this pointer to pass it to,
+
+um, to pass it to a function that expects a robot or to otherwise polymorph it into a robot.
+
+Okay. So far so good. Now if if m1.
+
+So if this let's just say M1 is not overridden.
+
+It's the same exact code. That comes from robot.
+
+If inside of here, where I have my robot arm, I do ha arrow m1.
+
+That's all good, right? Because this code expects that this pointer to be a robot arm is a robot.
+
+It's pointing. Here we go. Inside of there, we're pointing at the robot subject.
+
+Everything is happy. But let's suppose that over here we've overwritten M2.
+
+So in overriding M2 what is the this pointer inside of here.
+
+What type is that? This pointer inside of M2 cyborg cat.
+
+If they. Cyborg cat. Pointer. Which means that if over here I do r m2.
+
+And I just put this pointer into a zero and called that method.
+
+Right. So this is pointing at, you know, some cyborg cat code.
+
+We're going to have a problem, because when we come into that method, ours is going to be pointing here.
+
+But we expected this pointer that points at a sidewalk at. So what can we do?
+
+But once you start treating something as a robot, it is a robot and it will never be a cyborg cat.
+
+Well, that runs into the problem though, that once we've done this, we basically violated the way dynamic dispatch works, right?
+
+Because our object actually is a cyborg cat. And so when we do RL m2, the whole point of dynamic dispatch is we want to go do this code.
+
+Utah. I think you start a function that I have to check whether.
+
+It's you want to check something. We're not going to check anything. But here's what we are going to do.
+
+This picture is actually a slightly. We're actually going to have two pieces to this V table.
+
+So this is the primary V table on the secondary V table.
+
+And uh for M1 it's just going to continue to point right at this same code here.
+
+And that's no problem. But for M2 what it's going to do is it's going to point.
+
+To a little fix up code right before the main part of our M2 code.
+
+And this we are only going to use this V table entry when we are a cyborg cat polymorph toy robot.
+
+Okay, so if we're a cyborg cat, not polymorph to a robot cyborg cat, straight up, we're going to use this V table entry.
+
+We're not a cyborg type. We're going to be using other V table entries.
+
+But if we are a cyborg cat polymorph to a robot, we're going to be using this V table entry right here.
+
+Which means that we know when we're using this V table entry that we are transitioning from code which expects at this point to a robot code,
+
+which expects at this point of a cyborg that you know, by that,
+
+which means this little fix up code is basically going to be like a zero minus equals, you know, whatever amount we have to add.
+
+And then it just falls through into the start of the message.
+
+So we can just have like one little extra instruction before that that fixes the this pointer
+
+and then lets us fall right into the rest of the code with the correct in this point.
+
+Do you all like it? And then if we have a whole bunch of other classes where we might need, you know, to,
+
+to fix it up for a lot of different ways, we can either slide through many different subtractions,
+
+or we can subtract the right amount and jump, depending on how many subtractions we have to do to get to decide which is a better, better choice.
+
+All right. So that's how multiple inheritance works.
+
+Seem nasty. Okay.
+
+That's my job. That's part of the reason why Java got rid of it. But wait.
+
+There's more. Let's suppose that we make our cyborg cat, and we want to change its name.
+
+Or even just look at its name. How many name fields does cyborg Cat have?
+
+Two. Is that good or bad? It's a real bad, right?
+
+Because if we just like set name here, we might have our cat,
+
+our cyborg cat that thinks its name is fluffy on the cat side, and, you know, robo 4 or 5,
+
+seven on the robot side and like, it's we have all these weird bugs in our code where we,
+
+like, print out our cat and see that its name is definitely fluffy.
+
+And then we do this thing on the robot side, and it doesn't answer to fluffy and like, we're just going insane, right?
+
+I kind of like, I kind of like that. Don't like your side workout.
+
+You should have, like, uh, you want this, like, chat?
+
+That's like. Yes, I am definitely fluffy. Fluffy?
+
+Who are you talking about? I am robo 4 or 5. Three. I have never heard of fluffy.
+
+Yes. Yeah, I am too fluffy. Um, well, it might be funny.
+
+It's also probably one of those nightmare inducing bugs where you like.
+
+You keep printing the cat's name and going. I see the cat named fluffy find fluffy in data structure.
+
+No cat named fluffy in data structure. I just put it in the data structure.
+
+What is going on? Right.
+
+I don't know if you all ever have those bugs where you're, like, questioning your sanity,
+
+and then you sleep and you wake up and the bug is still there, and now you're really questioning your sanity.
+
+Uh, so the fact that we have two different name fields.
+
+Is, um. Is is bad from a like, software engineering perspective here.
+
+Um, and if we just keep this class hierarchy where we are having animal and robot and they both have name, we're kind of stuck with it, right?
+
+But we might look at this and say, hey, you know what? Um, I need a class entity.
+
+Which is going to have a name. And my get name and set name and so forth are on that.
+
+And then if I just made animal and Robot inherit from entity and took away their name fields, I haven't actually fixed any problems yet.
+
+But in C plus plus. If I virtually inherit from entity on both of these.
+
+And take away the field. Now I will actually fix my problem, but I am also going to throw away my whole object layout and redo it all over again.
+
+Is everyone ready for me to erase all the object layout there? Okay, you could just say you at this moment don't wait.
+
+I'm still drawing, but. So like if you're still drawing, it's fine.
+
+Just okay. Which is great.
+
+You. Let's see.
+
+Okay. So entity is pretty straightforward to layout.
+
+It just has a name like we can draw it like well we think maybe it has a V table also.
+
+Um it doesn't have any methods at the moment. Function. What does virtual inheritance mean.
+
+It means that if we inherit multiple copies of an entity, we are later, as has multiple inheritance come together.
+
+We are only going to have one entity, some object in the resulting object.
+
+Okay. And it has to be done at this level and not this level, because we have to layout animal and robot differently to accommodate this.
+
+By the way, did they teach you in, I don't know, 250 or something, how to solve any functionality functionality problem in computing interaction.
+
+Yeah okay. Functionality problem. Indirection. Performance problem.
+
+Cache. Right. So we are going to need here we have a functionality problem I want to layout an object but I can't seem to do it.
+
+So we're going to add another level of indirection. And the way we're going to do that is animals are going to be laid out like this.
+
+H. Our command range.
+
+That we got. She looked like. All seminars and methods that aren't pinscher.
+
+Okay, so are animals.
+
+Are now going to have their entity, some objects obtained through a level of indirection in their vehicle.
+
+So here's my entity self object. And the way we find it is that the table stores the difference between that the table pointer
+
+or animal and the b table pointer for entity in a particular entry in its own B table.
+
+So basically if I want to find this entity sub object.
+
+Let's say I have some animal pointer p. Right.
+
+And I want to do p arrow name. Because this is an animal subject.
+
+I'm going to have to do offset equals uh p arrow v table zero.
+
+Right. To get this. Uh p prime equals p plus offset.
+
+And here I mean like a rough loss not a like actual normal pointer arithmetic.
+
+We can scale by the size of what we're pointing out. But like an assembly plus and then I can do p prime uh, name.
+
+And I might be able to kind of, you know. Which I can't, but I can.
+
+I can do primero name in kind of a normal way once p prime is pointing at this entity.
+
+But now for every field in my animal sub object, I have to go to my vtable to get the appropriate pointer to get there.
+
+Billy, you might hate this, but if if we're like,
+
+I don't know if we're going to try and help out the programmer and they really want to do this cat robot thing and they both have the name field,
+
+couldn't we just add this entity abstraction for them?
+
+If the if the field has the same name and the same type.
+
+Um. It can we hide the entity thing and just do it in the background, you know,
+
+like so so so I would say if the programmer just write the classes as they are, then there should be mess with it, right?
+
+Because they might actually want that for some reason. Or maybe we should give them a warning I don't know.
+
+But if you want to say like, hey, let's add like an annotation, like in Java, like at inherit once, right?
+
+Then yes, we could do this entity thing in the background where we could extract like,
+
+oh, these things are in an at inherit once and they're inherited multiple times.
+
+And we basically need to lay our object out this way. Um, but I wouldn't want to do this without the programmers.
+
+Like knowledge and permission. Cause I hate it when I try to write code and somebody decides like, I know better than you, let me do it differently.
+
+Uh, but the important point here is we have this level of indirection, which means that this is also a valid animal.
+
+Like if I have. V table.
+
+Age. Right.
+
+If I have a bigger asset here, I'm allowed to have a valid animal object with, like, a hole in the middle.
+
+Do I buy that? Because the rules I've set for animal are not that this has to be right after this.
+
+It's that this is this plus this. Okay.
+
+And that's going to be important because. If I take this and just sort of extend it to cap if you park.
+
+Ladies and gents, you know.
+
+I can now take my robot object and stick it right here.
+
+Has a model number. Uh.
+
+And it's going to have. We want them to.
+
+And it's also going to have the entity offset. 20 or whatever.
+
+Right. Because it's object that's going to say you find my entity by going from here plus 20 down here.
+
+And then we can also just stick in our, um.
+
+We need to stick in our ways of power here. Right.
+
+And so now we can basically stick the entity some object last.
+
+And it can be found through any of table by getting the appropriate offset.
+
+Okay. So you can make this work in kind of the nice way where this now only has one name,
+
+but it comes at a cost where accessing any fields in that entity sub object are going to be more expensive,
+
+because we have to go through the V table to find where that is.
+
+Sound good? All right.
+
+Um, the, uh, the only other things I'm going to say about, uh, compiling old languages are, uh, if we have lots and lots and lots of fields.
+
+So forget all the. Oh, actually, wait, I will just mention, um, if you are initializing these objects in C plus.
+
+Plus, there is actually a well-defined order for them to be initialized for their constructors to be called.
+
+It involves like a DFS of the inheritance hierarchy, and I don't remember the rules, but I can look it up if you need.
+
+But I just will mention there is a well defined thing if you're ever trying to do that.
+
+Uh, the other thing I was going to mention about O languages is if we have lots of fields in our object.
+
+So like our object has like a B table and like a whole bunch of fields.
+
+F1 and F2 number three. Moving up.
+
+Right. We might want to, um, reorganize our field slightly for cash behavior.
+
+Right. So lots of times, objects with lots of fields, like maybe I'm going to use F3 and F17.
+
+A lot. And fields one, two blah blah 20.
+
+I don't use very. All right. So I could if I know that.
+
+There's one other one that I like a lot. Like 2013. Oh, no.
+
+Something like that. Ah. Cold winter. Right.
+
+We can basically rearrange our objects like this so that all the fields are packed together.
+
+And then there's a pointer to our code fields. And what advantage does this give us?
+
+Let's suppose I have lots and lots and lots of these objects. And I'm only accessing the hot fields.
+
+How many of them can I fit in the cache? Let's say each field is four bytes.
+
+And I've got those four fields right.
+
+Like this is 16 bytes. So I can fit 4000 of them in the cache versus if I have like 20 something fields and I can only fit like,
+
+I don't know, less than a thousand of them in the cache. Right. So it gives me much better cache locality.
+
+But accessing these fields becomes costlier because I'm going to have not only a pointer, but presumably a cache miss to get to them.
+
+But if those are very rare, then that's a worthwhile tradeoff.
+
+How can we figure out how hot the fields are? Profile.
+
+Yeah, okay. I thought one of you was going to say, like, well, we can have a little website called am I Hot or Not?
+
+Where we have the fields and people can read it, but, uh, yeah.
+
+So is that a thing still? I don't know, that was that was a thing when, like, I was in school, so I guess it's not a thing anymore.
+
+Um, you'd have, like, some compelling stuff.
+
+Well, so, I mean, that's basically what profiling is, is like, we could, we could instrument this to count how often our fields are used, right.
+
+That data down and then recompile the code for actual use profiling is this really great thing that hardly ever gets used.
+
+Um, because it's like a lot of extra work. I mean, like big companies that care about performance a lot.
+
+We'll like, do it cool. But like most of you probably don't profile and we optimize your code.
+
+Um, but if you're doing something like Java where you have just in time compilation anyways,
+
+then you can sort of measure that stuff in the Java runtime,
+
+and we compile the code as you need to change it, potentially changing around object layout.
+
+Yeah. What is just in time compilation? What is just in time compilation.
+
+Good question. Um, I yeah, I didn't realize you didn't know that.
+
+So, uh, so thank you for asking. So in Java.
+
+When you run Java C. You basically compile into Java bytecode.
+
+Which is um, Java's own specific IHSa.
+
+That is kind of a weird ISO. It's like a stack based eyesore.
+
+Um, but it only runs in the Java virtual machine. There are not like processors that run it natively.
+
+So one option you have is to just interpret that.
+
+I mean, you can basically just like run those like, run like a little like loop that's like, oh, this is a push instruction.
+
+Take this, push it on the stack. Oh this is an add pop to operands, add them up, push it back on the stack and so on.
+
+But this is going to be slow. Okay.
+
+Another option you would have is to compile it. Compile it like you can imagine something that takes your entire Java program.
+
+All the files reads them in as if it was basically like an er, kind of a weird intermediate representation,
+
+and then does the back end of your compiler and spits out x86 assembly.
+
+Right. Um, and you could do that and then your program would run and you'd have like whatever optimizations you want, but you spin.
+
+So this would be fast. After you compile.
+
+Right. Compiling it might take a while. Um, and so if you have a program that's going to just run very briefly,
+
+you may not want to compile the whole thing, especially because Java itself has a huge library of class files.
+
+Right?
+
+So if you were to like, say like I need to compile, not just like my hello world class, but like Java, like object Java lang vector blood in a block.
+
+All all these things that would take a while just for you to run.
+
+Hello, world. So there's kind of like a middle ground here where what most Java virtual machines do is they will interpret your code at first.
+
+So like the first time they see your code, they're like, oh yeah, some code. Let me do that.
+
+And then after they've seen the same region of code a couple times, they'll compile it and then run the compiled version in the future.
+
+Right. And so they're only going to compile what you actually need.
+
+And by need it's code that you've run, you know, at least a couple times like actually run it in that.
+
+And so while you're doing that, like while you're, um, examining that code the first time or a couple times, you can gather up statistics on it.
+
+But if you ever wanted to, you could also recompile, uh, things on the fly.
+
+You can you can change a change around how things are compiled, because at any point you can just say,
+
+I'm getting rid of all the previously compiled stuff, starting from scratch and interpreting this, or just keeping these parts or whatever you want.
+
+Okay. Any questions? All right.
+
+I'm going to give you the last, like, ten minutes of class after I erased the board and stuff to do your course evaluations, so please do them.
+
+I know that, like, it's like, uh, yet another thing to do, but I do look at them and take them seriously.
+
+And, like I know everyone else above me likes to look at them and be like, what?
+
+What numbers did you get? Um, so do please do them.
+
+And. I hope you all have had.
+
+A great semester. I learned a lot in here. Even if I didn't make your heads explode last time, or especially because of major events it's all about.
+
+Also, while I'm racing the board, as someone once told me that there's like, you know,
+
+a psychological trick you can play on people when they're going to do evaluations where you ask them to like,
+
+write down like three things you liked, and then write down ten things you hated and like, as you're like, oh, ten did like one I hated Gezi Park two.
+
+Oh, I can't think of anything. And you're like, realizing you can't think of ten things you hated.
+
+It apparently makes you more likely to rate things highly because you're like, yeah, I guess I can't think of things I hated.
+
+Oh, man. Look, I filled out my list of things I liked really well, um, so there's your, like, psychological trickery lesson for the day,
+
+but you might try it out before you try it in a high stakes environment, because I've never actually done this.
+
+I've just heard that. All right. Any questions before I leave Utah?
+
+Uh, how about after all the questions about what?
+
+About, uh. Uh.
+
+Yeah. So if you like, if, uh, Asimo and, uh, virtually, uh, in terms of entity,
+
+do the thing, you know, uh, constructing the self or being constructed by hand,
+
+but, uh, how does the entity know if it's being constructed by, like, just new entity or as a sub object?
+
+Yeah. Like it does not. Yeah. So, like real control, uh, constructing things.
+
+And then you have to construct the entity at the put at the end, like,
+
+but when you're constructing 3D, uh, I work that bit, but at the end of the construction.
+
+So the entity construction has to happen before the animal constructor or the robot constructor.
+
+So in this case, it's pretty easy. You do entity first, then you do.
+
+Animal robot. Cyborg cat.
+
+But before you constructing the robot, uh, other animal and robot.
+
+Uh, uh, have to put it.
+
+The energy at the bottom, right? Yes, but it's going to be in one fixed place for that object.
+
+So when you say new cyborg cat, it's going to allocate 128 bytes.
+
+The last 16 of those are going to be for entity.
+
+That gets initialized with a constructor whose this pointer is pointing at those last 16 bytes.
+
+And then you're going to go, okay, now I'm going to make an animal.
+
+Its vtable is going to have for this particular kind of animal.
+
+It's going to have the asset pointing at that entity.
+
+It's going to do its construction.
+
+You're going to do Cat, you're going to do robot with its pointing there, and then you're going to finish with sidewalk time.
+
+So you know how much space have done that for. Thank you for that.
+
+Yeah. You know how big the object is when you create it. Because you know having a sidewalk cat right.
+
+Yeah. Any other questions? Billy.
+
+Um, so interfaces are something you can like, do like several of in Java, like you like, and, um,
+
+they don't really work the same way as like classes with implementing the, the seals at the class level.
+
+Great question. So interfaces don't have fields, which means that our object layout gets much simpler.
+
+We still need the VE tables laid out so that, uh, well,
+
+in the first version of Java invoke interface like call a method through an interface
+
+was really slow because it basically went through the V table entry by entry,
+
+looking for the right thing.
+
+And so like if you had 20 methods and it was the 19th one, it's like comparing each method identifier to see, oh, it's that one I'm going to call.
+
+You can do that. It's terrible.
+
+Um, if you know all of the interfaces and the classes that implement them upfront, you can basically do a graph coloring problem, right?
+
+Where like, like I want all things, like all things that implement this interface,
+
+the method one in their third slot and method two in their eighth slot and so on.
+
+And so you can basically have like implement same interface, the interference edge between the methods.
+
+The vtable slots are the colors, the methods are the thing, the nodes.
+
+You do a graph coloring problem. It's an easy graph coloring problem because you can just make your B tables bigger any time you need.
+
+So if you're like, I can't 12 color this like code will put a 13 slot in the V table.
+
+Um, that gets trickier in Java with the fact that you can dynamically load classes in, but you know,
+
+any kind of data structure that's going to let you look these things up efficiently might have some more overhead than just a normal class.
+
+It will be faster than a linear search for the entire V table.
+
+Yeah. And if you're not doing, um. Uh, what was it like runtime compiling with, like, your generics?
+
+Um, at that, like, level like, how does how does that work in essence of like you need to be able to be like,
+
+oh, like I can run this function, it can run a string or an and or whatever.
+
+And your Java handles that via like just checking on the fly.
+
+So Java so Java handles the generics by the fact that you can only do generics on object type.
+
+So you can't actually do int, but you can do integer. And so that's an object.
+
+And so like length of the list of t gets compiled into code for a linked list of object.
+
+And so the part where like because of the way that works, you can't call methods like inside your linked list.
+
+You're going to call dot equals which is an object, but you're not going to call meow because that won't compile.
+
+Right. And so, um, the thing you lose is that because you don't know what T is, you can't say nu t you can,
+
+you can kind of get around that by taking some other object in the linked list and getting its class and doing new instance,
+
+but like T is not available at runtime to you anymore. And so it just compiles into linked list of object, which by the way, is what I grew up with.
+
+Like generics happened after Java when I went to school.
+
+And so like when I went to school, you had linked list of object.
+
+There wasn't an angle back. It was just like linked list has object.
+
+And when you get an object out, you're like, man, I remember remember that this is all linked list of cats.
+
+So you casted as a cat and like uh generics basically get rid of that cast coming out of the linked list.
+
+But all the code inside just looks like object stuff. Okay.
+
+Any other questions? All right.
+
+I'm going to head out and let you all do these, uh, with the last four minutes of class.
+
+And I will see you on Wednesday for whatever kind of review you want.
+
+Have a great day, everyone. Such a flexible.
+
+I don't need. To do such a thing to reach the stack.
+
+This is. One of the two.
+
+Ways. I.
+
+We can't mess it up. It's just a matter of, you know.
+
+I think. Little money.
+
+So. Yeah. If statements switch case.
+
+Average. Recommended.
+
+You mean you? It's not just me.
+
+She hears me, and it's like she has everything to.
+
+It's say. It's like, oh, it's six years.
+
+Old and 12 months old. Yeah, that's what I did, you know.
+
+I have like, this year, so I'm not going to push it and expect to find any job.
+
+It it's always a process. Like I usually get tired of it.
+
+So tell me about the generational rule that you just tell.
+
+Uh, do you really do the testing for that astrology to.
+
+Do that like once the work.
+

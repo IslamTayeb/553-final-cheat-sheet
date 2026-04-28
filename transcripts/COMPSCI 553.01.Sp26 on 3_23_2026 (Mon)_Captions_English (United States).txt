@@ -1,0 +1,1261 @@
+[Auto-generated transcript. Edits may have been applied for clarity.]
+I'm pretty sure. We've seen those Texas locations.
+
+All right. How is everybody today? They're doing well.
+
+And I'm suffering from pollen because they apparently were calling counties like 9 million.
+
+I'm getting it worse this year than usual, and I just want to, like, crawl into my bed and emerge and, like, I don't know, winter or something.
+
+Maybe. But, uh, that's an option. So, um, that's going well.
+
+Um, I have not yet had a chance to grade your tests.
+
+That was planned for Friday, but other things came up.
+
+Um, I'm hoping to, like, fit it in tomorrow, around some other things.
+
+But the communication, I'll get there. Sometimes it's hard to do what's good for variable this year.
+
+Um. It's really. Okay.
+
+Um. Trying to think what else?
+
+All right, so what are we talking about last time? They.
+
+Remember, it's been a while, but not like that long.
+
+But it was there, like some big basketball game this weekend or something. To, uh, to the polls.
+
+Did we win? Yeah. Okay, guys, I guess, uh, but it's.
+
+March is almost over, so we have to be almost done with this, right? It just started.
+
+We just started. It starts in late March. I because they are really important in our, like, any programs or anything.
+
+So why do they call it March Madness then? It starts in March.
+
+Not, I don't know, April anxiety or like the upsets happen with the first two rounds which are in March.
+
+Uh, by the end of the game, just like good teams left. I see.
+
+Okay, so how far are we then? Uh, first week is sweet 16.
+
+Okay. All right. Well, uh, so you all forgot all compiler's things by thinking about basketball things all weekend?
+
+Yeah. Apparently, like, I have an alarm set from 117 two.
+
+Remind me to, like, come to class. And apparently I hit the snooze instead of stop.
+
+So it was. Uh. All right, so last week, think back Wednesday.
+
+Pete talked about, like, construction selection and like, how it can linearize a bit.
+
+Well, yeah. So when we do instruction selection what are we going from and to.
+
+We're going from. Well, that's, um, the tree based air to that.
+
+Isn't that register MIPs thing or infinite register or whatever, I think.
+
+Right. There's more important or not more important, but importantly in that we're going from the air that's already been linearized,
+
+and all the branches have their fall through targets right after them. So we don't have to worry about that when we do instruction selection.
+
+We just know that we can just spit out branches.
+
+Um, more of a general question for like any compiler, do they always, um, I guess go to like an infinite register version first,
+
+or is there like a yeah, I don't know, is there a way to like, abstract that out of doing it for every.
+
+So always is a very strong term, right.
+
+Like, could I go write a compiler where we don't do that. Sure.
+
+Um, but you as you're going to see we're going to basically have two full phases of your compiler that are going to be needed for register allocation.
+
+Right. Um, and so today we're going to talk about liveness analysis.
+
+And then next time we're going to talk about register allocation. And so breaking these down into separate problems right.
+
+Like hey we can select without like when we do instruction selection, not only do we not have to think about register allocation,
+
+but any time we need a new register for the result, then we can just get one because we have infinite registers, right?
+
+It would be like a thousand times harder to do that, selecting for real registers at the same time.
+
+So we'd be like, oh, now I need this. What registers free?
+
+I don't know yet because I haven't done those instructions.
+
+Um, and so this way we can have all the instructions we want and then go through and figure out, um, what registers we can map them on to.
+
+Of what else have we talked about last time, Pete?
+
+Um, like, a little bit of, like loop is.
+
+Optimized. Yeah. Why? Like, what was the bigger picture of why we were talking about loop unrolling style?
+
+Oh, yeah. Well, because we could also do instruction scheduling.
+
+And for you all, that's not going to matter much because Stem doesn't have timing, right?
+
+Like, if you optimize your code and schedule your instructions,
+
+it doesn't matter because spin is not going to execute them in a pipeline fashion anyways.
+
+It doesn't have timing.
+
+Um, but for a real processor, you would want to try to eliminate, um, as many stalls as you can by scheduling new instructions.
+
+So in the big picture of things. We're like over here on compiler's mountain now, right?
+
+So we've done instruction selection. Okay.
+
+And we I mean, you all are still working on that, but from the perspective of where we are in class, we have infinite register because.
+
+All we have to do, all we have to do is turn the infinite register maps into finite register maps.
+
+And, uh, we're good to go. Now, it turns out that usually after that, there's a little bit of like, getting all the stuff to actually,
+
+like, work and little bits of things that makes them happy, like data and text and so forth.
+
+So we have like a little tiny mini phase at the end for like now make it actually like run.
+
+Um, but this is the last big thing and this is going to come in two steps.
+
+So the first is going to be liveness, which we're going to do today.
+
+And then the second I'm going to go away from my mark. It's going to be the actual register allocation.
+
+Which we're going to do. Wednesday, and then we're basically done with the things you need to do your compiling.
+
+Okay. Um, so what are we going to do with the rest of class?
+
+Well, we're going to go back and talk, um, about more optimization.
+
+We'll talk a little bit about garbage collection, all sorts of fancy stuff that you don't need to put in your compiler, but it's good to know.
+
+And you could put some of it in there if you wanted, for extra credit, of course.
+
+Um, and so.
+
+Oh, yeah. Uh, with that, I need to find an eraser.
+
+Because. So the challenge.
+
+Mr. H. Um, we're going to get to our big example of life this in a moment.
+
+But I want to start with the first time I taught this class, it was in fall semester and live.
+
+This landed on Halloween.
+
+And so, ah, of course, if you're doing something about you've been live and dead on Halloween, you have to like make it Halloween leave.
+
+Right? And so it's a little weird now that it's in spring, that we have like vampires and zombies and stuff, but pretend it's Halloween.
+
+I forgot to tell you all to wear costumes. Sorry, I did wear my vampire cape, uh, when I taught that, and.
+
+But I would be kind of extra weird now. Um, but just so you know, that's that's coming up, uh, in just a minute.
+
+Okay. Um, so before we get to that, a couple, uh, just sort of things as we prepare.
+
+The first is the output of your instruction selection.
+
+Is this data type. Right. Uh, data type.
+
+Is offer phone labels?
+
+Move. And a move is basically just like, well.
+
+To those. Uh, label we don't really care about.
+
+And this is basically the same as that. But no job.
+
+And only one source does. Um, so it's going to be this data type.
+
+You're going to have these assembly strings which have like little back to things.
+
+It's going to like add. Okay.
+
+Well those are basically like the backtick S0 and backtick D0 are placeholders for the registers.
+
+When you finish instruction selection. Um, you can go print that out.
+
+And like this might be like, you know, ten 110 105 temp 106, uh, print out that way.
+
+But then once you've done register allocation, uh, you can basically change how these print and get the actual registers in there.
+
+Okay. Um, and I wanted to mention that both.
+
+Well, one, I probably should have mentioned it last time, but, um, to think about what's going into this in MIPs,
+
+you might say about to like, shouldn't things only have one destination?
+
+Um, well, some things have zero destination registers, right?
+
+Like stores and branches. Um, and some things actually, even though the the assembly instruction itself doesn't have multiple destinations,
+
+they kind of look like they have multiple destinations because they might write multiple things.
+
+And the big one there is like a function call, right?
+
+So even though it's only outputting something in V0 in terms of what we get back, it's going to overwrite all the T registers, right.
+
+Or potentially overwrite all the T registers. So we should treat it as an instruction whose destination is all the T registers.
+
+We just don't know which is writing it. Okay. Does that make sense?
+
+Yeah. You also consider, like, return address? Um, yeah.
+
+You would also write the return address? Yes. Good point.
+
+Um, and so the instruction itself will write that.
+
+But like before we come back to the next instruction in this function, there are the V0 and all the t registers and the A registers.
+
+And anything that's not saved could get written by that function.
+
+And so we need to be aware of that so that we don't um.
+
+Don't don't try to keep those things.
+
+Uh. Don't try to keep anything in there that we. Um, and so, uh, the other thing I'll mention about this.
+
+So this jump label list option, if it's not, you just go to the next instruction.
+
+If it's some of a list, those labels are the potential targets for this to jump to.
+
+If it's the j r to the end of the function,
+
+it's some of the empty list because we're going to process things one function at a time for register allocation.
+
+And so there's nothing after.
+
+Moves and other instructions are kept separate specifically for register allocation because, um, we're going to see next time moves.
+
+Um, like following back moves are unlike other things in that we would like to get rid of them.
+
+Right. Like if I have a register to register move and my register allocator can arrange.
+
+And if I'm moving from temp 200 to temp 300 and my register allocator can arrange for temp 210 300 to both be s four.
+
+That's great, because now I can just get rid of that MOV instruction because it would be mov s4 to s four and my program has fewer instructions.
+
+We can't really do that for other instructions. Like we can't whole register allocation tricks to get rid of multiply.
+
+Um, and so moves are special because, uh, we would like our register allocator to give it.
+
+Okay. So, so far, so good on that.
+
+That's like kind of a bridge between the last time and this time.
+
+So when we're doing register allocation, we're mapping an infinite set of things down onto a finite set of things.
+
+Um, sometimes we won't be able to do that because we'll need too many registers at once.
+
+But one of the things that helps us is that if we don't need to read, if we don't need a value,
+
+if we don't need the value of 100 at the same time as temp 150, we can map those to the same register.
+
+Okay. And so if we have a bunch of assembly instructions, whatever and some instructions, those are and we look at I don't know let's say there's.
+
+Add into camp 100 from some, uh, and then down here, uh, we do a multiply and the temp 200 from temp 100 something something something.
+
+Well, I basically need this value from here until here.
+
+Unless. Something else in here writes temp 100 in between.
+
+Right. So if I don't have anything in here that writes it, I'm going to say that this is live.
+
+Across this range. Right. And then after that, if I don't ever read ten 100 again, it's dead.
+
+Okay. Or if I right now this is actually a little bit of an approximation of liveness.
+
+Um, liveness means. If I ever need the value for my computation.
+
+Right. Um, and.
+
+That's something that's undecidable, but we are going to use an approximation that sometimes will say something is live,
+
+even if, uh, even if it's not, but, um, we'll never say something is dead when it's stops.
+
+Right. And so how could this be an approximation? Well, suppose that in here there was some branch that jumps over here.
+
+And this branch is always going to be taken.
+
+But I don't know that this branch is always one. Right. Then I don't actually need this value here.
+
+Right? Well, actually, I don't even need it anywhere here. If this doesn't use.
+
+I'm 100. But I would never be able to figure that out. Right.
+
+And so that's why it's a little bit of an approximation,
+
+is that there may be times when we could jump away from things and we would know that we wouldn't need these.
+
+Um, but we're going to just assume that all the paths through the code are valid,
+
+and that's the approximation we're going to use, which is generally good enough.
+
+So. Our definition of. So like the big conceptual definition of liveness is, uh,
+
+a variable or a temp is live if we might need its value, because it might affect the computation.
+
+And the way that we're going to compute that is something is going to be live at a particular place and some place.
+
+If we will maybe read it in the future.
+
+Before we write it down. Yeah.
+
+Okay. So if I might read it in the future before I write it again, then it's live.
+
+If I am definitely going to write it before I read it.
+
+Or definitely never going to read it again, then it's dead.
+
+And it could be I should I should move that definitely.
+
+If I am definitely going to parentheses around, write it before I read it,
+
+or never use it because I might be at some point in my program where this way I never will read it,
+
+and this way I will write it before I will read it, and then it's dead there.
+
+Right. It's definitely one or the other. Those. Okay.
+
+Um, and so if we had just straight line code, this would be pretty easy to figure out.
+
+Right. Like if we didn't have, like, jumping around and all of this stuff, we just had straight line code with no branches.
+
+That's originally looked at like we could say, hey, I need to read this after this, I'm not reading this, or there's a right.
+
+So that's where it's dead. And, um, and that would be easy.
+
+But real programs are complicated and have, you know, data flow graphs that have conditionals.
+
+And loops and, you know, whatever else going on.
+
+And so we need to think of a way to do this where, um.
+
+Where we can handle complex graphs. Control flow graphs okay.
+
+And this is going to be the first of our, uh, data flow equations.
+
+So. This.
+
+We are going to work in terms of a basic block. Which are the nodes of our control flow graph.
+
+It's a sequence of instructions where if we enter the first one, we execute all of them until the last one.
+
+Barring exceptions or our program being killed in the middle, and we never jump into the middle.
+
+Right? So it's basically just target the start.
+
+And then at the end we might have a jump or we might not, we might just fine to another basic block.
+
+If a jump target some instruction in there. Um, and so what we're going to do is take this basic block and compute it deaths.
+
+And it's useless. And that is which tempts.
+
+Does this define. Use.
+
+And which things does it use before definition? Okay.
+
+Uh, and so, uh, and the reason why is basically like, if this, let's say whites to temp 100 and then later uses temp 100.
+
+Well, I don't need the value of temp 100 coming in here.
+
+Right. Because I'm going to write it right away. And conversely.
+
+If this uses temp 100. But then later rights to ten 100.
+
+I don't care so much that it wrote it. I need, um, I need that value coming in.
+
+Right? So we're going to have our deaths in our users from the block perspective.
+
+Uh, just take that into account. Okay.
+
+So let's just suppose we've gone through we've computed the deaths and uses and
+
+figured out basically what values does this block need to read and what values.
+
+Uh, does it kill the libraries? Okay.
+
+Um, and once we've done that.
+
+What we're going to do is we're going to have, um, these two equation or these equations where what we're looking at is what's live, you know, and.
+
+And what's life out? So live in means that at the start of this block I need whatever temps are in the set or variables.
+
+I'm going to use the two terms interchangeably, but if I say x, y and z are live in, that means that those values are live at the start of this block.
+
+And then if A, b and C are live out, that means that as I leave this block, A, B, and C are alive.
+
+Okay. And with those we are basically going to have uh, two equations.
+
+So the first is going to be that live and we're going to.
+
+Um, why, if this information basically goes backwards?
+
+Because we're talking about the future, right? So live in we're going to compute it from the live out by saying that what we need to do is, uh,
+
+take the live ins of this block or whatever, block B, and it's going to be, um, anything that is live out minus anything that we defined.
+
+Right. Because like if, if A is live out. But I write into a here, I don't need that here and then union with the users.
+
+Because even if B's not live out, if I need B in here it's live in.
+
+All right. So that was uh, live out of the block B minus the depths of B.
+
+You mean use? Okay.
+
+So far, so good. If we know it's alive out at the bottom.
+
+And we know what we define and we know what we use, we can figure out what's living at the top.
+
+And you don't want to take a guess on what we need to do to compute. Log out. Kind of.
+
+Like in that this block is going to jump off to some other blocks, right?
+
+And anything that's live in at the start of any of those blocks is live out here, because I might go to them.
+
+Does that make sense? So this is going to be.
+
+The union over s as a successor of B, a successor of B is anything that comes after it in the control flow graph of life in.
+
+S. Does that make sense?
+
+So now we have these equations. They're kind of like mutually recursive.
+
+Um, especially like if I have no cycles in my graph.
+
+I could start at the end and work backwards and just compute all this, right?
+
+But if I have cycles in my graph, I don't have an end to work from.
+
+And so think back like two months.
+
+I know it was mad and it's cold. And like we're thinking about all the ice storms and snow.
+
+Valentine's day. Well, there's no fixed point.
+
+Yeah. We're going to iterate this to a fixed point. Right.
+
+So what we're going to do is we're going to say, hey, we're going to start by assuming and we want, by the way, the least fixed point.
+
+We're going to start by assuming that no variables are live in at any block and no variables are live out of any block.
+
+And then we're going to take these equations and update.
+
+We're just going to go through each block and update and say oh my gosh a was live here and B was live here,
+
+and X and Y were live here and keep going.
+
+And once we've gone through all the blocks, if anything changed, we're going to go back and do it again and again and again until nothing changes.
+
+And then we have a fixed point okay. And we actually have the least fixed point if we start from the empty set.
+
+And the least fixed point is what we want. And then that is what is life.
+
+Yeah. We can at least fixed point. Um.
+
+The smallest set that satisfies all the equations.
+
+So we'll see after we do liveness and register allocation.
+
+When we come back and look at some other analyzes and optimizations that there are some things where
+
+we want the greatest fixed point where we would start bias by putting everything into the set.
+
+And then we're basically like iterating down, making our set smaller and smaller and smaller.
+
+And we get the biggest set. That's possibly true. Um, but if we were to do that for liveness, uh, I'm not sure I can do this off the top of my head,
+
+but basically something with the least six point something is only live because it has to be with the greatest fixed point.
+
+Something satisfies the equations because it can. And so if you had, um.
+
+You know, something that just kind of loops back to itself, right?
+
+If you start by assuming that X is live here, you'll conclude that x is live here, even if X is not involved in this block at all.
+
+Um, but if you start with the empty set, X will only be live here from actually going to possibly using some.
+
+Yes. Uh, so how did you find this blog?
+
+Well, actually it is. How do I define a basic block?
+
+It's a set of instructions that you cannot jump into the middle of, and you cannot jump out of the middle of it.
+
+So there is no possible jump target in the middle, and there is no jump in the middle of the jump can only be in the end.
+
+It's the longest such sequence of instructions that does that. Yes, it is the least fixed point, always a subset of the greatest fixed point.
+
+That is um. That is a great question for.
+
+Things like this, like these equations I want to say with 99.999% certainty.
+
+Yes. Um, could I make a generating function like something like this that we want to take the fixed point of where that's not true?
+
+Uh, maybe, but I have to work at it.
+
+Okay, I don't know, ask ChatGPT. Um, yeah.
+
+Um, so here's another way to think about least fixed point versus greatest fixed point.
+
+Um, when I was in like, I don't know, fourth grade or something like, uh, one of the like,
+
+I don't know, let's all like, misbehave so that we feel cool things to do is like,
+
+okay, everyone at 157, like, push your textbook off your desk and everyone says, well, I'll do it if everyone else does it, right?
+
+Because you you don't want to be the only one to do it because then you get in trouble.
+
+But like, if you all do it and you like, the teacher can be like you kids all my gosh.
+
+And then like, it's right. And so if if you're like, equations are like I will do it.
+
+Like we'll do it of person equals intersection.
+
+Like, you know, and everyone else does it. There's two fixed points that nobody does it and everybody does it.
+
+Right. And so the least fixed point is everyone gets scared and nobody pushes their book off their desk.
+
+And the greatest fixed point is everyone does it. Um, and anything else is like, not consistent with those equations.
+
+Okay. But as what happens as like half the class does it and the other half for classes like, hey, I didn't do it.
+
+All right. Um. Okay, so these are the equations we have for life.
+
+This. Everyone good with those?
+
+Yes. No. Maybe because this is where the vampire thing comes in.
+
+I hope you're all good with it, because I'm going to need you to use them questions now.
+
+We just decided to do garbage. Collect the board.
+
+Really, this is more like exac. I'm just I'm not I'm not checking what information up here is needed.
+
+I'm just tearing everything down and putting a new thing on.
+
+Okay. So we are going to have.
+
+And I'm going to have explicit go tos, even if they, like, kind of fall through.
+
+Okay. It's just. This would probably be, uh, three wikis.
+
+Three. Just.
+
+Uh. You.
+
+Guys know who Buffy is, right? Yeah, Buffy the Vampire Slayer.
+
+My other classes. Like what? They're apparently going to do like a.
+
+Remake of Buffy or something, but it got canceled. Back when I was in grad school, my wife was at McGill and I was at UPenn for a while.
+
+And so like I would take the train up to see her and watch like, like an all day train trip.
+
+Um, so I basically just like, watch Buffy the Vampire Slayer, like the whole way up.
+
+This is back when, like, you watch things on TV is always. Access computer.
+
+Well, I. And go to.
+
+College. Program there.
+
+Okay if I did that right? All right.
+
+So here is the control flow graph of our function.
+
+Um, you were you know, I don't know.
+
+I think that vampires and zombies are way more exciting than, like, temp 101 and ten.
+
+102. And of course, if you haven't seen BuzzFeed, like, I don't know, I guess that just shows how old I am.
+
+Like, um, they used to be a thing that of course, I never did.
+
+All right. So what's the first thing we need to do?
+
+Crush workout like taps and uses. Yeah, workout Destin uses.
+
+So how about over here? What does this use?
+
+Nothing. What defined? Define on business.
+
+Um, Jack, how about this one? What does this define?
+
+Why? What does it use? Uses an ax. Okay.
+
+Other Jack, how about this one? Uh, we might all use, like, heavily for defining what happened, but we don't know yet because.
+
+Right, because we have already defined WhatsApp previously. That's fine.
+
+We can redefine things like we didn't, we didn't find one. Yeah, we are defining why, but what are we?
+
+We also using it. And so which happens first the def or the use these use.
+
+So we are going to put this down as a use of why and the definition of vampire.
+
+Right. Because you know this defines it. If we think about like over here do I need the value of.
+
+The answer is yes. You need that before you write into it.
+
+Okay. Um, how about here?
+
+Um, defining that. Okay.
+
+And how are you using vampire? Sounds good to me.
+
+Um, personally. What am I defining here?
+
+Nothing. Yeah. Nothing is a perfectly valid answer. What am I using here x x.
+
+And Z, um, we're using zombies.
+
+Uh, and defining y x.
+
+I think that while it works well. Okay, sounds good to me and Alicia.
+
+All right. And, um. By the way.
+
+So this is going to be one of those things where like when we return answer, it's going to look a little a little weird,
+
+but it's not actually a special case because this instruction is going to be j r uh, with a source of answer.
+
+Well, actually, it's really going to be like a source of V0,
+
+but we're going to assume that answers don't worry about answer b0, but we need we need that.
+
+Um, and that's going to be what goes nowhere.
+
+And so like the fact that this is going to be live at, at our, at G is what's going to make your kind of life out of the human function.
+
+So that's going to look a little I'm going to write that one up here slightly specially.
+
+Um but it's not it's not that special.
+
+You just need to make that happen earlier. Yeah. Let's just jump register.
+
+So, like, the way we return from a function is just to register, right?
+
+Yeah. Oh, what do you notice? Uh, you know, why do we not do this?
+
+Why are we not using that? Because we defined it first.
+
+And so, like, we don't like from the perspective of this block, it's not using any prior value of stack.
+
+This is going to use that value so that it consumes itself. Yeah.
+
+All right. So over here I'm going to say that live.
+
+Well I'm going to say live out of this is.
+
+It was a kind of. Special.
+
+Okay, so, uh, I've put empty sets everywhere except for this one where that's going to be live out the bottom of it.
+
+Um, and okay, so that's going to be a little bit, uh.
+
+It's actually going to be a little bit weirder because like J.R., you're going to have it read the V0 register, which is going to be like,
+
+you're going to have to have a source of the V0 register, and you're going to move something explicitly into the V0 register.
+
+Remind me to talk about that bit at the end, because it's not um, it's not exactly like the register allocation part, but everywhere else.
+
+I've written up the empty set, okay, which is where we're going to start.
+
+And then, uh, let me ask you all this. Should I start here and go this way, or should I start here and go this way?
+
+Let me go back over there. Will it make a difference from the correctness of my answer?
+
+Will it make a difference from how quickly I get there? Yeah, a lot.
+
+Right? Because if I started here, this live out is going to basically be completely bogus.
+
+And like I'm going to have to go around many, many times for everything to slowly work its way backwards.
+
+But if I start here and go that way, everything will be great.
+
+So we're going to go one. To.
+
+On three. 456.
+
+Right. Um, and we could change the order of a lot, but it won't matter for correctness.
+
+But that's basically going mostly, um, that way.
+
+So where did I leave off? How?
+
+Uh, what is live in at the start of meat buffet?
+
+If you. Want to go?
+
+And. Yeah. So we're going to take this minus answer which we're defining union with vampire.
+
+And you can see of course that the vampire is live end to meeting Buffy but not out of meeting Buffy.
+
+All right. Um, Utah.
+
+What is live out? Uh, test.
+
+Uh, vampire. Vampire. Because we basically are uniting these two sets together.
+
+Okay. Alex. What is live in?
+
+Uh, x and then X and vampire.
+
+Okay. If then what is live out of night?
+
+Um, that would be, um, night.
+
+Uh, that would be X and vampire. Yeah.
+
+Because it only has one successor, which is this block. So we're just going to union that one thing.
+
+Other. Ethan. What is live in it night. So.
+
+And take X and vampire take away. Snack empire.
+
+So X and vampire. But.
+
+Right. So, for example, what is live out at dawn?
+
+You know, a little help because, uh. Whatever you need. Okay, so first, how many successors does this have?
+
+Yeah. Just one. So we're going to look at the limit of that.
+
+And the union of one thing is just that thing. Okay.
+
+So like we're union ING like that union comes into play.
+
+But here we had two things and we union them together.
+
+Right. But here we only have one thing. So union Union is just that thing.
+
+And so what's it going to be. So just excellent.
+
+Just excellent. Vampire. Yep. Okay.
+
+And will what is live in at dawn?
+
+So excellent vampire. But vampires find in that walk.
+
+Yeah. So we take that out wise used so just x and y. Okay.
+
+Um, Eric, what about live out at loop?
+
+So we union, we have, uh, multiple successes. So we union in live in of Don, which is x and Y and of night which is x and vampire.
+
+So x y then okay x y vampire.
+
+Cartesian vampire is not to be confused with a polar vampire wave.
+
+All jokes all semester. And that's the one that wins.
+
+Oh my gosh, I thought that was going to get the biggest eyeroll. Okay, I will I will make a note to myself that you all like coordinate jokes.
+
+Maybe we can coordinate our jokes better, which is.
+
+So when I was in France visiting my friend Felicia,
+
+her of her car has like the navigation system where you can put it on different voices and one of them is dad jokes.
+
+And so it keeps just like making like the same dad joke all the time, just like police have had during an EV.
+
+So you might be charged with battery. And so.
+
+Yeah. So she drove me from her house to the which like an hour maybe.
+
+And so I started having to, like, make up better dad jokes.
+
+Um, okay. Uh, where where we actually vampire.
+
+That was Eric. So what is life in it?
+
+We have x, Y, and vampire. Um, but we define wise, and we take that and we use x, but that's already in the sense, I think, just x.
+
+And back to crush what's alive out here.
+
+Uh. Just remember. And Jack.
+
+What's live in here? No vampires in vampire, I do so.
+
+Oh, wait. Really? That's okay. I was gonna say variable, but man, if you like.
+
+If I had, if I had, if I were Tyler and I had candy, you would get some candy or something for, like, super attentiveness, because.
+
+Good job catching that. Okay, now that there are the same, uh, hiding should be empty.
+
+Yeah. Empty. Okay. So we're done, right? Oh, wait. No, we still even have this block to do.
+
+We're definitely not done. Jack. Let's live out here.
+
+So live out of that is exit number.
+
+And Patrick, what's life in, uh, for your vampire anthology?
+
+So are we done? Not necessarily.
+
+No. And in fact, why in particular, are we not done?
+
+Like, what's kind of the thing that went that that is the key reason we're not done here.
+
+Ethan, is that when we went to test it. To test. We hadn't processed your brand yet.
+
+Yeah. So when we did this one this was empty.
+
+Right. And so we union empty with vampire to this.
+
+But now this isn't correct anymore because this is not the union of these two.
+
+So we have to do it all again.
+
+Okay. But we can do this fairly quickly. That's fine.
+
+Uh, we know this one's right, and we know this one's right. Right. So, Pranab, what happens here?
+
+Would you just do any those and then get like emperors zombie.
+
+Okay. And then Annie, what about live in to test.
+
+Um, we're not learning anything.
+
+And you just. You leave it with X, so it's like spam fighter zombie x, vampire zombie.
+
+The worst romance novel ever. My X is a vampire zombie.
+
+All right, so those two three Alicia wants live out at night.
+
+Um, I need to add. I need to add zombie to it.
+
+Will I ever take anything away? No.
+
+I will only ever add things.
+
+Okay, so that's one of the things about least fixed points is we're going to just keep adding more things in until we converge.
+
+And that's one of the things that guarantees will converge is that there's a finite number of variables.
+
+And as long as we're only adding things, eventually we will converge.
+
+How? Or live? Yeah.
+
+Live in tonight. We'll add in zombies.
+
+Anybody noticing a theme here? Utah. What about, uh, live out at dawn?
+
+We will add in zombie. Alex.
+
+We also need to add Dolby Atmos. So zombies there live at dawn.
+
+But vampires are not. This is important if you're ever fighting the undead.
+
+Remember, I teach you compilers, but also important life lessons in here.
+
+The vampires will die at dawn when they're exposed to the sunlight. The zombies will keep coming after you.
+
+Okay. Over here. Um. He said, uh, add zombies and zombies.
+
+You guys are going to get in there and you're just saying add zombies until they suddenly introduce you other Ethan outside zombies.
+
+That's all I. It's me.
+
+I agree. That's not what she. Well, yeah, I knew I'd be the one that couldn't say ad zombies.
+
+It's defined, so we can't be too hard. Examples.
+
+How about over here? What about this? Live out? Uh, no.
+
+Eric, uh, zombies is live in of loop.
+
+So we add that to live out. And then.
+
+Pete, what about this? We already have zombies up there.
+
+And the define. And he's stayed the same, so I think we're fine.
+
+All right. So then, are we done? Like we know we are.
+
+But algorithmically we go well. Oh, yeah. I was gonna say that.
+
+Yeah. Like we are smart people are like, uh, that was the only problem.
+
+And now that the zombies have propagated everywhere, which, by the way, is what zombies do, right?
+
+Like they propagate their zombie ism everywhere.
+
+Now we know we're done, but algorithmically, we have to go compute all these again.
+
+Doo doo doo doo doo doo doo doo doo. And what we've done that we can say, okay, we're done.
+
+You all like it? Yes.
+
+No. Maybe. I don't know what you're doing with Easter bunnies instead of zombies next time.
+
+Paul and I could make up a debt by Paul and Joe.
+
+Um, okay. Um, so a handful more things.
+
+Uh, so this is the main thing you all have to do. Okay.
+
+Now, what do we do? This, uh, actual basic blocks or just individual instructions?
+
+Um, we can do it either way. If we do this at basic blocks like we just did.
+
+We're going to want to go once we have this information and just compute the liveness at each instruction.
+
+But that's easy. Once we know what's life out at the bottom of the block.
+
+We can just kind of iterate backwards because that straight line code in the basic block.
+
+Okay. If we do it in the like instruction by instruction level, that works too, right?
+
+We could we could cut this up into individual instructions, which I believe is how how do you do it in your, in in your book.
+
+Um, and we get the same answer. Um, it's just a little more efficient,
+
+especially if you have a large basic blocks to do the algorithm that revisit the basic blocks potentially many, many times.
+
+And then compute each individual instruction. Right. Because this converges fairly quickly because I worked carefully on an example that would.
+
+But you could imagine something with lots of loops and complex control flow and, you know, dozens of basic blocks.
+
+And that might take a little while to converge. Going going through one.
+
+Um. So I handful of things.
+
+So first you're going to do this um upheld gives you a implementation of a graph.
+
+You're welcome to use a palette implementation of a graph. It makes me sad because it is a very imperative graph.
+
+Um, by imperative I mean you use it with side effects.
+
+For this, it doesn't matter quite so much. Um, but for register allocation, it also doesn't matter, like super a lot.
+
+But we're going to see that basically we take things out and put them back in.
+
+And if we have a functional graph, we can just remember the graph that we had at that point.
+
+Um. Yes, sir. Well, my brain just lost a thing.
+
+Oh, um, the other thing I will say is that, you know, here we're computing basically sets of temps, right?
+
+And SML has ord set built into it, which is nice and gives us like an actual set and gives us set operations like union and equals and so forth.
+
+And so to me, to me, it's a tragedy that Apple didn't just make like temps compatible with or set an ordered map from the start.
+
+And so I. Just like added temp SML and make them compatible with or set an automatic.
+
+Well wait, why aren't they? Can't you just make it work? Yeah, right.
+
+So you can just make it work.
+
+Accept the fact that a pallet hides all that information from you behind your signature.
+
+Oh, and so, like, I go edit that and make it so that, like, they expose, uh,
+
+a set of temps and a map of temps, um, which just makes makes life easier all around.
+
+Um, but it's not like a super big change.
+
+It's just like, you know, go, go expose.
+
+Like what a set of those would look like. Um, and so once you have that, it just seems a lot more logical to have these be actual sets.
+
+Um, well, if you do that or if you want to use my functional graph, you're welcome to.
+
+It requires that your, your temps be able to be put in sets and maps because the graph is built on those data structures.
+
+That gives you nice and functional data structures to use. Um, but basically you need to go do this and compute at every instruction.
+
+What? Um. What temps are live with.
+
+Okay. Um, and as we're talking about a little bit before class.
+
+Uh, it's actually kind of a pain to just grade that on its own.
+
+And so the grading is going to be the liveness and the register allocation together as one unit,
+
+because your register allocator will consume, uh, that liveness info.
+
+And we will, um, we'll talk about register allocation on Wednesday.
+
+Um. Yeah, yeah.
+
+I wonder if I have any questions about that before I erase all of this off the board that you all worked so hard to come up with.
+
+Okay, uh, I want to mention two things and two very different directions here.
+
+The first, I'm going to just rant about a little as I raise the board is Apple's various product entry exit ins.
+
+So if you're reading your book and looking at the descriptions of his things, he has an entry exit one, two and three.
+
+And with my software engineering professor hat on, I kind of want to scream at him.
+
+Um, like, could we please make these functions better?
+
+And every year people are like, drew, is this supposed to go into product entry exit one, 2 or 3?
+
+And I'm like, you know what? Let's look carefully at their names and see that I have no idea.
+
+Right. Um, and so, uh, the reason I'm mentioning this is, you know,
+
+we are talking a little bit about how you need j r r a to come at the end of your function.
+
+Right. And that comes from one of the entry exit.
+
+I don't know which one. Um, but.
+
+Ultimately, there's kind of a handful of things you need to do between all of these, right?
+
+You need to put the prolog and epilog on that.
+
+Um, set up the stack frame. We talked about that a couple weeks ago.
+
+You need to put this on. Which serves a couple purposes.
+
+First. You need to return from your function like you need to actually do that.
+
+But the fact that this has no.
+
+Out there, which, um. Um, I think confuses a lot of people.
+
+Every year is what it calls the view shift. Um which happens in one of these entry exit.
+
+And again, I don't remember actually. Um, but what this is, is that from the callers perspective, let me switch from green light.
+
+Green does not do so from the callers perspective.
+
+It's going to put things into like a0, a1, a2, a3 and then maybe on the stack.
+
+Right. That's the conventional argument in places.
+
+When you go and do air translation in the colleague, like you're going to say, oh hey, here's this variable x.
+
+It doesn't escape. So it's going to be in register temp 100.
+
+Here's this. You know, this is like f of let's say x y and.
+
+Okay, here's this variable. Why it does escapes.
+
+It's going to be a frame pointer minus four. Here's this variable.
+
+It doesn't escape. Here's this variable. It doesn't escape.
+
+I don't know. B let's say it doesn't escape. The reason I'm doing up six of these.
+
+And this one, maybe maybe this one doesn't scale. So it's that like a frame point or minus eight okay.
+
+Stacked. So here in the collage perspective it's going to put the first parameter in a0,
+
+then a1, a2, a3 and then put them on the stack and put them on the stack.
+
+But something has to connect A0 up to t 100 and a1 up to frame point or minus four, and so forth.
+
+And that's what this view shift is. Right. And so you basically need to look and say, hey, my first argument that's coming from a 100 into T, um.
+
+And, uh, T 100. So I need to put this move in.
+
+This needs a store. Word. Right?
+
+Then we need some more moves. I'm going to skip those because they're the same.
+
+And then this means like a load word from whatever on the stack pointer stack pointer plus something into T 103.
+
+And this one needs both a load word and a store word, right?
+
+Load word stack pointer and something into some town, and then a store word to frame pointer.
+
+And from that same town. Right. And so this view shift is basically saying we have to move things from the conventional
+
+locations where the caller is going to pass them into what are translations,
+
+um, expect at the various temps or frame slots.
+
+Um, and so it's not that hard or complicated.
+
+You just need to think about the fact that the caller doesn't know where the caller put these things done.
+
+Why do you have to move, um, arguments from the stack, like why you can't just leave him in like 3 or -4?
+
+Why can't you just leave them in the stack? Well, so this is something where, um, when you go do your air translation for this function.
+
+Yeah. You're going to say, hey, B doesn't escape. I'll look local.
+
+False. Oh, here's temp 103. And so all your code inside here when it uses B it's going to read temp 103 or write temp 103.
+
+I'm more interested in the read ones. So we would need to basically do a load words to get this into temp 103.
+
+And then go from there. Now if you're saying like, oh, well, why don't we just say, like any parameter after four,
+
+let's just say it escapes and treat it specially and put it like on the other side of the frame pointer and so forth.
+
+You could do that, especially for something like this.
+
+But there's like that's one.
+
+If it's not going to escape, we probably want it in a register, right?
+
+So that we can use it more quickly through the rest of the function. Who is going to escape?
+
+Um. Uh, like having your sixth parameter to reusing where it was passed,
+
+as its frame slot is like not a super big deal in terms of like like there might be programs where that helps a lot.
+
+It's not super complicated, it's just some extra special cases.
+
+And there's not like that much point in doing it if you want to put it in.
+
+You can, but it's not. Like.
+
+Yeah. You would just kind of want to change your Alec local interface to like.
+
+False. True or like?
+
+I get basically be a second priority local, which is like an option specifying where it should be in the frame.
+
+If you have somewhere else you want to put it already. Okay.
+
+Um, so that's the view shift. Um, I just wanted to mention that now, while we're mentioning these various entry exits,
+
+and one of the things people always ask is like, which one does this belong in?
+
+And so forth. Like, I kind of don't remember. And as long as you can get this all working by the end, that's fine.
+
+Um, and I'm not so picky about which product entry exit does what.
+
+Um, and also, if you feel like naming them something more useful, like set up Prolog and Epilog, do view shift.
+
+I don't know whatever else. Like good for you. Um, yeah.
+
+You might also say, well, what if I don't want this register to register?
+
+Move, right? Like, couldn't I just, like, what if I want X to just be a zero throughout my function?
+
+You don't really know that until you do register allocation.
+
+And we're just going to ask our registered allocator to try to put that in a zero if it's convenient.
+
+And if so, we'll eliminate the register to register your move.
+
+And if not, then we'll need the register to register move, because the register allocator has good reasons to keep it somewhere else.
+
+It seems logical. Right. All right.
+
+Uh, any questions on that front? The last thing I want to mention, um, on the live now is a little bit about the part where, um.
+
+You know, we're approximating this, right? So let's just suppose I have, um, maybe like an if else that is less than seven.
+
+If some code. Else other code.
+
+And then I have another. If else you x is less than or some code and else some other kind of.
+
+So if I have this and x doesn't change, um, any time I go into x less than seven I'm definitely going to go into x less than four.
+
+Right. So if I drew this out as a control flow graph.
+
+Now, this means that, as I said, this path.
+
+I did that completely wrong. Let's let's make that, like less than nine.
+
+Once I once I wrote it down. X less than seven means x is definitely not greater than or equal to nine.
+
+So that path is impossible, right? Now, that means that if I had something.
+
+Um. Let's suppose that, uh, I use some variable over here.
+
+Right? So, like something something something y. So I use y here.
+
+Okay. Um. And maybe I define.
+
+Why here? Well, if I'm going to get to this use of why, I'm definitely going through this definition of why I write.
+
+So is why I live up here. No.
+
+It's fine. Will I ever need the value that is in Y.
+
+Um, let's assume that after this I don't. Or I redefine Y immediately, or I never use y again or whatever it is.
+
+Y live at the start of this. No.
+
+By conceptually, no right from our definition of credit affect the behavior of the program.
+
+But what will our data flow analyzer say? Yes, it'll say yes, because we're not going to realize that this path is impossible.
+
+And as we like go like, oh that uses why live in there, live out their life in their life.
+
+And, uh, we're going to conclude that we need. Why? Is that safe?
+
+Sure, we can say that any variables live at any time and it will be safe if we add things.
+
+Do we want that? No right, because that means register allocation that much harder because we're if we have,
+
+um, I don't know, 25 other variables that are live at the start of this.
+
+Having that 26 variable means we're going to need to spill to the stack.
+
+But if we knew it wasn't live, maybe we could get by with those bills. Okay.
+
+Um. And so. You know, this is one particular slightly contrived case, but in general, there are things in programs that can't happen.
+
+But our data flow analyzer can't tell that that can't happen.
+
+Okay. Um, and figuring out all those things is, of course.
+
+And so undecidable, right? Because like, we could replace these with more complicated conditions,
+
+like I'm calling some function and calling some other function and figuring out that those two
+
+functions results are mutually exclusive or mutually exclusive or something is impossible.
+
+Could we figure out this specific case of algebraic inequalities?
+
+Sure. Can we figure out another specific case? Yeah, sure.
+
+Can we keep adding things and adding things and adding things to it?
+
+Yeah. But at some point, like no matter how many things we add, there's always going to be one more thing.
+
+And we're getting closer and closer and closer to the terrain cliff. And we don't want to fall off.
+
+Right. Um, and so that's just a thing about kind of any compiler optimization analysis we do is we can make it better and better and better,
+
+but it will never be perfect. Any questions?
+
+Isn't what it means to fall off the cliff. Because sounds like we keep adding things and we're getting closer to it.
+
+But at what point do you. Oh, yeah.
+
+Um, so if we were to try to do this perfectly, we would basically end up with something that goes into an infinite loop sometimes.
+
+Right. So so the thing about, um, so, like if you think about the canonical undecidable problem of take this program and figure out if it halts,
+
+like does it, does it, does it um. Always.
+
+Even just on this. One minute. Does it terminate? I can give you something that is never wrong by saying, well,
+
+what I'm going to do is I'm going to take that program and run it, and if it stops, I'll say yes.
+
+And if it doesn't stop, I will keep going. Right.
+
+And so, um, there have basically fallen off the cliff.
+
+Uh, because now what I'm doing is going to go into an infinite loop, right?
+
+And so I'll never be wrong, but I just won't always give you an answer.
+
+And I don't want to I don't want my compiler to, like, have the blindness analysis like going to.
+
+All right, next time. Register allocation.
+
+And then you will know everything you need to know to make your compiler work.
+
+Isn't that a good feeling? And also, it means we're coming up on the end of the semester because, like, yeah, it's almost April.
+
+Oh, we. Have to work on texts.
+
+I feel like we're doing right now the way I'm doing functions.
+

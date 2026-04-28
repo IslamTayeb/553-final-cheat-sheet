@@ -1,0 +1,1283 @@
+[Auto-generated transcript. Edits may have been applied for clarity.]
+If you want to Google swag, go work at Google. It didn't even interview me.
+
+Uh, I didn't even interview me. I got killed for a water bottle.
+
+Are you like, uh. I don't think that's from New Gallery. Right? Are you like, a new tour?
+
+Like, every time you you do it yourself?
+
+Um, so, uh, that's a bit of a complicated question, because, like.
+
+There's like, I'm in a visiting role, so I don't have to do all the stuff that real nuclear do.
+
+Like, like if I were to go there permanently, I just purchased like three weeks in,
+
+I forget what they call it, Google Technical Institute like where they like.
+
+Have, like this session.
+
+Howdy. Um, I forget what it's called, but like, their, their developed like their, their version of jet.
+
+It's not good. It's something else. And like but they also should not like plan where your career is going and portable.
+
+And I don't need to like where my career is going. So like it's a little bit of a like a yes and no.
+
+Well answer that makes sense.
+
+I don't have to do. A lot of you get the hat, right? Like I did not get a hat.
+
+I never got a hat. Never. Now, you should probably write that into your next contract or something like that.
+
+Dear Google, I'm declining those offer because there's no hat involved.
+
+Oh, wow. It's time to start class. Okay. Hey, you guys have gotten me, like, way off topic here as I was looking at the notes.
+
+Okay. All right. Um.
+
+See, you all can just, like, distract me with conversations about Google for all the class and then, like, not have to learn anything, right?
+
+Okay. So how's everybody doing? Good.
+
+Okay. Um. I think if I have any exciting or important announcements for you all, but I don't think they do.
+
+Uh, so what did we talk about last time? Hopefully that comes to your names.
+
+Chris, Jack, Jack, Patrick, and not be Annie Thomas.
+
+Alisha. Uh, Utah CEO Billy Espino, who's mining back there?
+
+Will. And he's okay. I don't do it every time.
+
+I'll start forgetting because my brain is old and tired and like.
+
+Um, okay, so what are we talking about last time? He, um.
+
+We talked about Linearizing towards the end. Okay.
+
+Why do you wanna linearize the air? Uh.
+
+Because, like, assembly programs are linear, not transfer.
+
+Yeah, assembly programs are linear and not tree structured.
+
+And so it's moving us one step closer to assembly, which is where we ultimately want to end up.
+
+Um, and so we both talked about putting the block the basic blocks into a linear order where the DFS is your hand up.
+
+Are you just not okay. That's fine.
+
+Sometimes it's really hard to tell if you, like, have a question or just like playing with your pattern if you're like, yeah, it's fine.
+
+Um, and um, we also kind of, uh, took our expressions and made them pure by pulling the side effects out.
+
+I know it has like a little thing here, but the bandwidth to get water through this is not as much.
+
+Um, and so this time, what we're going to do as instruction selection.
+
+We're basically going to take our air and map it on to infinite register notes.
+
+Okay. And infinite Register is going to be, uh,
+
+important for us because both we don't have to worry about mapping things down to a finite set of registers until later.
+
+And this also means that at any time, we need a new register in our, um, translation of that, we can just say like, hey, I just need a new temp.
+
+Okay. Uh, and so.
+
+What are we going to do? Well, let's just put some some air up here.
+
+So let's say we have a move. To, um.
+
+Uh. Let's say we're storing into an array.
+
+So it's going to be like, um, plus uh, let's say it's in, uh, let's, let's do this.
+
+Uh, yeah. No, that's, um. Any.
+
+Times. Um. Right or right?
+
+That looks like, uh, an array store. And what are we going to put in there?
+
+We're going to say, um. Times.
+
+Sorry. Uh. Maybe we're going to get something out of a record.
+
+So it's going to be 1 million loss of AR and eight.
+
+So this is going to be the third field of record.
+
+Um, and what else should we add to that. I don't know. Uh 27.
+
+Okay. So this is basically our way and I get.
+
+Aunt Z plus 27.
+
+I'm sorry about that. Yeah.
+
+Z come from. Oh I just it's some, some record.
+
+I figured since I was going to be the third field we have X at offset zero y offset for the an offset eight.
+
+It could have been C just some field in a record. But like this is this is going to be our air for this night.
+
+So. Um, let me ask you all this.
+
+Do instructions for this need to happen.
+
+Uh, like or message. What instruction is this going to correspond to?
+
+Amazon store as a store. What instruction is this going to correspond to?
+
+And all that out immediate which instruction is going to go first?
+
+The store or the ad? Immediate. The immediate right.
+
+So our instructions are going to end up meaning to come from the leaves first.
+
+Up to the top. Okay. But we're going to look from the top down and figure out, uh, what we want.
+
+So we're going to look at this and say, oh, I need to store what's it going to store and recurse down.
+
+As we recurse down, we're going to omit the instructions that we want to.
+
+Um, produce. Right? We're going to say like, oh, I want to do this.
+
+And then as we return back up from our recursion, we're going to be able to say, where did this come from?
+
+Like where did this put its result? What do I need? So knowing that this is a store which by the way, are all the stores.
+
+Yeah, I know. How did you know this was a store?
+
+I think you saw that it was move of MIM, right?
+
+Um, and so basically you kind of looked at this and were like, aha, that's a store.
+
+This is the address. This is the value, right?
+
+Is that all I should look at for this? For this store?
+
+Yes. Okay. So what we're going to do is we're going to say aha, this.
+
+Is a store. Let's go.
+
+Recurse down and do the address. This is going to be what?
+
+Us right. Does that and dereference the address.
+
+Did not last any questions like it does?
+
+Dear men of the address.
+
+Does that mean that I'm getting good value at memory addressing this?
+
+Or does it mean I might want to consider this as an address?
+
+Um, it means a little bit on where the mem.
+
+Yeah. So if you move to mem, it's a store to this address.
+
+And if I do mem over here where I'm reading it, this means I want to go read this memory address and produce this value.
+
+Okay. Okay. Does that answer your question.
+
+Like how do you represent I want to read through.
+
+The address is located in this address. Thank you.
+
+I think what you're saying is like, uh, hang on.
+
+So let's remember, this was. And you're saying, like, what if I wanted, like, some other array or not?
+
+That. But like, if this were see if I wanted to guess.
+
+Where this is an array of pointers. Yes. Yeah.
+
+Then I would just have another mem there. Okay. So it would be like mov.
+
+Mem. Sorry, ma'am.
+
+It's all the same stuff. Time or like closer.
+
+Oh, sorry. There's not actually a time for there.
+
+It's just a ray of light. Because the times, fortunately. But we would still have a light.
+
+I would have that. Uh, so I was like, oh, yeah.
+
+So looking at this, we say, hey, we want to start, all right?
+
+And now we need the address and we need the value, and we need those in registers.
+
+Right. So we're going to say, I need a store, I need to recurse.
+
+And the goal of this recursion is going to be to compute this, produce the assembly instructions and return back to register that this result is in.
+
+Okay. So what is this going to correspond to. At.
+
+What address? Yeah. Like what? It's like, you see.
+
+Hey, I'm doing a plus. So what? Assembly instruction. Uh uh.
+
+Right, I can say, hey, this right here is an ad. Okay.
+
+And I need to recurse left and right and get those values in registers.
+
+So when I recurse over here, we say, oh, there's a that's already in a register.
+
+All my variables are in registers, so I don't have to omit any assembly instructions.
+
+It's just in a register. Right. This is no instructions at all.
+
+Kind of just put. That's nothing.
+
+Right. Um, and so let's say I, as in, you know, as zero.
+
+So we're going to return back. Zero.
+
+Okay. And then we're going to recurse down this side and we see a times.
+
+Um, first of all does MIPs have multiply immediate. Now.
+
+Um. So. The one thing we could do is we could say, oh, we need both these values in registers, right?
+
+We can say this is a multiply. We're going to recurse over here and we'll say I in S one.
+
+Turn that up. We get down here.
+
+So again, no instructions. We're just going to make empty circles instead of.
+
+Okay. So next how can I get foreign to a register.
+
+For the lie. Okay.
+
+I need to pick a new register. I'm going to just say, um, some new town.
+
+Right? I'm going to write.
+
+I'm going to write my temps with like T's. We're going to avoid using the T registers.
+
+So that's like just a fresh temp. Yeah.
+
+Uh, that was a modification that I want one.
+
+Is that one. This is I um,
+
+so I should probably avoid using actual real registers because I don't want to confuse you because we haven't done register allocation yet.
+
+So I'm just going to call these like r zero and R1R0.
+
+Okay. And so the first instruction that we need it's going to be load immediate four into temp 100.
+
+Right. Do you believe that that's the first instruction that we need.
+
+And I needed a fresh temp I picked a temp 100.
+
+Really? I don't know if I'm speaking out here, but could we just convert this into, like, a pitch shift?
+
+Yeah, we can do that too. Are you going to do this? I was going to do this first and then we'll we'll we'll make it better later.
+
+So think she would be able to pass a loop or something?
+
+No. We're just going to use a multiply instruction. Oh. Oh, I thought you said there wasn't.
+
+Though there's not a multiply immediate. Okay. So it's multiply register by register.
+
+There's not like you can't do multiply R1 by the immediate four.
+
+You have to put four into a register. Why we're doing it right.
+
+And so now we know that this is this recursion returns R1.
+
+This recursion returns ten 100. And we're going to say great.
+
+Now the next thing we need to do is multiply. And again we're going to want a fresh temp for that result a temp 101 R1 times temp 100.
+
+Right. So this and a return back I put this into temp 101.
+
+Do you see why? It's great that we have infinite registers everywhere we want one.
+
+We're just like I need a new register okay. And now we're ready to turn our ad into something we can say, oh great, that's an ad.
+
+Into ten 102 hours zero.
+
+Not. Not that. Zero. Register. Just like. And one on one.
+
+I'm just trying to distinguish between like registers that existed before this and temps that we're making up.
+
+Are we ready to do our store work now? Yeah, well, that didn't work.
+
+What? Yeah. Yeah, we got to do this whole side.
+
+Right. So that was just one recursion to compute the address and get it into a register.
+
+And now we're going to go do. Under Khorshid.
+
+On the other side. So we're going to recurse this way.
+
+We're going to say, hey, you're a multiply. Again we don't have multiply immediate.
+
+And what about this. What instruction should we use for this. When we recurse left everything add.
+
+Who says add? Nobody.
+
+I could have sworn someone said. At which one? Right here.
+
+There's lots. Should we use the Add instruction like we did for this plus?
+
+Why not really. Well, there's an integer on the right side.
+
+The integer on the right side. So what should we use instead? Add AI or something.
+
+Yeah. We should we should say hey you know what?
+
+I'm going to take this whole chunk of the tree and say, this is an ab immediate where I don't need to go put 27 in a register.
+
+I can just turn that into an immediate and not do an instruction down here.
+
+Okay. And so then I do need to recurse left. And what is this mem going to be.
+
+What a fetch fetch which we call load word.
+
+How is do I need to go put this into a register.
+
+Do I need an Add instruction down here? Why not?
+
+That's what is in here. But do I need to add I instruction?
+
+Well, you know, if his memory allows you to give the address and the officer.
+
+I can take this whole thing and say this is just a load word of this with this offset.
+
+Right. So my next instruction is going to be load word into temp 103 uh memory at.
+
+There are two. Are to offset eight cores MIPs load words.
+
+Let me do that in a single instruction. And then we're going to say this is going to return back to 103.
+
+And now I'm ready to do my add on. And temp 104.
+
+The get a return back. Or before.
+
+And once again, I need to go turn this into, uh, load immediate.
+
+So we're gonna load immediate. The temp 105.
+
+Um. Oh. I'm sorry.
+
+A constant three. And then we're going to multiply.
+
+Tim. And then, uh, I'm finally ready to do my storyboard, right?
+
+So, starward. And to.
+
+So the, uh, we're going to say temp 102.
+
+Offset 016.
+
+Ta da! What do you all think?
+
+Good. All right, so we just kind of, uh, did that by by, like, we're smart people and can figure this out.
+
+How do we do this algorithmically? Like, what is it that your instruction selector is going to look like?
+
+Well, first, this algorithm is called maximum munge.
+
+For those of you who are Sesame Street fans, this is Cookie Monster speakers algorithm.
+
+Nom nom nom cookies and I are tration.
+
+Which basically means that we are going to take the largest chunk of the tree.
+
+That matches an instruction. And in reverse.
+
+Each. Right.
+
+So in some cases, that was just one thing.
+
+I have a cluster and turns into an Add instruction. In other cases it may be several nodes of the tree like mem plus register constant,
+
+where we realize that can all be one big load word instruction, right?
+
+Um, or really mem anything because we can put anything into a register.
+
+And so this actually is one of those things where.
+
+How many of you are loving SML so far? Okay.
+
+Good. You'll really love our smell now, right?
+
+Because this is exactly what pattern matching will do.
+
+Like, wonderfully for it. Right. So like, what did we see here.
+
+We're going to have this or let's say this.
+
+Space to write. Never enough space to write.
+
+Such. All right.
+
+So if it's like select. Right.
+
+I can write this pattern. It says. Oh.
+
+An option there. Write.
+
+I can write this pattern and says, hey, I'm looking for something that's a meme with a beat up floss.
+
+Uh, well, one argument is a constant, and the pattern matching will just do that very nicely and cleanly.
+
+Whereas like if you're doing this in Java,
+
+it would be like if current node type is equal to mem and and current node dot get child dot type is equal to been up and and current node
+
+dot get child cast as a bin up node dot get operand is equal to plus and and current node dot get child dot get child get left child.
+
+So actually we don't need do that and get right child is of type constant node.
+
+And we have like this much code to figure out that this is the case.
+
+Right. And then inside there we need to like get all the pieces to do anything.
+
+Whereas here we can just like write this down. It is beautiful and elegant.
+
+Okay. Yeah. Crush. We're doing this on the tree or the flag.
+
+This will be on the, uh. Well this will be on the linearized I are the expressions are still trees.
+
+So like you'll have you might have a statement that is this in that the thing about the linearization is just that all the branches now fall through.
+
+Which is important because if we try to do instruction selection for a branch, we know that the false target is always right after it from before.
+
+And that's how all assembly branches. We don't have to do anything special.
+
+Okay. Do all like it. Yeah.
+
+Okay. Um, and so one of the other nice things about this.
+
+So. Okay. Big picture. You're going to write a whole bunch of patterns, right?
+
+That say what to do. Uh, one of the nice things about this is you can start, like, your instruction selection would be correct,
+
+but just not as efficient if you just said, hey, there's a meme, I'm going to make it a load word, and then I'm going to do an add immediate here.
+
+Right. And so if you don't right this special case and you just write, you know.
+
+So let me um, was this without trying to do anything fancy.
+
+You'll get something that works. And then you can just improve it by writing this other case later.
+
+Right. You can just refine, um, how you optimize things.
+
+One of you asked earlier, should we really do this as a multiplication?
+
+What do you think? How many of you are in?
+
+350. How long does your multiplier take?
+
+Three cycles. What were cycles? Four cycles.
+
+Oh, good. Because like last year, they said it took them like 50 cycles. And I was like what?
+
+We have multiply. She take three cycles for us okay. Um but like usually they're like yeah it takes like I don't know, 30 and 30 cycles is okay.
+
+I guess if you're doing it like bit by bit every cycle or something like that, a tree row, huh.
+
+But how long does a shift take? One cycle, right?
+
+And we probably have more shifters than multipliers like every ALU can do shifts.
+
+Multiplication is complicated, and we probably only have like a few multipliers.
+
+So if we have a wide processor we prefer that. So we could realize that hey when we have.
+
+That's right. Select. Moulton been on.
+
+Times. He can't see that.
+
+I can look at that constant and make a decision about whether I want to make it a shift, uh, a couple shifts and some ads or an actual application.
+
+Right. Because, like, if I want to multiply by three, is that one shift?
+
+No. No. But what can you do instead? Just 1 or 2 shifts in an app, right?
+
+Is that a good idea or a bad idea? It depends on my processor.
+
+Probably a good idea, right? If I'm multiplying by 127.
+
+Well, actually, then I want to make it like a shift and a subtract, right? But multiplying by, I don't know.
+
+I'd have to think of some weird number, but where I have like 27 shifts and or let's say 16 shifts and 15 ads,
+
+I probably just want to leave it as a multiplication, right?
+
+Um, and so I can look at this constant and figure out how many bits are set or cleared or whatever, decide what I want to do, do that.
+
+But before I even do that, I can just write this very simple thing of just times E and E make it be a multiplication instruction,
+
+and then make this something that I add on later as an optimization after it's worked.
+
+Yeah. You know, I like it when we can, like, make things that are simple and correct and then make them faster as we go.
+
+Um, and so in general, what you're going to do here Utah southern exposure and what that means.
+
+So we are going to take the.
+
+So wherever we are in the tree, our current node, we're going to take the biggest piece that we can map on to a single instruction.
+
+Right. Like we sort of all of our monkeys or what we circled here.
+
+So we said aha. This is going to be a star word.
+
+This is going to be an ad. So we're going to munch the biggest bite we can off the top of the tree.
+
+And then we're going to recurse to get the operands into registers.
+
+Like I say I'm going to do this instruction selections.
+
+I'm going to recurse I got a plus. What am I.
+
+I'm going to recurse left and I'm going to recurse right. Those recursions are both going to return back a register where the result is right.
+
+And then I know that this was our zero and this was temp 101.
+
+And so given that I can just omit my Add instruction.
+
+Okay. Um. And by the way, this is where it's a little handy that all of these expressions don't have side effects,
+
+like all of them are just going to omit registers, right? We can reorder these freely if we want, which we may or may not want to do.
+
+We'll talk about that in a minute. Um, but basically you're going to say here's the piece that I'm pattern matching against.
+
+I know what instruction this is going to be. Recurse left and right, get, uh, do whatever to get those instructions.
+
+That's going to put the result into a register and that recursion is going to return.
+
+And then I know the register for each of these. And I can do this operation.
+
+Sound good? Um, and so really you're actually going to have two functions, one that's going to select false statements,
+
+and then one that's going to select four expressions because they're not exactly the same type of thing.
+
+And statements are just going to produce instructions and not return a register.
+
+But the expressions are going to put the register um into about the value into a request.
+
+Okay. Thomas.
+
+Mr. In machine code.
+
+Are our side effects just. What is side effects?
+
+It is just like a change in the. Yeah. I mean, so everything is a side effect, right?
+
+Because we're, we're writing registers, but, um.
+
+We basically know that inside of this expression, we're only writing the temp registers that we're allocating as we go.
+
+And we're not like, like it's not the case that the value of AI is going to change between this side of this side.
+
+Yes, yes, it's right here. Looks like we could have another instruction before this or after this.
+
+That does I equals I plus one. Um, but inside of just these expressions, we're not going to change the values of our variables or right to memory.
+
+Any other store is going to be a top level instruction. Okay.
+
+That's, um. All right.
+
+Someone else had a question, I thought. No.
+
+Okay. Um, and by the way, we we will talk a little bit about register, uh, pressure and allocation later.
+
+But notice that once we've done this.
+
+Right. This value has to last until here.
+
+And this value has to last until later.
+
+Right. And so basically like this is going to be colliding with one, two, three, four other things.
+
+There's nothing in here that would prevent me from doing, um, these four things first and then these three things.
+
+Right. And if I did that, this would be live across these three instructions,
+
+and this would be only live to the next instruction, which would reduce my register pressure slightly.
+
+Right. Basically if I need, if I only have well, okay.
+
+Here, these are all pretty short lived, but, um.
+
+I'd have to think about how many register, how many and if it would make a difference.
+
+But this like if we wanted to get fancy, we might want to swap the order of these.
+
+And we know we can do that, because it doesn't matter whether we compute this first or this first precision side effects.
+
+Right? We could do that to help our register allocator later if we wanted to.
+
+You all don't have to do that. Just, um. Documentation.
+
+But you can if you want. You can do anything really silly.
+
+So register allocation. Is there like a trade off between like loading words?
+
+Right. So like heuristically I want to load a bunch of things into memory at the start of my program to like, keep things faster.
+
+But then there's also the trade off of like you have to store things as well,
+
+and you like storing words and then loading words again, like there's a bit of a.
+
+Um. We don't want any longer to store story.
+
+We don't have to have. Right.
+
+So, uh, our register allocator is going to do the best job it can to go put these things into actual MIPs registers.
+
+And if it can't put them all into actual MIPs registers,
+
+it has to put some load words in store words and like like if we couldn't fit these all into the registers,
+
+we could store word ten 102 onto the stack and then load it back here.
+
+But that's an extra load in store that we really don't want. Okay.
+
+Now on MIPs, we have like 25 registers to work with.
+
+Register allocation within a function is often pretty easy.
+
+Groups that try to do something fancy for spilling often have to work hard to write a test case where they can't just fit things into 25 registers,
+
+right? Because most like, how many functions do you write that even just have like 25 like variables in use at the same time?
+
+Right. Like most functions you write, if you have 25 variables, like you should probably be writing that in a couple functions, right.
+
+Um, and I mean, they're not just the programable variables, they're these also, but these are all very short lived.
+
+Right. So like I can use the same I could do this as the t0 register and this as the t0 register.
+
+This would have to be T1 because I need both of these. And then this could be t0 again because I've done it with it.
+
+Right. So like I only need two registers for this little bit of code here.
+
+Um. I couldn't make much more complicated expressions where we have lots of long lived temporaries.
+
+Um, but one of the things we're going to talk about in just a second is that I might
+
+actually want to reorder the instructions after I've done this for performance.
+
+All right. So, um, all my 350 students, if I have.
+
+This load word and this ad I right after it.
+
+Do we like that or not like that? Why don't you all like that?
+
+On the, uh, memory latency there. Mhm. Got a way to fetch from memory before you can execute that at all.
+
+Yeah. I had to wait to fetch from memory. Thomas bypass.
+
+Yeah. So if we miss the cache on this load, pretty much nothing we're going to do in.
+
+Like, if we miss the last level cache and actually go to Dram and it's 200 cycles, we're just sad.
+
+It doesn't matter. But let's just suppose we're hitting the L1 cache, right?
+
+Because like this is, you know, some record that we're messing with.
+
+We hit the L1 cache. Um, you still have you all probably have like one cycle, right?
+
+Okay. She used. Do you have like maybe three cycles to go actually do the data cache access and get that value to the ad immediate?
+
+Um, and if this is an in-order processor, that's just going to stall, right.
+
+But. There's no reason I couldn't do this.
+
+Like right here, right? Like, I could do that loan word.
+
+And while that's access in the cache, I can do this and this.
+
+I probably want to move that ad around because multipliers take a few cycles to and so on and so on and so on.
+
+Um, but if I can move that load away from that ad, we can reduce the salts.
+
+Really. I think that's where I was getting at with my my question there was like moving my load words up.
+
+Okay. My question is like basically do we do that?
+
+We move our like instructions after we do like the correct register allocations.
+
+Like if we figure out the optimizations for like the number of registers we didn't do, we do on.
+
+Um, we so one of the things that's difficult about optimization is there's always trade offs.
+
+Right. Moving some of these instructions around may make them live longer, which may make like harder on the register allocator.
+
+We probably want to move them around before register allocation because when we move them around,
+
+what's a valid register allocation will change, right?
+
+Like if we're like, oh this it can be zero.
+
+If I move this up here and this was previously like this could be t zero, this could be t zero the way I have it.
+
+But if I move this up here they can't both be zero. Right.
+
+So I want to do that before register allocation. But I might make life harder on my register allocator.
+
+How much harder? That's hard to tell. Um, it's it's complicated.
+
+All right, so, um. Real compilers do a lot of the instruction scheduling.
+
+Uh, these days there's out of order processors which can go like.
+
+Oh, yeah, like this is waiting. That's cool. I'm going to do like, oh, we're waiting for this ad, or I'm going to go ahead and do this load.
+
+If you take 552, you'll learn a little bit about them.
+
+Um, but in order processor's compiler scheduling, which is in order is what you make in 350,
+
+where you do every instruction in the order it's written is really important, and especially if the processor is.
+
+What do you all know what I mean by wide? Okay.
+
+I never know what they teach or what they don't.
+
+Um, so in like 350, you probably make an a processor that executes one instruction per pipeline stage, like.
+
+And, um, you can make a two way processor where you can basically have two instructions in each stage.
+
+So like, uh, we can be like this add and load are independent, right?
+
+So they could go through the pipeline together. These could start life like start going together.
+
+But then when we get to execute, this one's going to have to stall because it needs the value from from the previous one.
+
+So they can't go in parallel okay. And we can make it wider.
+
+You're just designing detail. Um. The processor in your laptop is like four or more wide.
+
+Um, and generally, most especially out of order processors are pretty wide to try to do a lot of instructions at once.
+
+Intel seems like you have different cores, but this is completely different from multicore.
+
+So, um, your laptop also probably has like 2 or 4 or something cores in it.
+
+This superscalar can be exploited from just taking a single thread of instructions and the hardware just saying, oh, hey, like this is writing 100.
+
+Uh, sorry, this is writing 102. This isn't using 102.
+
+They can go through the pipeline together. To use multicore you have to have multiple threads or multiple programs.
+
+You have to run one thread on one core and another from the core, which means that you,
+
+the programmer, have to identify the parallel work and do a synchronization and all that good stuff.
+
+All right. So what is something like the hardware competition?
+
+What do you mean? Like from this moment of life?
+
+Uh, it, uh, sort of horribly, um, parallel the hardware is just figuring out a more effective way to execute the instructions in the program.
+
+So, like, if you're it was deciding whether to, like, go through at the same time enough to get through the code before you do that?
+
+Yeah. Because I would just follow them. Yeah. So like basically like let's say we take these two instructions, we fetch them,
+
+decode them, realize that the multiply has to stall, let the load immediate go ahead.
+
+And then they'd go through the pipeline like this.
+
+Exactly how they do that depends like whether they go like this or whether this one comes up and, you know, the the ad comes.
+
+Down and so on. Right. Like it's a little more complicated, but we'll give you higher instructions per cycle.
+
+IPC. But you could just think of it as like load and multiply, go stall and then go like this and then like add and load.
+
+Go like that okay. Um, and so.
+
+Yeah. So real processors are often wide.
+
+Um, if they're in order, that makes the scheduling even more important, because not only do these like this takes three cycles,
+
+this takes three cycles, but we don't even want these instructions next to each other.
+
+Because even though this just takes one cycle, this can't go in parallel with it.
+
+And we want like we want this and this to go completely in parallel.
+
+Yeah. In practice does the user. User is going to tell the compiler via flags what their hardware setup looks like.
+
+Or is the compiler trying to?
+
+There are ways to tell the compiler, hey, this is probably going to be faster for my hardware, right?
+
+Um, or is that not that common? So GCC by default assumes that you are compiling for the microarchitecture that you're going to run on.
+
+Okay. And so it has basically an architecture description for every different major type of processor that says how long does each instruction take.
+
+How many different functional units are there available for each different type of instruction?
+
+Like how many multipliers are there? How many floating point square root units are there?
+
+Again, it's probably one thing to write how many vector units are there.
+
+And so if I compile on my laptop it says, hey, your laptop is whatever generation of Intel Core i7 from 2018 or something.
+
+I don't know if my laptop is kind of old, and that's what I'm going to optimize for.
+
+You can give it a, uh, a flag that says you can give it two different flags.
+
+One is what specific architectural features to compile for.
+
+So like there's x86 64 but.
+
+Today's x86 64 has instructions that 2015 x86 64 didn't have.
+
+And so you can say, like, I want you to compile for this past generation of processors so that this binary can be moved around.
+
+Um, but like stuff like add and branch isn't going to change, but it's like, do we have this cryptographic acceleration instruction or something?
+
+Right. But then you can also give it a separate flag that says what to tune it for.
+
+Well, basically use the the width and latencies and so forth for a different architecture to um, to to get that optimization I see.
+
+Okay. So. Uh, with that in mind.
+
+So, uh, just to be clear, the thing I'm about to talk about is not a thing you have to do, uh, instruction, scheduling.
+
+But we're going to talk about how it works because it's good to know.
+
+And also, that alias analysis thing we just talked about the other day comes up again.
+
+This is what you have to do. Okay. Um, I believe in your book, it also talks about doing dynamic programing to like select constructions,
+
+which, uh, for MIPs, there's no need for that because there's just not that many choices.
+
+And maximum lunch will do the best thing. Anyways, if you're on something like that, which is it doesn't exist anymore,
+
+but has all sorts of weird instructions and stuff, then it might make a difference, but probably not that big.
+
+Right. I very good with that.
+
+Also, I assume. I assume that you all have learned about dynamic programing.
+
+They probably made it a lot more complicated than needed because it was taught by theoreticians,
+
+and so it probably seems a lot scarier than it actually is. That sound, right?
+
+Now may be okay. He's here.
+
+There's. Just not great concentration.
+
+So, um. We're going to start with where I equals zero.
+
+Um, typically, I think it ranges.
+
+All right. So, um, we're going to take an array of whatever kind of numbers you want.
+
+Integers, floating point numbers. Uh, multiply them by a constant and add another constant and store the result to some answer.
+
+Um, if this is single precision floating point numbers,
+
+this is called sax P for a single precision ax plus y and with double precision it's called Dax P.
+
+These were like my advisor's favorite things when I was in grad school.
+
+Um, and I mean, he's he's he's at D.O.
+
+Are you doing like, scientific computing now?
+
+But, um, so if we do this right, we're basically going to have something where we're going to do, uh, exit I.
+
+So we need, um, tell jokes I times for.
+
+We need, uh, let's call it temp zero. Temp one gets.
+
+Um, x plus zero to get load word.
+
+From, um. Two one.
+
+Tim three gets Tim two times a Tim for tips to help three plus why we can keep this I times four and say temp five.
+
+It's answer plus temp zero and then store word and temp five and zero.
+
+For. And then we need to do something like, you know, iPods plus plus and, uh, some kind of branch and less than to go back to the top.
+
+Okay. So that's, I don't know, assembly ish.
+
+Um, translation of that. Now if we do this.
+
+So let's just, uh, look at the data dependencies here and say this is.
+
+Sarah. Multiply takes three cycles. Our ad takes one cycle, our load, where it takes three cycles.
+
+Our multiply takes three cycles.
+
+It's three cycles. One cycle.
+
+Once I call. Okay.
+
+Right. So I put iPods plus one cycle to itself because each time we're the loop,
+
+it's going to need that and, uh, branch off less than it's going to read that.
+
+And then I did my offerings are less than. Yeah. Okay.
+
+So when I look at this, first of all, how's that performance going to be on an in order processor.
+
+Thomas. Correct.
+
+It will be horrible. Right. Because we're going to do this multiply and we're going to solve and we're going to do is Add and we're going to stall.
+
+We're going to do this load word. Well we're not going to do it. We're not going to stall for this ad unless it's wide.
+
+If it's like four wide, the next three instructions are all going to stall.
+
+Then we're going to stall here and here and it's going to be terrible.
+
+So we want to, uh, reorder these instructions, but it's also the case here that there's probably not much to work with.
+
+Right. And what do I mean by to work with. Like, if you look at this, this depends on this.
+
+This depends on this. This depends on this. This depends on this. Okay.
+
+This plus we can move that around. Like I could move that maybe up here.
+
+Right. That'll help with that. I can move my eye plus plus pretty much anywhere I want.
+
+Although if I do that, I have to be a little careful because I might have to recompute nine times four.
+
+Or actually. No, I don't want to reconfigure that. Sorry. I can move this I plus plus, uh, up.
+
+Good. Stick that like in between this. Multiply.
+
+That'll. That'll help. I can't really move this branch around.
+
+Right. Um. And so I might be able to recover like a cycle or two.
+
+Which is kind of sad, right? Um, but.
+
+One of the things that we can do to make a living stack up.
+
+The problem here is that what's called our scheduling scopes.
+
+We basically have this block of instructions to work with, and we need more independent instructions to be able to do something useful.
+
+Right. But if I look at this loop, as long as I know that answer and X are two different arrays, I could imagine writing this like this.
+
+Right. So I change this from, you know, counting by ones to counting by twos.
+
+And every loop iteration, I'm going to do two of the same thing job by that.
+
+And now. For what?
+
+Before I even talk about instructions scheduling on that. This also reduced the number of I plus equals twos and branch off less than by path.
+
+So that's a win. So now I'm going to write the second iteration here.
+
+Uh, I'm not too fancy. Um.
+
+Six. I'll do that.
+
+Thank you. Our copilot is going to be smart enough to. Realize that we can just.
+
+Make that a plus for. You.
+
+Uh. Eight.
+
+Town. Yeah. Was.
+
+Cheap 11 can get. Okay, so now I put the second loop iteration.
+
+This one or not loop iteration, but the part where I basically manually unrolled my loop over here in green.
+
+And um, we're going to have kind of the same data dependency structure in here.
+
+This one's a little bit better in that this is uh, only one cycle.
+
+Um, but this is one cycle. This is going to be three cycles.
+
+This is going to be three cycles. This is going to be one cycle.
+
+This is going to be one cycle and yes, one cycle.
+
+Right. Um, and so now we have kind of the same relationship, but these instructions are independent of these instructions.
+
+So by that. Which means we can go interleave them and make our scheduling.
+
+But there's one really tricky part before we do that, which is, uh, what's this?
+
+A load more than once. This is a story, so we have to know that they don't alias each other.
+
+That is, we need to know that x I plus one is not the same as answer I.
+
+Before we can do everything I'm about to do. Do you all remember alias analysis last time?
+
+It's hard. In this case. We're going to just assume the compiler knows that.
+
+Okay. Um, but in general, uh, like we and some compilers will take chance, like, um, in, in C,
+
+you can use the restrict keyword to say this pointer doesn't alias any other pointers.
+
+Um, but we're going to assume for a moment that the compiler just knows that those, those arrays don't overlap.
+
+So I'm going to give each of these, uh, just a number here.
+
+C123. Seven and one.
+
+Okay. This this is confusing because this they were lining up and in this store where it doesn't write a register.
+
+And so now they seem off by one. But they're actually all right.
+
+There. Let's do it. Okay.
+
+So, um, as with, I don't know, 80% of computer science, this turns into a graph, right?
+
+Just that's that's how computer science works is like, what do we do with this?
+
+It's a graph. So we have, uh, instruction zero.
+
+Which two markers open the points here has a recycle edge two.
+
+Instruction one. And then that has a one cycle edge to instruction two.
+
+And then that has a three cycle edge to instruction three.
+
+And then that has a three cycle edge. Instructions for, and then that has a one cycle edge to six.
+
+And we also have over here five, which has six over five also has three.
+
+So good comes from zero and then we have seven.
+
+This is like basically the same one. Uh.
+
+Second year. Eight.
+
+Eight is one cycle. Nine.
+
+You'll check me if I mess up here. Okay. Your job is to like me when I screw up.
+
+Three to love it. 11 is again one cycle to 13.
+
+Uh. 12.
+
+15 is restored and then we've got 14.
+
+15. Okay. And then this has a dependency kind of across iterations.
+
+But we're going to keep. So this graph basically has each instruction as um a node.
+
+And the edges between them are the data flow.
+
+That is this produces a value that this consumes uh, labeled with the latencies.
+
+And um. Time.
+
+You know, six and nine were our load in our store that if we we're if we didn't know that they aliased or that they didn't aliased.
+
+We might have a dependency later. Right. And we don't know.
+
+But we're going to assume that we don't. That makes our lives much easier.
+
+Okay. Um, and so what can we do?
+
+Well, we can basically have a little table.
+
+Let's. Let's suppose our processor is too wide. Okay.
+
+We can basically have a little table that's like on cycle zero.
+
+Cycle one, cycle two, and so on and so on and so on.
+
+And we can look at this and we can say, hey. On cycle zero what's ready to go?
+
+Um, and we actually have three. Three choices to pick two from instruction zero would be ready.
+
+Instruction seven would be ready, or instruction 14 would be ready.
+
+Which one do you think I should pick? Or which two do you think I should pick?
+
+But a different way. Which one should I not pick? Jack with wise instructions.
+
+Oh no, you're right. It's not true. I lied. I forgot about that edge because I wrote that as a.
+
+I wrote that as a plus. Uh, uh, of that one.
+
+So it's not. So I only have two things that are ready to catch. Thank you for any time I lie.
+
+You need to tell me I'm on so we can say, hey, you know what?
+
+Uh, we're going to take instructions. Zero and 14.
+
+Okay? And that basically means that this.
+
+Would be ready on cycle three. This would be ready on cycle three, and this will be ready on cycle.
+
+Actually this one's complicated because it's the the branch.
+
+So we need to do that at the end. Um.
+
+It will be ready, but we don't want to branch away from our whole loop because everything is control dependent on that one.
+
+Um, and so then we could basically say, well, on cycle one and cycle two, there's really nothing that can happen, right?
+
+We don't need to put no ops in there. You will probably learn in 250 that back before, like processors detected the stalls,
+
+you had to put no ops in back in, like the old days and dinosaurs.
+
+Did you all learn about that? No. Oh, you tell us.
+
+Like, what do you do? Two points. Mhm.
+
+What can we do to explain why can we do two instructions at a time.
+
+Yeah. Because I just said we have a two by processing.
+
+Okay. We're going to schedule this for two wide machine. Um back a long time ago before MIPs.
+
+Right. MIPs. The IPS stands for interlocking pipelined stages because there's hardware stall logic.
+
+Before they came up with hardware stall logic. The idea was software would have to put nope, no.
+
+Like nope nope nope no. Up until three.
+
+So we're just going to kind of advance time a little to say board space and say on cycle three.
+
+Now we can do instructions one and seven.
+
+Okay, so we had two stall cycles, one and two, but now we're getting one and seven together, which means that this will be ready on cycle four.
+
+And this will be ready on cycle four. And this will be ready on cycle four.
+
+Oh this one's ready on. Let me start.
+
+Now it's ready on three also. Why would I want to pick one and seven and not five?
+
+Eric five won't be ready for another however.
+
+Many a lot of cycles. Yeah, so one of the things is basically I got to get one done to get to this.
+
+But even if this even if this were a separate instruction, this has a much longer dependance chain going.
+
+And so outgoing dependance chain isn't a perfect touristic.
+
+But and if we pick the longest outgoing dependance chain will generally do pretty well.
+
+Okay. And so now on cycle four. We can once again say, oh man, I've got choices.
+
+I want. Two, two and nine.
+
+Which means? I'm really confused here for a second.
+
+Two is a load word eight. There's an ad.
+
+Okay, great. Just wanted to double check. So this one will be ready on seven.
+
+And this one will be ready on five. Right. Way to do it.
+
+Let's go to it. Thank you for keeping me optimistic here.
+
+That's a two and eight and then on five.
+
+Uh, I just want to. I want to, like, exalt the ones I have done.
+
+On that one. Okay on five I have choices of of 12, five and nine that are ready to go right when I have done this.
+
+Go buy that. Um. And so.
+
+Between 5 and 12.
+
+I don't care too much, but I definitely want nine.
+
+I'm going to say nine, right? So this one's going to be ready on.
+
+That's not going to be ready. I forgot to do that side which was 98.
+
+Then on the next cycle, we can do 12. Uh, that's all that's ready now, right?
+
+So we're going to have basically nothing here. And then seven.
+
+We have one thing ready. Yes, one will be ready.
+
+On. 13 is waiting for this.
+
+Not nine. Nothing is ready. And.
+
+For. 11 and 11.
+
+And then this is on the left.
+
+And. Two, three, 11 and six.
+
+And then on 12 we're going to have um, 13 and finally our branch.
+
+Okay. And so now we can just spit our program out in that order, right?
+
+Uh, I times four I plus equals to this add.
+
+This. Add this load word.
+
+This, uh, this ad and so on and so on and so on. And we have drastically reduced our stalls.
+
+There's still some stalls here. Some like.
+
+Let's call them half stars there. Uh, and and also nine.
+
+I mean, but we're doing a lot better in terms of using our pipeline because we re-ordered these
+
+instructions so that independent instructions are going in what would otherwise be the stall slots.
+
+Okay. Now, the tricky part of this, of course, is that, as I said, this store and this load have to not alias.
+
+How do we know? They don't know. Well, I just told you they don't. Alias.
+
+But if you're the compiler. That might be really hard to figure out in this particular case.
+
+Even if we can't figure it out, we can, uh, because we're basically just looking at two consecutive arrays.
+
+We can basically take right before our loop, or, you know, we can basically put in like a, you know, if.
+
+An L two where we keep the same like we copy this for loop and we just check if those arrays overlap at all.
+
+Right. Where the common case is going to be the arrays don't overlap.
+
+And so if the arrays don't overlap at all. So we can say like you know if like ans plus size less than x uh or.
+
+Uh uh. The size. They're all right to just check.
+
+Like either. Either this one is before this one entirely, or this one is before this one entirely.
+
+Man inside of here, we know that that answer and an X access is don't overlap at all.
+
+Right? Actually, because of what we're doing in particular, we really need needed to be one because we don't care if they overlap a little bit.
+
+But then in here we can make the optimized code where we know there's no aliasing.
+
+And in here we can make the slow code. Where it's correct if there's aliasing.
+
+Right. And maybe we just never go execute that slow code.
+
+That's fine. It's there for safety in case there's some weird case where people are x plus y doing overlapping arrays.
+
+Um, but the fast code will work nicely.
+
+And you might say, well, gee, do we still have stalls over here?
+
+Could we do better? We of course we could.
+
+We could unroll the loop more. Right?
+
+We could make it so that instead of just two copies, we have four copies in there, or eight or 16 or 32 or, I don't know, a million copies.
+
+Right? At some point we're going to stop because we're going to fill up our schedule nicely.
+
+But even if we don't, at some point we're going to stop because one, we're increasing the number of instructions in our cache.
+
+Right? Like two copies is great. A million copies means that now you're going to be having it.
+
+Cache misses all the time, because every instruction you're not going to be going around a loop.
+
+You're going to just be going through all these different instructions. Okay.
+
+We also are increasing our register pressure slightly.
+
+Right. Because in this reordered instructions we need more.
+

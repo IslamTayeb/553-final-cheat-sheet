@@ -1,0 +1,1253 @@
+[Auto-generated transcript. Edits may have been applied for clarity.]
+There's this other button we apparently have to press. Oh, now they have them.
+
+Uh, and so. Yeah. Look at this.
+
+You could say that. Like, you don't have to respect the fact that you're doing this.
+
+We have our instruction. That was. We know.
+
+Is this really, really kind of look at the whole set of emails, probably individually, rather than just seeking everyone.
+
+Yeah. No, like each of you. Just, like, send him an email. Hey, Sean.
+
+I'm wondering where am I? I are great, and my instructions are.
+
+Thanks. Can just at one more. We should send a separate one for air.
+
+And then a separate one for 30 can tell, right?
+
+Maybe about five minutes apart and all that.
+
+Okay. Thank you. Um, how's everybody doing today?
+
+So we have, uh, basically three classes left today. We're going to review whatever topics you all want.
+
+And then next week is Compiler's hacking day, where you can come and work at Pilar.
+
+And I'll be here to help you do whatever you have.
+
+Uh, and if you're not having any issues, that's great.
+
+You can just, you know, basically have two 75 minute slots with your team to make a big push to get the compiler done.
+
+Um, if you don't come, that's your choice. If you're all kids, adults, even as they say.
+
+All right. So, uh, today, basically, I'll just take whatever questions you have and answer them.
+
+Um, can you just talk a little bit about and then discuss a little bit about.
+
+In what way? General scope.
+
+Structure is scope. Uh, we have nested scope with lot of lead questions.
+
+I mean, okay, so here's the thing. Every class people are like to is a final cumulative.
+
+And I never like to say yes or no because especially in like programing,
+
+people will be like, oh my God, you expected us to know what you did on this final exam.
+
+That was for the midterm. It's like, well, yes, you can't really write a binary search tree without pointers.
+
+So like, what do you want me to do? Right. Um, and so like.
+
+You know. Oh my God, it's true. Like we. I don't know.
+
+Something with Tiger before the midterm.
+
+I can't believe you expect us to do something after, like, uh, the point is to test you on things since the midterm.
+
+But I don't want to, like, set down some sort of, like, seeming contractual obligation where there's a corner case that you're unhappy about.
+
+Utah. We just have one that is then probably like five by ten, probably.
+
+I mean, look what's there. I haven't looked in a while, but yeah, I don't know.
+
+Okay. And how about the similarity.
+
+It is 2011. Yes I mean.
+
+Okay. There's, there's like trying to metagame the exam and then there's learning theory.
+
+Right. So like well there are probably question about data flow.
+
+Sure. Whether it be exactly the same question about data flow.
+
+No. Because that's a bad idea. Right. Will there be a question about register allocation?
+
+That seems likely, considering it was like a major thing that we did, right?
+
+And so, you know, I'm not going to tell you exactly what the questions will be, because that's not how tests work.
+
+Um, but if you the point of a practice exam is not that you feel like I know all the questions, it's for you to be like, oh,
+
+man, I tried to do this register allocation question and realize I don't actually know anything about register allocation.
+
+I better go figure that out. Right?
+
+Well, to what extent do we need to know, like all of the things that aren't necessarily going to be part of our compiler,
+
+like garbage collection, or how C plus Plus handles multiple types, like the stuff that was on Monday.
+
+Yeah. So you should still know something about garbage collection.
+
+It's kind of even though it's not in your compiler, it is still a major and important topic.
+
+Um, you know, how does C plus plus handle multiple inheritance?
+
+Um, so anything that's like C plus plus specific, like the nasty corners of C plus plus are not the point of this class,
+
+but having a general idea of like how languages are compiled, what the subject rule is.
+
+Um, you know what a vtable is? Something where basically if somebody says, oh, you've taken a compilers course.
+
+Well, how would you compile this oh oh language?
+
+You don't go, oh man objects. Never heard of them.
+
+But like, can talk coherently about it. Other questions?
+
+Yeah. And I also know there's, um, there there are many differences between the state and what we would want.
+
+You mentioned some of the points you have that always resolved and, and, uh, and.
+
+Okay. And. Um, if you will only put it on the paper.
+
+We also need to. I mean, anytime Andrew and I are in conflict, I'm clearly the one who's right.
+
+You should not know that by now. I mean, what what professors have you had that haven't had that opinion?
+
+Um, but, I mean, here's the thing.
+
+Okay, the book has a lot of extra, uh, stuff in some cases.
+
+Like, you know, when we did parsing, it has like the l l r r k hierarchy of languages and,
+
+like, prove that, I don't know, not all l two grammars or LR1 passable.
+
+I'm not that interested in that because this isn't a theory class.
+
+Um, you know, and at the same time, like you could say, well, drew is an all of the type theory stuff.
+
+Theory? Yes. But it's like the very specific, like, theory of types that you need to go through all this.
+
+All right. So like, um. Um.
+
+Do I?
+
+Do I want you to know that if you have some weird, complicated Sisk IBSA, you could use dynamic programing to get a better solution than Maximo much?
+
+Sure do. I need you to, like, write down the dynamic programing code for that on the exam?
+
+No, that is that is the one thing I will give you away.
+
+Give away? I'm not expecting to get.
+
+I am not going to give you some ridiculous ask Issa and ask you to like do dynamic programing for instruction selection.
+
+I'll give that away. But, um, you know, basically like if I covered it in class, you should know it.
+
+If it's in your book, it may supplement and expand things or give you a different way to think about it.
+
+Um, but nothing is really that contradictory. What I teach him, what Apple does, except that I still think that free should be called unfreeze.
+
+Grumble grumble grumble. Other questions.
+
+I was hoping more for like she drew. I don't remember how to do X, can you instead, just like the meta questions.
+
+But if you all want to ask a question at this point, or maybe you're all just like rock solid on the material.
+
+Okay, while you all are thinking of questions, I'm going to ask you all a question.
+
+Did anyone go over by, like, the gym this morning? Yes.
+
+Did you all see that? Like Google gym? Gym. And I like.
+
+We can make you a study guide. Use Gemini thing. He was.
+
+I saw him setting it up. Okay. You're going to get up at one last.
+
+You know, we're going to look for waterfalls. But like you said, you saw him setting up.
+
+Did he want to, like, actually, like, see it and then, like, look at it.
+
+I went I filled out a survey and they, like, gave out a list of first 100 people who took out the survey.
+
+Okay. So, like, you have to go and then, you know, like I tell you how to use Gemini and then they give you, like, a box.
+
+Okay. You know what? That's it. Yeah.
+
+I don't want to I don't want to bias your answer by telling you what I thought. What did you think of this?
+
+I only went because I wanted, you know, all. I thought so I went in like, it's clearly for students, but I was just curious.
+
+And so, you know, I thought it was weird.
+
+Like it. Yeah. All right. Well, have you seen the OpenAI ads in, like, inside the gym?
+
+Because they're doing, like, a very similar movie on. Yeah, yeah.
+
+Like what's on the TV, like, suspicious or like, all the humans there.
+
+Yeah. Yeah. I mean, I've seen that and I guess I feel like a little TV ad of, like, use ChatGPT to help you study is less weird than,
+
+like, we have these four stations and it's like, look, I made a study guide, okay?
+
+And you can use Gemini to make a study guide. I think everyone knows that.
+
+But okay, like, I don't know, I just thought it was kind of weird and I was just curious what people thought.
+
+It's like it's just IPO season for those companies that were just like my Google.
+
+It is not IPO season. I know OpenAI tried IPO, so maybe Google is like, what if we like stole some market share or something I don't know.
+
+I mean I get Google wanting to, you know, market share and like have have more.
+
+If you all use Gemini than ChatGPT I just my my feeling and I know I'm very different in these things than you
+
+are was that it gave me like a negative impression of things rather than like making me excited about Gemini.
+
+Of course. I then went back to my office and was like, Hey Gemini, please write more graders for next semester about like, you know, whatever.
+
+Okay now? Yes. Do you like Gemini more than the other ones?
+
+Um, do you have, like, a contractual obligation to do. I am contractually obligated to love Gemini more than anything else.
+
+Um, so, uh, it's a bit of a nasty question because Duke has, like, a site license for, uh, for OpenAI stuff.
+
+So, like Codex, I can use that with a reasonable but fairly small weekly limit.
+
+And, um. Gemini. Uh.
+
+Yeah, I'm using the free tier right now.
+
+When I go back to Google, I'll be on the like, whatever.
+
+And someone has told me that I can like, link my personal account to my work account and then get like not free tier.
+
+So that may drastically change. But like I get like less than an hour of use out of Gemini per day, right?
+
+It's like you've used this up. You wrote three Raiders in the end.
+
+Um, I was very annoyed that somewhere between having run out of my limit yesterday and upgraded the package version on the server,
+
+it like lost my context of what it was doing, and so I had to like, get it to spend some time relearning like how the Raiders were written.
+
+Um, but uh uh, it needs a lot less.
+
+Like it. It needs a lot less prompting for me to say like this.
+
+It's okay to do this. Then, um, Codex has me.
+
+So, like, even when I'm like, yes, I approve this, please just edit the files.
+
+It keeps asking me, like, can I edit this file? And yes, the whole point is that as files, please keep going.
+
+Um, such. I don't know if you tried anti-gravity at all.
+
+I have not. Any particular reason?
+
+No. It's just when it came out, it was like famous for just, like. All right.
+
+Like somebody is like, oh, no, no, I don't give you permissions for that.
+
+Okay. Um, I when it's like I want to run a command, I think very carefully about whether I want to approve that or approve that always or like.
+
+No, but when it's just like I want to edit the source file a like yes, please approve always.
+
+Why is always not always. Um, yeah.
+
+Okay. Now you've all had a chance to think and compile those questions.
+
+So. Compile those questions. You all just like Erlich.
+
+We know everything so well. I'm gonna crush it.
+
+Make it harder. So, for instance, would you, like I said, feel like rich allocation would be like, well, what things would you want to be able to do?
+
+Like given like some sort of a challenge or like, you know, um, yes.
+
+One of those kinds of things would be good. Like, here's some code.
+
+You have law registers to like, do liveness, then to register allocation or like maybe just here's an interference graph to register allocation.
+
+Um, one of the difficulties with like here is code do like is I mean register allocation is like if you mess up one it makes it harder to grade.
+
+But like you could imagine a couple different problems of like your code.
+
+Do like this okay here's liveness information for different code.
+
+Do register allocation or something like that. But all of those skills are important themes of the class.
+
+And. So if you have a dependency graph, just tell us just as at the read through your notes.
+
+Uh, see, this is a good question, right? This is the kind of like how do we do register allocation.
+
+They get. All right. So you're going to have your interference graph. So there's our interference graph.
+
+And if we're getting a three color this which node can which which nodes could we remove right now.
+
+Can we take out a. No, because it has three neighbors.
+
+Can we take down the street actually. Yeah.
+
+F2 or G9. And I'm just kind of making this example up as we go.
+
+If we take out f. We put it on a stack.
+
+Right. And now, um, now it's much easier because they have had their degree decrease.
+
+So now we can do a right and so on and so on and so on.
+
+And then when we get done, we're going to basically pop our stack back off and color each one as we go.
+
+Right. Does that refresh your memory a little? All right.
+
+Other register allocation questions. You all, you know, Billy, you know, spilling be included and stuff like that.
+
+I mean, it certainly could be, right? It could be like, suppose you wanted to three color this, like do so.
+
+And when you get to a potential spill like a star next to whichever thing was potentially spilled and then,
+
+you know, you keep coloring the graph, leaving that uncolored or something like that.
+
+Um, well, how would I keep on spilling if I don't want to do the, uh, that, like,
+
+kind of lazy algorithm we talked about in class where we like a register, make the code for spilling it, then redo register allocation.
+
+Like, like how would you like if it was like, like, here's something that I can't register allocate register allocated on the test and like yeah.
+
+So there's a couple different things there. There's kind of the register allocation question where you're going to just do it and then say like,
+
+oh I couldn't register allocate X because there were no colors available.
+
+And so like, you know, for a test question sort of thing that would be like,
+
+Mark, whichever ones you couldn't allocate with a star or something like that.
+
+And then just keep going. Then there's the question of how do you actually deal with a spill,
+
+which is not something like how to actually deal with a spill and change the code to make this bill go away?
+
+Is extra credit on your compiler. So you don't need to know that for the exam.
+
+Like you should know, I need to load and store stuff, but I'm not going to say,
+
+please take this code and rewrite it with extra loads in stores to handle spilling and then reregister allocate.
+
+That would also just be a nightmare to great.
+
+Utah ensemble cast. Uh, we're doing, uh, partly due to actually, uh.
+
+I've been doing a lot of news analysis on our interactions, so I'm doing the analysis, um, block level for that be, uh, different.
+
+Like, how do we handle the register allocation? What, uh, parables retain the plot.
+
+So what we did with. So what we did in class, what we did at the block granularity, that's faster.
+
+Right. Because you basically only have to do your live in and live out for each block rather than each instruction.
+
+Once you're done with that, if you need it at an instruction granularity, you just take the live out to the bottom of the block and work backwards.
+
+Right? You say, okay, XYZ is live out here.
+
+I wrote X so that's killed, but it used Q, so that's live and just go backwards.
+
+Like if I have a block. I say x equals q plus uh uh y equals c times three two equals five or.
+
+Three. And I say live out is x y.
+
+Uh uh you right.
+
+So going backwards we would say okay this kills x but generates q.
+
+So live here is y. Oh it generates q and a.
+
+H u y b.
+
+Right. Because we take x out of this and we add q and a. And here we're going to kill y but generate z.
+
+So we'd have a to z b.
+
+This is going to kill q but generate I. So a I z b.
+
+Is it going to kill a but generate b which is already there. So just ICP which should be the live end of our block, right?
+
+So do the blog narrative first and then doing the transfer level.
+
+Meaning you briefly go over the other data. So things like very data expressions and assertions and needs in case.
+
+Yes. So, uh.
+
+There's sort of four main classic data flows, lightness reaching definitions, available expressions, and very basic expressions.
+
+So lightness you all. Available expressions means that when I'm at some place.
+
+I know that all parts. To this place have computed some expression like x times y, and its components like x and y have not changed, right?
+
+So if x times y is available here I know I've already computed it.
+
+And so this analysis. Dry.
+
+So this is the analysis. This is the optimization.
+
+Um. And um, um, uh, we can basically say, since I've already computed it,
+
+if I need to compute x times y here rather than recomputing it, I can just reuse those values.
+
+And so this is going to be something where we need to know what happened in the past.
+
+So information is going to flow forwards. And we need it on all paths.
+
+So it's going to be intersection across our predator predators.
+
+Our predecessors. And then um.
+
+That's going to be available expressions in. And then are out.
+
+Okay. It's going to be what we do for like kind of the other side of the equation this time anyways, which is going to be our ends.
+
+Is our kills. Know channels.
+
+Um, and so computing and expression is going to generate the availability of that expression,
+
+writing to any of its components, like storing the X or Y is going to kill the availability of it.
+
+Okay. This is an intersection. So we want the greatest fixed point.
+
+So we start by assuming that every expression we could care about is available everywhere.
+
+And then our sets get smaller and smaller until we converge um, reaching definitions.
+
+Right. So again that's the analysis and drives a lot of different optimizations like uh, copy propagation, constant propagation, um diffuse webs.
+
+That's actually really more of like kind of analysis, but like wide range splitting.
+
+All right. So remember range splitting is where we take a variable and split it.
+
+We realize that AI is at the same variable in all those different places.
+
+Um so this is going to be again taking information that's floating forward where we care about our paths.
+
+But instead of intersection, that's going to be you, right?
+
+Because if we have a definition and here and the definition is here, both of them can reach here.
+
+And so we iterate to a fixed point the other way starting at the smallest.
+
+Okay. And I just wrote the union there instead of rewriting all the equations because they're the same except changing that intersection to a you.
+
+So good. Liveness. Is the one where.
+
+We do union for the live out. Right.
+
+We're going to union the lives of our successors. So it's going to be a union over our successors as in the successor.
+
+Um. Because if it's alive, any of the places we could go, we consider it live here.
+
+And so that's liveness like variables, which drives register allocation.
+
+And then the other one is very busy expressions, um, where it's going to be the intersection.
+
+Because we want to know, are we for sure going to compute this in the future.
+
+And that can drive things where we're going to hoist code up and want to make sure that we don't, uh, compute something needless.
+
+Just a second. Sorry. My sock is very uncomfortable.
+
+Folded up. Okay?
+
+Please. That's cold. That's like my foot is hurting when I'm taking steps.
+
+Does that answer your question, Danny? Yeah. Okay. Any other questions about data flow?
+
+Jack, I guess related to our lock level example over here.
+
+If we said like B was not laid out like it would just,
+
+we would just remove the one like the last three expressions on the right hand side when we like do our interference graph,
+
+like, would we still have a interfere with B?
+
+Um, okay. So the question was if B isn't live out, it just we would get rid of this.
+
+This, this, this. But we would keep this because it would be generated here.
+
+Um, and then a would not interfere with B because, well,
+
+the way we generate our interference graph is when we do that right to a, we're going to see what's live here right after it.
+
+Right. Because A and B could go in the same register. This could be like temp one equals temp one times three.
+
+If we had multiply I mean in our case um, because we don't need them at the same time the right happens after the read.
+
+All right, other questions. Everyone's just like, uh, I don't know what this this is like.
+
+Drew, I'm a master of this material. I just ready to crush any exam you can, right?
+
+Or I haven't thought about this enough to know what questions I have.
+
+Yeah, you just haven't thought about it. Um.
+
+Well. Okay. Alex, I don't ever read the, uh, occasion.
+
+Uh, but we're doing the Hollywood set up.
+
+We have you reading the note every time. But for some of the questions we are required to by the process, I probably will hold the final answer.
+
+And hopefully we will write down the process of erasing.
+
+Um, I mean, you can still write down the order in which you erase stuff, right?
+
+F a, b, c, d, e.
+
+And then there are colors going back the other way. Um.
+
+Other questions. You know, can you give an example any like er question.
+
+Is that something. Um. Yeah sure. So I could say like.
+
+Here is some tiger. Right.
+
+I can say here is some tiger right down the air for this statement.
+
+Right. And you could either write it as like a tree or as constructors.
+
+Right. So this would be like I'm going to have move where what I'm moving to is going to be um, mem uh loss.
+
+Uh, and we'd say like, you know, are is a record with field X, y, Z.
+
+So this would. Uh, yeah.
+
+Zero four. Right.
+
+Uh, and like we'd say, like, I don't know, Aria's in town 100.
+
+Why is in town 101 a year and tell 102, right?
+
+Okay, that's going to be 100 lots.
+
+Eight. And then over here I'm going to call F.
+
+Yeah. Uh, with one argument, which is going to be at times, uh, 101 and um.
+
+Uh. Los.
+
+Temp 1 or 2. And then since I just wrote three here, it could either be 12 or like times.
+
+Three by four. They're the same thing. Your compiler is probably going to spit out times three by four.
+
+Um, and so, you know, this would show me that you understand how to take tiger code and turn it into its corresponding I.R. stuff.
+
+That's what you basically did in your, er, translation phase.
+
+Or I could I mean, I could imagine asking you the other way, like what tiger code would correspond to this, er, tree.
+
+Um, something like that. Other questions.
+
+Really? What's the notes policy? You'll find it the same as the midterm.
+
+What does the notes policy for the midterm? Handwritten notes.
+
+Any entry notes. That is the same. I just didn't remember if I.
+
+Paige limited you all. Um, because when I.
+
+Paige limit, I generally make the final have a bigger Paige limit than the midterms.
+
+I know 551 is, like, four pages of notes for midterms and, like, six pages for the finals or something.
+
+But, yeah, if it's just unrestricted handwritten notes, whatever handwritten notes you want.
+
+You know, George and Briggs, but George and Briggs.
+
+George and Briggs. What about their game? Um, we have to like.
+
+I guess you could play one of those. Do you have to remember which one is named?
+
+Which? No, because I can't remember that off the top of my head.
+
+Right. Uh, would it be good to know the general heuristics for them?
+
+So one of them basically says what we're going to do is look at that combined node and see if it has like
+
+count up how many neighbors of non-trivial degree it has and if that is less than the number of colors.
+
+We're good to combine them because we know that we could basically we know we could
+
+take this combine node out because we could take out any trivial degree nodes.
+
+And then if there's less than our number of colors of non-trivial degree nodes, we could then take this one out.
+
+Right. So that's one of them. I don't remember if it's George or Briggs.
+
+You don't have like memorizing the names of the algorithms is not my thing.
+
+Okay. Um, and the other one is asymmetric, right?
+
+It says basically, what you're going to do is you're going to say, if I'm combining A with B,
+
+I want to look at all of the neighbors for A and see if either they are already trivial degree,
+
+which means I can rip them out later or they're already a neighbor of B.
+
+Right. And if we do that, what we're going to do is we're going to like,
+
+if we basically ignore the ones that are trivial degree or already a neighbor of B, we're going to see.
+
+Wait. Yeah, we're just going to need all of them to be one of those or the other.
+
+Right. And then we can do it the other way around. You know.
+
+Okay. But.
+
+Yeah. Don't don't. Like if you're worried about like, oh my God, am I going to remember those two things like write them in your notes.
+
+Um, it's not about memorization, but like you should be able to apply that in the context of register allocation.
+
+I don't know if you all know about Bloom's Taxonomy. It's like my favorite thing in educational pedagogy.
+
+Um huh. Well, like, I remember that from, like, first graders upwards.
+
+So basically it divides learning objectives, things I can ask you to do in the six six levels.
+
+At the bottom is remember learning objectives, which would be like asking you what is the name of this heuristic?
+
+Oh, that's Greg's heuristic, right? I'm generally not super interested in remember level learning objectives,
+
+which is why you get notes above that is understand um and then apply, analyze evaluate and create.
+
+And so like apply is basically in this context.
+
+Can you take those two heuristics and use them to correctly make a decision and a.
+
+Register allocation situation, right?
+
+Create in that particular cases, a little outside the scope of the class of like, can you make your own new heuristic?
+
+I'm not going to ask you that on this test, but like for programing classes, generally that's where we are a lot,
+
+where it's like go create new code that you haven't seen before to solve some new problem.
+
+Yeah. Other questions.
+
+I really. I mean, I know you all said that. Oh, yeah.
+
+Eric. Uh, remember, you did, like, a giant working example of, like, optimizing code and, like,
+
+stepping through and showing, like, talking about which optimizations you would use.
+
+Is something like that. You think a possible thing we would have to do, like, here's a bunch of assembly just to optimize it.
+
+Um, I would probably want something a little more targeted, right?
+
+Like. Thank you. I don't want anything that I'm going to hate myself for when it comes to grading, right?
+
+And so here's a bunch of assembly code. Just optimize.
+
+It is very hard to grade, especially on an objective standard where it's like.
+
+Like, oh, did you just miss this opportunity? Did you not know this?
+
+You went down this path and you went down this path. And like by making this optimization, you don't have this optimization anymore.
+
+Um, and so something a little more focused like here is this code which expressions are available at the start of each block.
+
+Given that information, what common subexpressions can be eliminated?
+
+Rewrite the code with those common. Some of the expressions eliminated is, uh, that the same skill set, but in a more focused and narrow way?
+
+That's easier to see. Like if you're doing like if you're if you're demonstrating mastery of the appropriate skills.
+
+Billy, could you also do something similar like that where we're like given a for loop that's like easy to optimize.
+
+You mind taking something else? Putting it like a higher level for the maximum.
+
+Yeah. So I mean, I could certainly do something like that. That would again be something very probably want to ask more focused questions like.
+
+What? What lines of code are invariant in this loop?
+
+Where can you move that? What is dangerous about what, if anything, is dangerous about moving them to these locations?
+
+How can you correct for that danger? Um. Just to make it easier to grind.
+
+And not just I don't want to say just to make it easier to Greg, because that sounds like I prioritize, like my laziness over all other things.
+
+But to make it easier to grade fairly and where your grade corresponds well to your demonstration of the particular skills, right?
+
+Because open ended stuff, it's easy for a like it's it's easy for.
+
+Things to be mostly white, but really hard to capture that.
+
+Um, like how how well you doing?
+
+By the way, uh, one of my friends from undergrad.
+
+And later, like, when I was in my masters, he was a PhD student at Georgia Tech.
+
+Um, went off and became a professor at various places. And the way he did his exams was questions did have point values associated with them up front.
+
+Instead, there were more questions than you could possibly answer.
+
+And the fewer people who got it right, the more points it counted for, you know?
+
+So, like, if you're the only person in the class who gets in questions, right.
+
+You get a lot of points. And if you answer a question that everyone answered right, you don't get many points for it.
+
+And there was like a point to that. I mean, I think then you just like, have some why don't we just all each answer one question,
+
+but then you all because because then you like can't like does a normal curve of the grades.
+
+So like then you would all just get average, right.
+
+Um. I do not advocate for this approach, but I am much more of like, please show me that you know how to do the things that I've been teaching you.
+
+Other questions. And I'll say the midterms were generally very good, right?
+
+There were a couple of people whose midterms were not good, but most people did great jobs on the midterm.
+
+So I assume that you all aren't super worried.
+
+And maybe that's why you don't have a lot of questions. But I do want to give you a chance to get whatever questions you have answered.
+
+Really? You look like you. You look like you're about to raise your hand.
+
+Like the. The midterm is something that we did during a class period.
+
+And finally something that takes two class periods.
+
+So on the scale of difficulty, is it going to be three hours of examination or is that like, okay, so here's the thing.
+
+I don't want to write an exam that it's and it's, it's closer to like two and a half times the length of a normal class.
+
+Right? I don't want to write in graded exam that is two and a half times as long.
+
+Now I have had people in the past and it's very memorable when the exam is 7:00 at night who have sat there for the last hour.
+
+Flipping through and reading everything they wrote for me through and reading everything they wrote,
+
+and getting to the end of the exam and going back to the start. And me sitting there as the one person in the room is doing that.
+
+And I like looking at the clock. And you've been doing this for 35 minutes.
+
+Are you done yet? Oh my God, it's 9:00.
+
+And then like, I know what I'm doing on Tuesday. Looking at their grades and being like, you already have an egg.
+
+Yeah. Can you just please be done so I can go home and go to sleep?
+
+Um, so, like, you know, I don't want to rush you. Uh, but, like, I'm not.
+
+I don't intend for it to. That just seems like they really should make final exams two hours and and make it a much more reasonable schedule.
+
+It's absolutely ridiculous to have exams on the weekend here for you all.
+
+It's probably just a minor annoyance, but with kids it is an absolute nightmare.
+
+Especially when Margaret's out of town. Like I had a Saturday exam where Margaret was out of town.
+
+So I had to basically, like, pay extensive amounts of childcare like, you know,
+
+four plus hours of childcare to be here giving an exam at 7 to 10 p.m. on the Saturday night.
+
+All right. Other questions. You're almost like original Creed.
+
+Do you all want a minute to think of more questions, or do you all want to just like.
+
+Don't have half an hour back. I don't want to rush you.
+
+If you're like, I'm going to think of a question. But at the same time, I also don't want you feel like me and we have to just sit here.
+
+Moltres stares at us for 30 minutes. Um.
+
+Uh, there's a bit in here, like on the price of a free playoff and a Republican to discuss, like a general, like, farm layout, and that we specialize.
+
+In what? Detailed? We didn't know. So I don't know exactly what you're looking at, but I think that that's probably a question about static links.
+
+Um, and so, uh, you know, static links are kind of this like.
+
+Not just tiger specific, but specific to like kind of this nested kind of function thing.
+
+So you didn't like learn about that in 250. They were.
+
+And one of the interesting bits of your ear, you should understand, um, hey, I need this variable that's outside of my frame.
+
+It has to be in the frame of another function. How do I get there?
+
+I follow static links and so like if it's in my own frame, I'm going to access it relative to my frame pointer.
+
+If it's in my parent frame,
+
+I'm going to follow the static link to get its frame pointer and then access it relative to that and however many levels out,
+
+I'm going to follow those static links. And likewise, if I'm calling a child function, I'm going to pass my own frame pointer as its static link.
+
+I'm calling a sibling function either recursively or just, you know, like, uh, something declared in the same parent function.
+
+I'm going to pass my static link as its static link.
+
+And if I'm calling outward, I'm going to go out the appropriate number of times to give it the right static link.
+
+Other question, Annie. Do you have any old notes that we can practice?
+
+There's. Well, I don't know if it's like an age. I'm not sure if it's actually an old final or just a practice exam.
+
+I think it's an old vinyl that's on the website.
+
+Um, but I don't have, like, I don't have a bunch of published, like, if it's on the website or whatever I have is on the website.
+
+I don't have a big pile of finals that are publicly available.
+
+Because writing finals is a pain. Is writing all tests is a pain.
+
+Yeah. Um, and then also unrelated to know when the other compiler stages will be great.
+
+Uh, so you came in just after we talked about that.
+
+I think what I was saying, um, I encourage you all to email your to and maybe all at once, just like, hey, where's our air and instruction selection?
+
+Um, because he should have had those to you, uh, by now because it's been like a month, almost, um, at least on air.
+
+Um, and so feel free to pester him. Um, I can pester him, too, but, like I have.
+
+I have like zero power over Tas, because the only thing I can do is threaten to fire them if they don't do their grading.
+
+But then what am I going to do? All the grading myself, right.
+
+And so this is like the big conundrum with Tas is like, if they're not getting their grading done,
+
+all I can do is say, please get your grading done, which you all can do also.
+
+Yeah. Billy, did you walk us through, like, an on or on your neck, sir?
+
+Um, yeah. Type of thing. I see what's going on, Mikey.
+
+I'm fine. Um. Yeah. So walk you through and basically be like right, one of those functions.
+
+Is that something that we would. So uh, okay, here's the like just.
+
+I know why you love the metagame things too much, but asking you to just write on an index is uninteresting,
+
+because if you write it in your notes, you win for free. Right.
+
+And like, if you're just like, uh, I got lucky and wrote that in my notes.
+
+Haha. That was easy. That's not like any time that can happen means I've done a bad job making a test question, right?
+
+So just like asking you to recite a previous part of your compiler is not generally my goal.
+
+I want to ask you to do something you haven't seen before, where your notes might be a helpful reminder of like, oh yeah,
+
+this is the process for doing register allocation or whatever, but you still have to like apply those concepts or something like that.
+
+Other question. I will not make you convert something to continuation.
+
+Passing style. Getting all sorts of trouble with people's heads explode during the final like stop and cleaning everything up.
+
+A good crash. Oh, and what the [INAUDIBLE] do we do now?
+
+I think you mentioned earlier. Black garbage collection. Just like in general Patel's, like, stopped going to make you write a completely correct,
+
+c-plus implementation of the garbage collection runtime on the exam.
+
+Okay. Uh, no. Uh, I mean, you know, we talked about three algorithms.
+
+We talked about there trade offs. We talked about how they work.
+
+Um, you should be able to describe those algorithms and their trade offs and, like what?
+
+Why would you prefer to stop and copy over marketing suite? Why would you not.
+
+Why would you prefer market sweep over stopping copy. Uh, what is general garbage collection?
+
+Generational garbage collection. Why do we like it?
+
+Like, draw me a picture of generational garbage collection, right?
+
+Um, what's hard about generational garbage collection?
+
+Uh, those are all very reasonable questions to ask.
+
+Um, that can be answered in an exam. Alex, uh, a question regarding the final project.
+
+Okay. Um, so as we've mentioned in cars, we have a convoy of staff that can be, um, consider this and try to.
+
+But if we have a list of four. What are they like?
+
+Is there a list of extra credit options?
+
+Yeah. Um, no, because I'm pretty sure it's infinite, uh, and that there are all sorts of different things,
+
+but, like, you know, some obvious choices are like,
+
+you've done data flow to do liveness, do data flow to do other data flows like available expressions,
+
+etc., etc. put in the optimizations that go with that.
+
+Like, oh look, we did common Subexpression elimination. Be sure to be able to show how that worked, right?
+
+Like, oh, look, we did this. Here's this.
+
+You know, here's our, I don't know, a thing that does like a lot of array indexing.
+
+So we have a lot of like I times fours that we just compute once and um, that sort of thing.
+
+Uh, you could imagine bounce check elimination also in that you could imagine live range splitting where you would want to show that to having.
+
+One variable used in lots of different places that really could be different variables.
+
+You turn that into a bunch of different terms and that helps your register allocation.
+
+Um, you can do fancier register allocation with coalescing moves.
+
+You can do. So what exactly do you do for spelling?
+
+The sky's the limit, right? You could do something very simple or very complicated.
+
+Um. It. I know, uh, you know, I had a group do garbage collection in the past.
+
+That is quite an ambitious task, um, and required a ridiculous amount of work.
+
+I would not recommend that. Just for a couple points of extra credit.
+
+I've had groups in the past who have done different language features.
+
+Right. So you could say, hey, we talked about compiling o o languages.
+
+Let's make o o o Tiger where our records can have methods in them.
+
+Right. And you know, what exactly does that involve?
+
+Like, we could just start with a very simplistic no inheritance, right.
+
+Like point has x and y and move and we pass the this parameter and implicitly do this x and y and so forth.
+
+Um, then we could add inheritance and dynamic dispatch and polymorphism and, you know, all these sorts of things.
+
+And as you add more and more things, you might have extra credit. You can get grabbers.
+
+I've had a group do parametric polymorphism in Tiger um, where like they can have functions like like records of angle bracket t.
+
+So they can make a generic link lists and then functions that can like add to a generic link list.
+
+So they take a T and a list of T and add to it. And you know.
+
+Whatever language features you want. Um.
+
+I've never had anybody put in dependent type system because we don't talk about those.
+
+And you have to be like more on they like independent type systems are where you're types can have values in them.
+
+It's a whole nasty can of worms you're not talking about, but like there's all sorts of stuff you can put in that you want to do.
+
+Yeah. Okay. And. How well that gradient.
+
+Very carefully. Um.
+
+You mean, how will he determine how much extra credit to give you?
+
+Yeah. And and also, maybe some other teacher might be a little bit different than what we were expected for the normal compiler.
+
+So if you do anything that breaks the normal test cases, you need to talk to me first a little bit.
+
+Like if your language will no longer compile regular plain old tiger.
+
+We need to agree on that in advance. So it doesn't just look like a bug.
+
+Um, but you should, for whatever features you're making,
+
+have test cases which clearly demonstrated to your to compile my fancy matrix multiplication dot tick.
+
+Observe that you know, this this and this would normally be four times I, but we only compute it one time in these instructions.
+
+Or you know, here's our program that does linked lists or just will do spelling.
+
+Look at how we spell, um, explain to your teacher what he should be looking for.
+
+And then if [INAUDIBLE] talk to me about how much extra credit things are.
+
+Okay. So basically we need to dive in a little bit. Yeah.
+
+You should, you should you should have test cases and instructions to convince your teacher that they did this.
+
+Because if you're just like, yeah, we did spelling. Okay.
+
+Um, what do you mean? All your programs successfully copilot those spelling and you did spelling that it's it's it's not
+
+really fair to the to to try to make up test cases that you should have anyway for your teacher.
+
+Crush. I just saw campus assignment created.
+
+What? I just saw a canvas assignment created, like frame analysis.
+
+Okay, I'm taking these on it. Okay, good.
+
+Then you should. I'll email them. Thanks for creating that canvas assignment.
+
+We look forward to instruction selection. You guys know the phrase managing upwards, right?
+
+No. Oh, okay. Yeah.
+
+You mean you need to manage upwards with your. Right.
+
+So managing upwards like means in your organization chart, like your boss is above you.
+
+And managing upwards means managing your boss. Like keeping them on top of the things that you need them doing for you to keep you productive.
+
+Um, making sure that like they are doing what you need them to.
+
+Chris. Also, there's a couple things you mentioned, like in terms of, uh,
+
+the one was like changing the record type to be like a functional style and like implementing coalescing.
+
+Yeah. Um, like do like maintenance. I mean, these were just a bunch of examples off the top of my head.
+
+Um, but, uh, you know, anything is like any kind of extra language feature or optimization generally will be a valid extra credit opportunity.
+
+If you want to know how big it will be. Tell me in specific what you're thinking about doing.
+
+So like if you just said, hey, drew, we're going to keep our records as just kind of plain records,
+
+but we want like point 3D extends point and adds a Z field.
+
+That's a very small change, right?
+
+You're like, oh, but we're also going to have subtype polymorphism. That's a.
+
+Slightly bigger, but still fairly small change if you're like.
+
+And we're going to put methods and dynamic this pattern, that's a much bigger change right.
+
+Because if you just make like point 3D extends point.
+
+It's just syntactic sugar and record creation and just touches like I put an extends keyword in my lexer.
+
+I put one line in my parser and then like in my type checker, I look up the other thing and I just like expand that record and then it goes away.
+
+And I don't worry about right.
+
+If you're putting in like dynamic dispatch, that's going to go all the way through, maybe not to like register allocation,
+
+but like you're going to now need to be spitting out V tables and like your er translation of dynamically dispatch calls,
+
+it's going to look different. And the block is just going to be like a lot, a lot more stuff.
+
+Alex. And when we are building the computer, sometimes we follow your instructions in class that is likely to, like, not follow the book.
+
+And that that kind of extra. Uh, I mean, it depends on what you mean by following my instructions and not the book.
+
+Like, if you did functional record types and your type checker, that was explicitly extra credit.
+
+Um, if it's just like, I don't know, sometimes I like what we have for a reason.
+
+Like, you put bounds checking in as it's separate either thing.
+
+I think so. Do you think so? I mean, so that's one of those things that kind of depends on what you do with it, right?
+
+Like if you're just like, oh, we just made these like bounds check things in our air and then our instruction selection
+
+just like spits out the same stuff that just took some work and shifted it around.
+
+You say, oh, we put in bounds checking as an explicit thing in our AR,
+
+and then we have this optimization pass to try to eliminate those bounds checks where we say,
+
+oh, this is inside a for loop from I equals zero to n, we can get rid of the lower bounds check.
+
+Oh this you know we've done this same bounds check three times.
+
+We can get rid of two of them etc. Then that's much more interesting and is worthy of some extra credit.
+
+Other questions. You all want to just wrap up for the day?
+
+All right, so Monday. Wednesday compiler's hacking days.
+
+There's plenty of room in here. You can hang out wherever lurk.
+
+I'll be up here to answer questions. And then we will wrap up this semester.
+
+Sound good? The. How is it possible?
+
+I'll be here Monday. I'm on a plane.
+
+I'm trying. To take a look at some work for the federal government.
+
+But I know that would. Seem at least the instructions.
+
+Uh, but, yeah, I think we're right. I think we're locked on, basically.
+
+But I think, like George, I was thinking about anyway.
+
+Like, I figure out if you want to talk about my lines or I can get are like runtime loaded functions going like.
+
+Yeah. And like. And then, yeah, I was like, you stand on my hands like that.
+
+I think I have it, but I got it like five Mac versions ago.
+
+That's not specific. It's just like, just because my wife's like, you know, it was kind of a cipher.
+
+I didn't write it. I don't know. Okay.
+
+I think. Oh, God. Okay.
+
+I have no idea. Okay.
+
+Yeah. Okay. That's the third time. But. I have no idea.
+
+I'm like. I couldn't take it so badly. I don't want that one.
+
+That's what we just told the friend. I should be like. Do we generate the code?
+
+To. And that's very clear. Turn out this for like, an hour.
+
+You can do it later. But the only problem I do have to do that.
+
+Uh, my daughter wrapped up the project throughout having to write.
+
+Okay. It's like something I never leave out.
+
+Right. But if we didn't market his life out, then we could just, uh.
+
+I think. So.
+
+I mean, yeah, I don't know if you would like to want.
+
+I'll keep working on it. Or we can the number I, I mean, I assume and we talk.
+
+We have a you I guess like the we have an alibi. And I like to have, like the extra credibility and algorithms and or like this extension basically.
+
+But it's like send your application in and then I will take a look at like to decide on uh, I mean,
+
+if he hasn't even started to analyze, I mean like three assignments ago, like, also we we have to fix this day, right?
+
+The last. Yeah. That's true. Well, we have like a week or so.
+
+The final thing is do it to do, like next Friday the 24th or something.
+
+Okay. So the silly question are y'all done with class?
+
+Yeah, we ended a little early. Thank you.
+
+Yep. No problem. Okay.
+
+Um. More plastic.
+
+Yeah yeah yeah yeah yeah yeah yeah.
+
+You can go outside. Hey. I'm inside.
+
+Oh, that's smarter than I was thinking. This is a big room for compilers.
+
+Yeah. It is. This looks interesting. So, nephew Sanderson, I project, uh, custom head swapping robotic arm.
+
+Oh. There you go.
+
+Have fun. Yeah. If you do everything on that front table.
+
+This one that will remain front and center.
+
+And then we should preface. Practice or see if it works.
+
+Well, just not here. Yeah, obviously the one who came here has the software stack that we're running right now over there.
+
+I'm going to go get him. Oh, we have to get the router. So I got the router.
+
+Yeah. Where is it? It's on the table somewhere, I think.
+
+Yeah. We'll just. Should we go the other direction on both sides?
+
+I'm thinking. Yes. Wait, what?
+
+No, I mean, if we rotate it, all four will be on the break.
+
+Yeah. It's like, I'd rather like if this flex.
+
+Is it fine? Yeah, that's I don't know.
+
+The other day there were tables. There are four folding tables in there that we can use.
+
+Oh, you can probably just take a table for these move now.
+
+They are. I think we're gonna put it like this because I want the I want this facing for it.
+
+Um, I think I think we're fine to just. These tables do move, go unsupported.
+
+Honestly, if you want to support one side, though. Yeah.
+
+Hope you find. Like this. Okay.
+
+Okay. Okay. Maybe not get. Like, all that really matters is that the center that is supported.
+
+Yeah, I just just why not? Long as we only have, like, a few minutes to tear down.
+
+So I don't wanna move. So. I think it is.
+
+Yeah. This is Joe. Yeah. So clever.
+
+However, how does acrylic don't work? Well, only someone had designed for me.
+
+I did designs and printed them. So you can print them either.
+
+Yeah. All right. This does not go here too. So. Yeah, but we're not going to run this all.
+
+I don't think so. I think job. Which makes this a goofy move to put it in two panels.
+
+Yeah. So, I mean, you can see the panels are a thing now.
+
+I mean, people. Is this the router?
+
+That's the router. Let's go. Yeah.
+
+Look, you put a table here. Well, if people don't normally sit in front.
+
+Well, he wouldn't normally sit here anyways, right? No. Okay.
+
+So. Okay, so actually just this is a fancy white car.
+
+Sit where I like this one. And this one seat. Oh, no.
+
+I know group sits there, but you be fine. Take this instead. Um.
+
+Winslow's group, other sports people. Forget it.
+
+I do think research on the front. I wasn't sure if it was like the front. I don't think it was.
+
+I don't know, I want to go back. Solar panels.
+
+It's probably good to have those. Generally speaking.
+
+Connor, who is your advisor for this? Uh, you got oh, this one's got a Holden.
+
+Who in our first meeting said, I'm pretty sure y'all can do an arm.
+
+Um, that's a passionate idea. That's cool. That's exactly what you want to do in the environment.
+
+Yeah. And then we kind of said, yeah, you're probably right.
+
+And then we showed him he had a few months later and said, hey.
+
+And then he said, okay, you probably can't do an arm. Here we are.
+
+Whatever. And then we showed it to them and they probably came with an arm.
+
+Very similar to my sister. Oh, yeah.
+
+You know, I never got to see, like, the final work in production. Yeah, it was kind of working only for a few hours for the demo panels.
+
+Taller than the other panels. I'm sorry. I have a really large body.
+
+This is for you. And then hopefully it'll just work here.
+
+So I plan to go to a restaurant. Actually, maybe we'll plug this in in a place where people can still.
+
+What is that? What's. Oh is that.
+
+Ah, the DSP is not into Wi-Fi. Is not there?
+
+Yeah, well, ISPs connect to the laptop for the primary or the secondary controls the primary control software.
+
+Via the router. So the pipe connects to.
+
+Yeah. And then the Pi connects to my laptop for the secondary control software over to.
+

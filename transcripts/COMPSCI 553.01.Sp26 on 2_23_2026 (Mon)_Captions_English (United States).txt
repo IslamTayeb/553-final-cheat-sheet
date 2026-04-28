@@ -1,0 +1,1285 @@
+[Auto-generated transcript. Edits may have been applied for clarity.]
+And not only did I point out that I, um, don't have anywhere near as exciting of stories as all I did,
+
+but in this case, I also like got sucked into filling out paperwork for Google.
+
+So I guess. It's way less exciting and fun stories.
+
+But, um, how are you all doing? Good.
+
+Okay. Oh.
+
+I'm tired. I went to the gym this morning, which is like one of those things that I need to do.
+
+I really need to do it, but it always just makes me so tired afterwards.
+
+My wife is the kind of person who's like, I went to the gym, I feel great, and I like I like the gym.
+
+Chris. Jack. Jack. Patrick. Uh.
+
+I don't see any. Auctioneer.
+
+Auction. Pete.
+
+Eric. Alicia. How you tell Alex.
+
+Yo, Billy. Ethan. Thomas is me.
+
+Um. And, uh. Oh. And, like, I'm going to do that, like, separate day.
+
+Because if I don't, I'll start to forget, and that'll be really embarrassing.
+
+You'll be like, oh, you knew my name in February, and I know my name.
+
+And you want to, um. Okay. How's everybody?
+
+What's coming up next week? Good term.
+
+The midterm. Yeah. You can find a bunch of open terms on my website.
+
+I I'll ask you to write some SML code and ask you to do some stuff with like,
+
+regular expressions and like, base and parsing stuff and type checking stuff and like.
+
+Nothing is like some professors write tests that are like prove PS not equal to NP partial credit.
+
+If you, you know, at least have a good, good, good art, whatever.
+
+But like, uh, there are you know, the average was a 27.
+
+Good job if you got a 28. Um, that's not my kind of test.
+
+My kind of test is I taught you all a bunch of stuff, honestly, that you know how to do the stuff that I taught you.
+
+Like there should not be surprises or like, oh, my God, you expected us to know something about types who knew that?
+
+Um, so, like, uh, you can bring notes.
+
+Um, they need to be notes that you have written. So, like, your textbook does not count as notes.
+
+Gemini on your laptop does not count as notes. Um, you know, no electronic devices, just like you.
+
+And a stack of dead trees with ink on that. Okay, I know it's not eco friendly.
+
+Yeah, well, sorry. Um, don't come with some ridiculous number of pages I had.
+
+I had, um. I prefer notes to be handwritten for lots of reasons, and in fact,
+
+51 at one year I didn't have a handwritten requirement and somebody printed out every man page for every C function, you know, and.
+
+And it's like, dude, yeah. If you're like, oh my gosh, I think I need a third floor poll.
+
+Let's find the best thing for a store floor. Like, how are you even going to use all those?
+
+Um, so be reasonable. Okay. That's just be reasonable for all reasonable people here, Thomas.
+
+So that who can't read the book. But we can't we can't bring the book test because so here's some some like learning theory,
+
+if you process information through your head to write it into notes, you learn a thing by doing.
+
+Now I will say this about open book. Okay. You guys wanted stories.
+
+All right, so, uh, here we go. This prompted a story.
+
+So when I was an undergrad, um, I took a cryptography class.
+
+It was, it was, it was theory two.
+
+So, like, theory one was like algorithms and automata theory and all that.
+
+And theory two was kind of like whatever theory related thing the professor wanted.
+
+And so this one guy was.
+
+I mean, I knew the terrible professor, but whatever you probably post.
+
+Uh, anyways, he taught cryptography with like, a lot of number theory and stuff, and, um,
+
+the way class usually would go is that he'd get up there and kind of stumble around on the board for a while, get mentally lost.
+
+And at some point he turned to Blair, who's also a student in the class but a math class double major and be like,
+
+can you figure this out and explain the rest of it? And she's like, oh God.
+
+Like, uh, maybe. And so class was kind of this big waste of time and got in trouble because, like, we were generally like misbehaving in the back.
+
+Not bad misbehaving, but like, you know, playing games where you like, say, movie titles, but replace some words with other words and so forth.
+
+And like, anyways, this is all related because our final was open book, which was fortunate because I learned like nothing all semester.
+
+Right? Like this is not the way class should go. And so I learned more on our final exam, like reading things in the book, the answer question.
+
+Then I learned the whole rest of the semester. So like I can see where, you know, that could be good, but that's not, um, that's all good.
+
+All right, so what are we doing? How can you remind us what we talked about last time?
+
+Um, let's go with Jack zero. I guess at the very end of class, we started talking about image registration.
+
+Okay, we started talking about MIPs registers. And why do we need to know anything about MIPs registers?
+
+Chris, we want to assemble this. Yeah. We're going to assemble the map.
+
+So we better like make this stuff work on MIPs. So we talked about some registers.
+
+I was shocked and slightly concerned by the level of register knowledge some of you have.
+
+Um, which. All right. Okay.
+
+Um, and um, um, and then we talked about what?
+
+Jack, one of the very start of the play over time.
+
+Okay, so we talked about polymorphic type inference, which kind of wrapped up our type checking part.
+
+Now you all know what it is that, um, SML does to your code.
+
+Um, so that's that's a good thing to learn. What was the last thing that we did on kind of the MIPs stuff?
+
+Chris. Yeah. So we started by talking about the prolog.
+
+So basically you get space on your stack frame.
+
+You save your old frame pointer, you set up your new frame pointer, you spill some colleagues saved registers the ones that you might need,
+
+um, save your return PC and that gets you ready to go do the body of the function.
+
+Right. Um, now, uh, uh, we'll talk a little bit about the frame pointer.
+
+Um, because in 250, do they still tell you that the frame pointer is like made up stuff that nobody needs?
+
+Yeah. Uh, okay.
+
+We'll talk about that in a minute. Okay, how about the epilog?
+
+What do we do at the end? Chris, like restore things.
+
+So we need to restore. Any saved as works.
+
+My G's and S's look a lot alike, which is very unfortunate, but.
+
+And part A for safety. What else? Eric.
+
+We need to admit we're stuck with your back to.
+
+Back up. We do need to set our stack pointer back.
+
+Um. Doing stack pointer plus equals may or may not.
+
+The, uh, a reasonable approach depending on our language.
+
+Um, but like we said, that point pointer, we might want to use the frame pointer, uh, to do that reset.
+
+And we'll talk about that in a moment. But I know that they tricked you all.
+
+I've been thinking the frame pointer is some crazy thing that got got made up in the olden days.
+
+We also need to reset our frame pointer, and, um.
+
+And we need to. How do we get out of this function? Yeah.
+
+We need to j r ray.
+
+Right. All right.
+
+Um, so this is from this and the prolog that we did last time.
+
+Ah. From the Carly's perspective, what does the call learning to do a and B.
+
+What. Okay, so, uh, for the caller we need to save any T regs.
+
+Okay. What else? Restore our safety.
+
+Restore. All right. Um, so we shouldn't need to save and restore our car here because we're doing it here, right?
+
+Like, if we if we save our the start of our function, make as many function calls as we want and restore it at the end, we're in good shape.
+
+How do we party? Yeah, we need to fill in.
+
+Uh, we need to move. Arguments into a zero, to a three and then on to the stack if needed.
+
+Right? Could you all pass arguments on the stack in 250?
+
+Are only A0 to A3? Okay. Some functions have more than four parameters.
+
+You put them on the stack. Um.
+
+And then we do. Jump in link to get to wherever we're going.
+
+We'll see what markers. Uh, and then whenever we get back, we might need to.
+
+Store you'd saved. Right?
+
+Okay. All right, so let me ask you all this.
+
+Um, I've, I've been up here saying like, oh, the frame pointer and you all are like, we don't need the frame pointer.
+
+Um, tell us what's happening. Yeah.
+
+Okay. So. Here's the stack frame.
+
+The stack pointer points down here the frame pointer points opposite.
+
+Okay. So basically whether the frame pointer points just out of bounds of your frame at the first address of the next one,
+
+or uh, like whether it points here or here is kind of like I said, dependent.
+
+The stack pointer almost always points at the bottom of this.
+
+Why would we want something that points at the top of our frame?
+
+Oh, and by the way, we saved the old frame pointer somewhere.
+
+But generally like right up there at the top of the frame. Thomas return address.
+
+Well, we'll save the return address in the frame also. So maybe we save like something else registers return address.
+
+Maybe we have some variables that are on the stack. But why do we need this?
+
+Why can't we just use the stack pointer for everything? Pete could be.
+
+If we want to make sure that, like, functions or only access to things within their own stack frame and not try and jump around.
+
+Um. So you want to use this for some sort of bounds checking?
+
+That would be a little tricky because in many languages, functions can access things outside of their frame, right?
+
+Like I can pass a pointer and then follow that pointer crash.
+
+And this prevents like doing a bunch of operations like the offsets.
+
+You can just have one as well. So we can get offsets like this way or this way.
+
+Right. So either way this is either going to be frame pointer -20 or stack pointer plus 12.
+
+We're going to have some arithmetic. Eric does this have to do with passing arguments on the stack.
+
+Um. Maybe a little bit.
+
+In what way? I mean, I just assume you don't necessarily know how many.
+
+But maybe you do. Maybe the compiler, the compiler should know how many arguments are getting passed, but maybe it makes it easier.
+
+It's unclear how many arguments you have in functions that are being called.
+
+So we could end up calling a function with a variable number of arguments. I want you to hold that thought for a minute.
+
+Let me see what Thomas has, and then we'll come back to that. How do you exit if you don't have the same wiener?
+
+If you don't have everything the like, you can, like we can move to.
+
+I mean, we could in theory, we could just say stack pointer plus equals something, right?
+
+Rather than stack pointer equals frame pointer. Utah.
+
+Um. Possibly.
+
+Yeah. So let me sort of so that goes to kind of a second a reason.
+
+So the first is this is going to stay fixed through the whole function.
+
+Not if we're like, not if we're inside some child function. But anytime we're in the code for this function, this is going to stay fixed.
+
+And this might. Right.
+
+So, uh, going to Eric's point, let's say I'm going to call printf.
+
+Print f takes an arbitrary number of arguments.
+
+Right. I get to some code that's going to call printf. I need space on the stack to pass those arguments.
+
+What do I have to do to the stack pointer? I have to move it down.
+
+Right. And when I do that move, all like the offsets to anything in my frame are now different.
+
+So if I'm referring to acts as stack pointer plus 12, when I'm about to make this called a printf and passing those arguments,
+
+it's not stack pointer plus 12 anymore, but it's always frame pointer -20.
+
+Okay. And so that might be one reason to move this around.
+
+Things that come up in other languages, but not an entire in C.
+
+You can do this, right? Like, you can just declare an array like a local variable array of some arbitrary size.
+
+Right? So when you do that, boom, the stack pointer has to change by some potentially unpredictable amount.
+
+And if you do it like you know. With a lot of things.
+
+Suddenly you've got a very complex calculation to find any variables you put in the frame.
+
+If you use the stack pointer, but the frame pointer is always the fixed point of reference.
+
+Okay. By the way, here's your C trivia for the day.
+
+You guys know Malik. Do you know Alec?
+
+A? It's like Malik, but on the stack.
+
+So you you just say like. Well, 400 licenses don't don't ever pass like a raw number of bytes without the size of something.
+
+But like fear not to see programing you do that, it'll just bump the stack pointer by however many bites you asked for.
+
+Give you a pointer to that and you don't free it because when the function's returned, returns that stack.
+
+That stack, uh, frame just goes away. So it just Malik's it in the frame for you instead of in the.
+
+There's your random Z trivia. Yeah, yeah. What does that used for?
+
+I don't know, I've never used it, but that's, uh, uh, it's actually a library function.
+
+It is actually. Yeah. Well, okay, so let me back up. Back in my day, this was not legal.
+
+See? Yeah. Okay. Like like.
+
+Yeah. Like back when I was a kid. Like, I always feel like writing this because back when I was a kid,
+
+you couldn't declare on a local array whose, uh, size was not a compile time constant.
+
+And so back then, yeah, Thomas is like, oh, my gosh, that is true, that is true.
+
+True. And the dinosaurs. Yes, I had T-Rex for my, uh, C programing class.
+
+You do not want to segfault in T-rex's programing class because I'm dum dum dum dum dum dum real.
+
+We got a class, let me tell you.
+
+Um, so back then, you know, if you wanted to do what you would just do like this now, you would use allocation, like to just make a local.
+
+Um, I, I have not used it in, like, the past 100 years or so, so, like, it's not super useful, but.
+
+Or these days. But languages do support this kind of thing. Okay.
+
+Um, but the point is, basically, we may have reason that the stack frame changes sizes,
+
+and having the frame pointer be a fixed point of reference, uh, makes that easier.
+
+Okay. And I know you don't do this stuff in 250, so like, that's why they told you not to worry about.
+
+Um, Utah was mentioning, like, stack unwinding.
+
+If you're debugging, right, your your debugger has to be able to look at this frame,
+
+tell where the previous frame is and like figure things out frame by frame.
+
+So it actually uses these frame pointers kind of like a linked list to walk up and down the frames and get information about them.
+
+Okay. Um. All right.
+
+So frame pointer. So we are going to do. We're going to do things in terms of frame pointer minus an offset.
+
+Um, and you can all go tell your 250 professors that like their lie is exposed.
+
+Uh, I mean, it makes sense why they would do that in the class, because people already have so much trouble with, like, the stock.
+
+Oh, yeah, I know, I know. I just like I don't know who you have 3250, but I know, I know damn well like you said.
+
+Tyler. Uh, Tyler Gladstone and like, I, I don't have a problem with these people.
+
+Okay. Um. Thomas, what's a lie?
+
+What's a lie? Like what? What was a like. Like you said.
+
+The light was exposed. Oh, the frame point was useless.
+
+Oh, like like in 250. They're like, oh, we don't need a frame pointer.
+
+It's just this made up register that's there to confuse people like we want it.
+
+Because in real programs the stack pointer might change around, okay.
+
+And we might want debugging information, which you know. They made you just debug your 250 assembly by hand.
+
+Other than like GDB helping you with it or something?
+
+Um, okay. I'm really good with all that.
+
+Besides me apparently being mean to happy people, who did you all have for 250 plus units?
+
+Eunice. It was that you? Okay. Wow. We have, like, a three way I saw in Eunice.
+
+Oh my gosh. All right. Uh oh.
+
+Hang on. Oh, okay. Um.
+
+All right, so, um, with all that in mind, we're now going to talk about a thing that is different in, uh, Tiger from in C,
+
+and it's going to, um, come into play coming up soon because we're basically setting up for translation dialog.
+
+She. Okay.
+
+That's. All right.
+
+Um, I wrote in the end because I don't really care about anything beyond this variable in this function here.
+
+But what is, um, different about the mean? Mean?
+
+It doesn't really matter. But one of you is going to ask me what that formally drawn star is.
+
+Um, what's different about this from anything you can do in C.
+
+Or at least do do directly in the language and see you can do it.
+
+Try hard not to. Eric, you're assigning X, but you know scope lower than the one X is declared it.
+
+Yeah. So x is in what function.
+
+Which may be a little bit tricky here because it doesn't look like it's in any function.
+
+But in Tiger, this this whole outside is a function that's called.
+
+Take Maine. You just don't see like your compiler will compile that into the body of a function that's take mean.
+
+So X is going to belong to take me, right?
+
+But f is going to mess with a variable that is not its own.
+
+It belongs to another function.
+
+And we can do this, you know, with, with variables that may be, uh, in much deeper relationships like an F has inside of it,
+
+G has inside of it, H has inside of it, foobar has inside of it another function.
+
+And that touches a variable from f like five levels out. Thomas, you look unhappy.
+
+Like so you the the function deep into deep inside is able to change the value of the outer scope.
+
+Yeah. So, so in Tiger, I can have, you know, function math, whatever has a flat variable, a three function.
+
+G. And so I'm not going to write all the lines but like, you know, function.
+
+Age 11 to 1 in a blog many levels deep. And somewhere in here.
+
+I can say, you know, a gets a plus one, right?
+
+Even though that's from.
+
+510 whatever function nesting level dumps out, we can touch any variable because this is in scope, even though it's in a different function.
+
+You talk. I think this.
+
+We cannot do that at the master function by yourself. I suppose you can do the run.
+
+And if you do that, you can also change the variables and also Washington's reference.
+
+Yeah. So. Okay. So in C you can not do nested functions in C plus.
+
+Plus you can do lambdas there. If you want a variable you have to put it explicitly in the capture list.
+
+And that capturing you have to say whether it's done by value or by reference.
+
+And creating that lambda is much more like creating an object where your capture list is the fields of the object,
+
+and each of the things you're capturing is copied into that object.
+
+And then the lambda behaves as if it is one anonymously.
+
+Anonymous. Anonymous does anonymous like named unnamed method on that object.
+
+So basically lambda it's like super easy in order to actually build share go it.
+
+Yeah I mean. Okay.
+
+First of all everything is syntactic sugar on assembly. Okay.
+
+Well that's all it is. Um, but yeah, like, lambdas are just like a nice way to write down an anonymous function,
+
+which removes all the extra syntax around creating an anonymous like class with a method and of the platform.
+
+Now I think Jack is writing down two quotes, which is great.
+
+And I will say that a couple of years ago, uh, one student at the end of compilers, like at the end of the semester,
+
+is actually a little later because it was like the pandemic year, but had a mug made to worry with all the various quotes she'd written.
+
+Not all of them, but her favorites of the various quotes she'd written down and gave it to me as a present, which I thought was really cool.
+
+Um, okay.
+
+So, uh, we have this situation where this variable, whether it's, you know, this one or this one, is kind of owned by a different function, right?
+
+Which means like we are a little bit of, like, how do we how do we do this?
+
+We can't we can't put this variable into a register.
+
+Joe by that. Like especially here.
+
+Like if we're like, oh, I'm going to put this in t0, there's no way that we're going to be able to guarantee t0 is fine down here, right?
+
+You know, if we say S0 like all these other functions, we could maybe do something wild and crazy, like we might have lots of these variables.
+
+We're not gonna do that. So where's it going to live? In the stack frame.
+
+But like this is going to live in tech mainframe and this is going to live in S frame, right?
+
+Which means that these bits of code need a way to go over there.
+
+Right. So here's like a frame for us which call G and so on and so on and so on and down here here's Fu.
+
+Right. And when we're in this frame we now need a way to go access.
+
+Variable A up there in F. Go by that.
+
+Um, and this, by the way, is going to be another reason we're going to want the frame pointer because like start point,
+
+you can be all the way down here. Um, and so.
+
+Or we need something beyond just a frame point like, well, only have the frame pointer here.
+
+We're going to have some sort of solution. So how could we do this?
+
+Our first guess might be to say like, oh well, if this remembers the old frame pointer,
+
+we can like walk a linked list out some number of steps to get there.
+
+Right. Well, I mean, uh, if it were, if it weren't for the complexities, I'm about to say, let's just say there's no dot dot dot here.
+
+We'd say, okay, I need to go out one, two, three frames.
+
+Right. Because this would be like. Right.
+
+And I could say like, oh, I need to go out three frames and get there.
+
+But what if. What if h r curses a few times before it calls this function?
+
+Right now, we don't know how many times to go out. Don't buy that.
+
+If we just like, followed the old frame pointer links.
+
+So we need a slightly different data structure in our stack frames.
+
+It's going to look like this. And which I realize is ugly with the way I've drawn an opponent.
+
+We draw that over here. So this points out it's statically enclosing frame.
+
+This points that it's statically enclosing frame. This points that it's statically enclosing frame and circles.
+
+So do these right. So all three of these are going to point at G because they are statically inside of G even if they're recursive.
+
+Right.
+
+And so anytime I'm in Fu, if I want to go to H I go out one level, I want to go to G, I go out two levels following these things called static links.
+
+I want to go to F, I go three levels.
+
+Okay. And um, to do this we basically just need a little extra information.
+
+We're going to store in addition to the old frame pointer the static link.
+
+We'll keep that in our starting frame. And in Tiger, this is going to be passed as an implicit first argument to every function.
+
+All right. So uh this takes two parameters y which the programmer can see.
+
+And before that the static link which the programmer can't see but will be passed in a zero.
+
+Thomas, wait. What's up I this like. Like, what's the point of static things?
+
+What's the point of static links? As we're executing coding through the need to be able to access a.
+
+And so if we have these static wings, we can say from food to H to G to f is always three levels out on static links.
+
+No matter if you're Kerstin, food, recurse and so forth.
+
+This is going to be set up where f from food.
+
+The static link always points at the frame for h that points at the frame for G that points at the frame for f.
+
+It's called a static link because it is referencing the statically enclosing meaning in the program text function.
+
+You're still unhappy until you're like.
+
+It's okay to be unhappy. Yeah.
+
+Do we need to do that?
+
+Like, if we're in foo and we want to call a, which is an F, and like we've used a couple other registers and don't have a in our register,
+
+do we need to do that recursion down the static links every time. Okay.
+
+So um, the answer is for right now every reference to A is going to be compiled into follow the static links out there.
+
+But um, um, later when we talk about optimization,
+
+we'll see how you could have like if you do a equals a plus one, that's basically going to compute like.
+
+Star. Star star. Static link plus one. Save that two.
+
+Star star star static link. And we could suck out that star star, star static link and put it in a register and realize its comment and not change.
+
+So like, we could we could do better. But you don't have to for what's coming up on on our transition.
+
+Okay. Um, um, if you were recurse was f.
+
+Like if EV calls itself. Yeah.
+
+Will like wouldn't the levels mismatch like where you have um, the the inside food will have four stars instead of three stars.
+
+So if Africa curses, if ever curses kind of most directly there, this is still going to go to the most recent path.
+
+Uh, where the trial will go to that automatically talk about, uh, it would go to this one.
+
+So the oldest one. Yes. Which is what you're going to want right.
+
+Of calls itself that F calls g, which college calls foo.
+
+That foo is logically inside the most recently call that.
+
+And even if we did something weird, we're like f called g, which called h, which called f, and then that called g, which called h, which called foo.
+
+We still want that most recent one. Okay.
+
+Everyone. Everyone. Good with that.
+
+Um. So we're going to, um.
+
+Talk a little bit more about this topic once we, uh, talk about air and can talk specifically about how all this will manifest.
+
+But for the moment, we're going to think of just as we're setting up our frame, we're going to have this extra thing that goes into the frame.
+
+It's our static link. Um, it's going to be passed in a zero to every function.
+
+So as we're doing translation, I ah, you're going to need to to throw that in there.
+
+It will get saved in the frame. Um, that looks like an escaping variable because it goes in the frame.
+
+What is an escaping variable by the way? Basically one that can't go in the register.
+
+Right? So this variable can't go in and register because it's getting used in a different place.
+
+It escapes in Tiger. That's the only way we have escaping variables is they're used in a nested function.
+
+Um, in something like C, if you took the address of X then it can't go in a register.
+
+It escapes because you can take a pointer to it. But, uh, this is the only way in Tiger.
+
+Okay. And by the way, uh, you all will need to go through and figure out which variables escape.
+
+Okay. Like I think a pal, just like in his description, is like, you can just set these to true.
+
+But like writing an escape analysis is not hard. It's just like going recursing over your AST and mapping variables to the depth that they're in.
+
+And then seeing when you encounter a variable at a different time.
+
+And so you recurse over your AST, you're actually going to map the variable to the depth.
+
+And then and the reference in the AST right.
+
+You probably saw that there's like some weird random bool reference that have like just set this to true is known as timeout.
+
+So set it to false. And then as you go along you know like oh x it's at depth zero.
+
+And there's its bool reference. Oh now I'm in depth one.
+
+And I see x I need to go set that to true. Okay.
+
+Um. All right.
+
+So, uh uh uh uh, and then.
+
+Yeah. So this, this will get marked as escaping, which means it means to go in the frame.
+
+This will get marked as escaping, which means it needs to go in the frame.
+
+Any variable that doesn't escape. And hopefully going to register.
+
+Why do we like sticking things in registers? Pete thinks that it's faster, and I like things to be fast, right?
+
+Um, now, of course, it's not really going to matter that much because you're doing things on film.
+
+And so, like, it's really just going to like, you're not going to get actual performance data,
+
+but, uh, because we would like to make things fast if we really did have a MIPs processor.
+
+All right. So, um, I'm going to just brief we kind of okay, first, everything good on this part.
+
+I'm going to briefly pop back up to the big picture. And then we're going to dive into translation to air.
+
+Okay. All right.
+
+So remember the big, big picture is that we are like right up here about to go to air, which is the um.
+
+Man, my brain is not working. I can't think of the word. The place where the front end and the back end of the compiler meet up.
+
+Right? So the front end is language specific. The back end is, um, ISIS specific.
+
+And even though you all are only doing. Tiger to MIPs 1110 so you don't have to care about oh, what if we had 37 other languages and 37 other ISOs?
+
+A lot of compiler compilers are built. Wouldn't either, because it, um.
+
+It means that if we were to do like Tiger and C and Fortran.
+
+Two MIPs and ARM. And I don't know spark.
+
+And PowerPC. And x86, right?
+
+If we wanted these three languages and those five ISIS, if we just did it naively, we'd have 15 things, right?
+
+We'd have to write a Tiger compiler for x86, a Tiger compiler for maps, and so forth.
+
+And so anytime you have in things that need to match up with things.
+
+In times. Em usually gets big really quickly, right? But if you can put something in the middle.
+
+That looks like that. Now you have it in place and things.
+
+Which. Is like. I think in plus M is always less than or equal to n times m for positive integers in an m,
+
+but I'm not going to prove that you know what I'm going to do?
+
+Look at the bigger than one.
+
+I don't know n n times. M definitely grows bigger though, right?
+
+Um, also, when we consider that each of these is now half as big anyway.
+
+So. But thank you. My math my my brain is tired not only today, but in general.
+
+Um, all right. So that's one of the reasons we're going to want the II. We're going to talk about another in um, um, uh, a minute here.
+
+But before I dive into that, I want to just briefly mention that as we start to go into the EIR,
+
+we're going to start touching on things that are a little bit ISIS specific, like all this stuff is ISIS specific, right.
+
+And so I have some out. And so a POW basically kind of divides what's coming up into three things.
+
+So you all are working on your type checker. Now that is some and um, it's going to interact with the IR translation.
+
+So at the moment you all are returning records that are something like, you know,
+
+type equals some type that you're computing and then like XP equals unit and you're wondering like what's this weird placeholder, right.
+
+That is the placeholder for the ah, because you're basically going to do this translation to here in the same tree,
+
+walk the same recursion over the AST is type checking because you're going to want type information to do that.
+
+Um, and so this is going to have kind of this interaction where you're like oh I have a plus of and and B let me recurse on a,
+
+it's going to go do some stuff and also say like, hey, translate this to I are going to recurse on B and ask it to translate that to er,
+
+these two are going to come back and I'm going to treat those as like an opaque black box.
+
+I don't know what the er is, I'm going to hand them over here and say, hey, I need you to do plus and give me the I back to pass.
+
+All right. So some man is going to ask translate to do translations and then it's going to
+
+return these up in this exp so that the next level up can hand those off to,
+
+to whatever needs to be done. Now as you do this, the goal of the goal of the way of health has this up is this is still, I said, independent.
+
+And that is nothing in here cares if this is MIPs or x86 or does wild and crazy,
+
+etc. but we are going to start having things where we do need to care about that.
+
+We need to say, oh, I need another variable in the stack frame.
+
+Oh my gosh, I need the argument registers or I don't know, I need another register or whatever.
+
+So yes or hand on the I said dependent.
+
+And stuff, um, to abstract that out.
+
+Now, I will also say, as I explain all this, that you'll do that and like this will then hard code like MIPs frame,
+
+which is a little bit unfortunate because this is SML and like functors would be great for exactly that.
+
+But APL is writing the book for also the C and Java programmers.
+
+So like that's the way it is. But you also don't care that much because you're not going to do anything except.
+
+Okay. Um.
+
+I need the next set of my. All right.
+
+So with that, we are going to start on the actual translation to here.
+
+And one of the things. About this year, in addition to giving you kind of the independence or the.
+
+The hinge point, if you have multiple front ends and multiple back ends and so forth,
+
+is that we are going to break a big problem into smaller problems.
+
+All right. So, um, I, I hope somebody has told you that if you have, you know,
+
+a big problem and you try and do it in one big step, it is much harder than if you break it into small steps.
+
+Right? That's kind of like why we have abstraction functions in all of these.
+
+And so there's a pretty big gap.
+
+Between our AST and assembly.
+
+Right. So for example. The overall structure of our HST is a tree assembly a tree.
+
+No, it's a linear sequence of statements. Right? But our ire is still going to be a tree.
+
+So flattening that out into a linear sequence is going to be something we push off until later.
+
+Uh, can any of you think of other things that look different between our T and assembly?
+
+Even, um, I guess our tree is all like one tree, whereas the assembly is divided up into a bunch of like.
+
+You're not going to believe it. I mean, there are so-called functions.
+
+Okay. So, um, this is going to be like, let's say functions.
+
+Are nested. In the lats.
+
+And this is um. Functions are top level only and they are just one attribute.
+
+Okay, so, uh, hold on a second, Billy.
+
+So in our air, we're actually going to.
+
+So basically solve this by splitting this into a list of fragments where a fragment is basically a function or a string literal.
+
+Those are both top level assembly entities. And then later phases of the compiler are going to work one fragment at a time.
+
+And we are going to basically undo all of that nesting. All right Billy.
+
+Uh, variables are still, like abstracted by their names in the AST, but their registers in.
+
+Okay. So this is basically going to be like uh variables.
+
+Are going to have. Um. Infinite number of names.
+
+This is going to be, you know. About 25 registers that we can use, right.
+
+There's a handful we can for variables. And this our R is still going to have an infinite number of registers.
+
+What you're going to be called. Hell's. Which, by the way, a pal gives you a file called temp dot SML to keep track of these temporary registers,
+
+which I will admit I have removed 8000 times.
+
+I'm like, oh, let me clean up the code in this directory temp dot SML.
+
+My compiler doesn't know, right? Because the temp SML is not like what you would think.
+
+Uh, Chris, did you have your head up a minute ago? Okay. Uh, yeah.
+
+The, um, operations we have is to do not match the operations in the same way for the options.
+
+Like, I guess, like, assignment is not like it might be more involved with that where, like, you have to get, uh, fetch from, like, ram or like,
+
+uh, I don't know if there's, like, extra stuff that goes into, like, we can't map 1 to 1 from the AST operations to the ASM opcodes.
+
+Yeah, I'm trying to figure out how to kind of put that succinctly.
+
+Um, on on our little table. Um, abstraction levels are what, you know, sort of.
+
+Um, yeah. So I think part of that is that like, um, so part of that comes in, uh, a little bit of depths, right,
+
+where like you can say x equals a big complex tree versus like, look, I need, I need, I need this register to equal that register.
+
+Right. So like I'm going to say, uh.
+
+Let's see what we can do. Like our operands. I think our subtrees.
+
+Right. Versus registers in memory.
+
+And here are operands are still going to be some trees. Does that capture your point pretty well, yeah.
+
+Okay. Other things. What about.
+
+So we had like variable names. What about scope? What's the scope look like in our esteemed.
+
+Child. Yeah. It's like this, like nested.
+
+Tree base thing. Right? What is scope look like?
+
+An assembly. Yeah.
+
+It's wow. Like Register three as Register three.
+
+Wherever you are, there's not a different register three and a different scope okay.
+
+And this is where we're going to move to something that's much more like assembly.
+
+Where are infinite number of register temp like they are temps.
+
+Temp 100 is going to be temp 100 everywhere. There's not a different temp 100 and a different scope okay.
+
+What about? My markers are retired types.
+
+What types do we have in Tiger? Crash and string and string.
+
+I heard a ray. All sorts of stuff.
+
+What types do we have in assembly? Right.
+
+What? Winery? Yeah.
+
+You basically have, uh, bite. Yeah.
+
+Word and d word. Right.
+
+Like you've got eight bits, 16 bits and 32 bits.
+
+Maybe 64 beds, but not in arms. Over here we're going to just have.
+
+We're just going to have 32 bit machine works. Okay.
+
+Because we don't really need bytes. We don't need like eight bits in 16 bit stuff for Tiger.
+
+Um, if we were doing see, we would need those things.
+
+But we are going to compile everything or we're going to translate into our R where everything has one type and that is 32 bits.
+
+Okay. Um.
+
+And the last thing I want to put up here on our little table was.
+
+Is branches or let's say just a control flow.
+
+So what? Um. What does control look like in your.
+
+Asst. Yeah, if we have.
+
+Yeah we have. So we have faults. We have. While we have.
+
+For all the nice stuff you're used to from programing languages, what does control Flow look like in assembly actions?
+
+Yeah, it's a branch and one of those branches in particular.
+
+They have how many targets? One target or follow through.
+
+Right. So we can have basically conditional branches.
+
+That are one target. Or fall through and we can have unconditional branches.
+
+Okay. And r I r is going to have two target conditional branches.
+
+As well as on membership purchases. Okay, so that looks a little different than assembly.
+
+It's not jump here or fall through its jump here or jump here.
+
+Okay. And we'll notice. So like here we're matching the AST.
+
+Yeah. If I pick a for both of these, that's not going to go well. Right I'm going to write a next.
+
+The ones that match and AST and next the ones that matches have like it were matching the AST here.
+
+We're much closer to assembly. Here we are much closer to the Asti Asti assembly.
+
+Uh, assembly. And this is kind of like halfway.
+
+All right. So you'll see that we basically ended up with a mix of things that we are moving
+
+closer to the assembly and things that were leaving more like they are now.
+
+We're not going to go solve the finite number of registers until the very end.
+
+We are not going to linearize things into a sequence of statements until right after this.
+
+We are which is also going to include turning our two target branches into things with a vault through case.
+
+Right.
+
+We don't want to have to worry about making things have a fall through, like the fall through case right after them until we're done making the IRR.
+
+But we are going to get rid of scope. We are going to get rid of types.
+
+We are going to make this look a little bit closer to assembly so that we have a smaller problem to solve together.
+
+So I'm good to everyone. All right so the next question is what is yet.
+
+You could if I raised this now. Just like.
+
+Just in case anybody is looking at the video and wants to read that, I realize my writing is a little smaller and lighter.
+
+What was showing up on camera there? As I was about to say, I got a razor because if one of you wants it, you can just look at the video.
+
+I need to review markers. I don't know which which I work.
+
+See that one's home. Okay.
+
+So what does our URL look like?
+
+We have a data type. Well, my statement, which means something we're going to do for a fact.
+
+So seek means do one statement and then do another.
+
+Lets us make things after each other. Label is going to basically say, hey, this is where this label goes in the program.
+
+So if you say label 14, that's going to be like Al 14 in your assembly, okay, it's going to be a target that we can jump to.
+
+Thanks. One.
+
+A jump is going to be an unconditional jump. It's going to take an expression to tell us where to jump.
+
+We'll come up with expressions in just a moment, and then a label list, which is a list of all the possible labels it could jump to.
+
+All right. Now you might say, shouldn't that just be like one label? Well.
+
+For what you are doing. It will be 1 or 0 labels.
+
+Zero for the JRA at the end of a function, because that goes nowhere.
+
+From its functions perspective. Advantages.
+
+Function is done, but as we'll see later, if we had some other things in our language, we might want some jobs that go to different places.
+
+We could. We could read something into a register that's not our A and jump to that register.
+
+Conditional job of an expression.
+
+Cross. Oh, sorry. Not expression.
+
+Relational operator. Relat expression and expression.
+
+Was like, the longest thing ever. And so this has you give me a relational operator like equals or less than or greater than.
+
+You give me two expressions. So like a equals b.
+
+And then if it's true I'll go to that label. And if it's false I'll go to that label okay.
+
+Move is assignment. So this is the destination and this is the source.
+
+Um, and this is one of the things that irks me drastically because Apple basically puts restrictions on what this can be.
+
+It can only be, uh, a minimum or a register, because those are the only things that make sense.
+
+But this means that we can write down illogical things in the type system I'll catch.
+
+I'll say more about that once I finish writing all these, um.
+
+Um, and the last thing we can do is we can just do an expression for any side effects in it and throw away the vote.
+
+Okay, so so sometimes we might have an expression that has side effects.
+
+We just need to do those and we don't care about the value. So those are the statements the things we do for effect.
+
+And because this is mutually recursive. An expression.
+
+It's going to be a bit up. Um.
+
+Right. So it's going to be like plus of A and B or whatever.
+
+These again can still be trees. So they can be quite complicated. That's fine.
+
+Um, ma'am. And so this expression is the address if you're using this like if you do if this ma'am is,
+
+you know, something in some other expression where reading that value, it's a load.
+
+If you move to ma'am of some expression, it's a store to that address.
+
+Okay. Temp of temp.
+
+So this is basically a register. The particular register you want.
+
+And Aecaec basically says, we are going to do this statement first for whatever effects,
+
+and then we're going to do this expression and produce a value, right.
+
+So you can think of that in terms of like if I had x gets x plus one x,
+
+this is a this is something that would naturally become an easy because I want to do this statement and then produce this value.
+
+This whole thing is an expression. But I need to do these side effects okay.
+
+So that's what an EQ is. And by the way, we're going to use these for lots of other things that aren't just that kind of programing construct.
+
+Name of label. This is a reference to another label. So, uh, you know, this declares the label like L 14.
+
+This is when you have an expression like jump.
+
+You need an expression most of your jumps to jump. Name some label.
+
+Uh, we've got the easiest expression, which is cost.
+
+Of and. Constant. And then.
+
+Call of expression cross expression West.
+
+So this says call a function. This function in our case of Tiger will always just be name of some label.
+
+The name of the function we're going to call, it's its label not necessarily its name.
+
+And tiger. And then the expression list is the parameters to pass.
+
+Okay. What. No. Um, so this is the gist of what we're going to be working with.
+
+We're going to end up with, like, kind of a really awkward, uh.
+
+Time time boundary here, but that's okay. Um, and so one of the things that like, if I could go back in time to, I don't know,
+
+1995 or whenever, like whack Andrew over the head and be like, look, don't do this.
+
+Like this lets us write completely bogus stuff like move.
+
+Concept three concept for and like one answer be like what?
+
+Okay, just don't do that. Right. But.
+
+Hey, we have a type system for a reason. We like our type system to catch our mistakes.
+
+We want our type system to tell us this is bogus.
+
+And perhaps also importantly, when our compiler, our SML compiler, warns us, match non-exhaustive.
+
+We want to be able to say, oh, I should look into that and not oh yeah, whatever, there's some bogus stuff in here where later when we're,
+
+we're processing this move is going to have non-exhaustive matches because we're going to have moves from 10th moves from memes,
+
+and the compiler is going to be forcing it like every other register or every other expression cases uncovered.
+
+We're like, yeah, those just don't have trust me, they don't. Okay.
+
+And so to me, to me, this should have been a different type for a location.
+
+Right. And then these two things should have been pulled out to be the type for location.
+
+And we should have had in here, you know, read. Uh, location.
+
+And then we with life would have been better. Now.
+
+This is one of those changes where unfortunately, I'm going to tell you, even though I like it this way, don't go change it.
+
+Because the next bit of code after this is like a palace.
+
+Like you know what? The linear riser then takes your tree and turns it into a linear sequence is really boring.
+
+So here you go. Here's the code for it. And if you like make this change.
+
+You'll have to go like fix his ugly toad to to deal with that change.
+
+And it's not worth it. It's not worth it. But it would have been nice if you like.
+
+Just. Just like that. Okay.
+
+All right. Everyone good with the gist of that?
+
+Yeah. Uh, where's the, uh, seashell?
+
+What is the sea jump? That is a conditional jump.
+
+So you say a relational operator like less than two expressions of A less than B.
+
+If it's true, you go to this label and if it's false, you go to this label.
+
+I'm confused about.
+
+That the relation operators are like less than, less than or equal to, greater than, greater than or equal to equals and not equals okay.
+
+Any other questions, Pete? You one more time. I have to jump on the label.
+
+This. Yeah. So for what you're going most of what you're going to compile where it's just, um, going to look like this.
+
+It seems a little silly, right? Because you're like, look, it's name X.
+
+Of course it's going to jump to X, but if you had something where you were doing like you can jump to.
+
+Temp would jump to whatever is in temp 143.
+
+Like, we've put stuff into a register and we're going to jump to that register.
+
+At the moment we're doing this translation. We would know the possible targets of that,
+
+but later it might be impossible to figure out what could possibly be in temp 143, or at least really, really difficult.
+
+So we just write down here like, okay, that's label 16 or label 17 or label 18.
+
+And then later on when we need to reconstruct the control flow graph and figure out where could this jump go?
+
+We don't have to try to figure out what this could mean. We could just replace.
+
+Okay. The other thing that's going to be, um, a little bit different is when you jump to aura, like the return address register.
+
+Um, this is going to be the empty list because that's the end of the function.
+
+Once you get to that, this function is done and you have no no next instruction inside this function.
+
+Okay. Utah, loose men and ten.
+
+So mem is a memory location. So this is the address.
+
+And if I use it here on the left side of a move, it's a store to this address.
+
+If I use it anywhere else it's a load from that address. Okay.
+
+Temp is are infinite registers. All right.
+
+So think of this as a register but not a real actual machine register.
+
+It's like ten 123 temp 144.
+
+We have this infinite pool of them.
+
+And later down the line, once we've got all those turned into infinite register, MIPs instructions and so forth, we will um.
+
+We will, uh, map those down onto actual machine registers.
+
+Had. All right. Any other questions?
+
+Okay. So with all of that in mind and five minutes left,
+
+I will probably be able to introduce one thing that we're going to need, but not getting into much detail.
+
+This is why I said the timing is going to be a little awkward. So remember that I said that we're going to have cement.
+
+Translate. Frame.
+
+And then if we have something like, you know,
+
+loss of A and B over here and submit when you're type checking that you're going to recurse left, you're going to recurse right.
+
+You're going to get back those results. They're going to say oh as an int b as an end.
+
+And they're also going to have this exp which in your type checker is unit.
+
+But in your er translation you're going to fill in with this stuff.
+
+Right. And so this recursive call is going to say like oh hey I need you to translate this variable.
+
+Give me back some air. I need you to translate this variable.
+
+Give me back some air. And then these are going to get returned up.
+
+And they're going to get passed over here and say like, hey, I need you to translate plus of this and this and give me back some air, okay.
+
+And the reason I'm bringing this back up beyond this that you need to go implement
+
+all this is it raises a little bit of a question of what type like SML type.
+
+Is getting passed back and forth across this boundary.
+
+Okay. So on the one hand you might say, oh we'll do like A and B are expressions, pluses and expression.
+
+Paths back and forth are expressions right.
+
+But not everything is an expression. Because if I have like a gets three that's a statement.
+
+Yeah. And so I can't have the interface between these things like, uh, and what I pass up to be ill typed, it has to be one type.
+
+Right? Because that's how it works. So should it be a statement or should it be an expression?
+
+Yes, it should be. It should be the order of those and also the order of something happens.
+
+Right? Uh, and so what we're going to have is this other little data type that lives in translate, which is going to have three constructors.
+
+I forget what it's called. Air for.
+
+So it's going to have an x constructor for expressions and index constructor for statements.
+
+If we just had those two, it's basically the data type of it's an expression or a statement.
+
+But we're also going to have this other one that label cross label two statement which basically is we think well,
+
+and the code over here is going to pick which one of these it gives back based on what you think you need.
+
+That's like you give me the true and false label for something and I'll give you back a C jump for it.
+
+Probably second. Right. And so if I have, for example, if I have a plus B.
+
+I'm going to give back an X for that, right? Because that's an expression.
+
+If I have a gets three I'm going to get back an X because that's a statement.
+
+And if I have something like x less than four, I'm going to give back a six.
+
+Because I expect that inequality is likely to be used as the condition for control flow, right?
+
+It's probably going to be effects less than four do something or while x less than four.
+
+It doesn't have to be. We'll talk about that next time.
+
+But if I give that back as something where you say oh I have x less than four, you give me the true label to go to if x is less than four, the false.
+

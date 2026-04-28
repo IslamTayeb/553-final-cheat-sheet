@@ -1,0 +1,1273 @@
+[Auto-generated transcript. Edits may have been applied for clarity.]
+It's like the liquid glass water. Uh.
+
+Hold on. It's all. Apple security updates.
+
+Fix one zero day vulnerability updates for macOS, Tahoe, Sequoia Sonoma, iOS,
+
+iPadOS, watchOS, tvOS OS the update addresses multiple security vulnerabilities,
+
+including a zero day vulnerability in Apple's Dynamic Link Editor component that was already exploited in highly targeted attacks.
+
+So basically, like whatever you have updated now, I'm not going to make this much.
+
+Um, I don't know if students can join security ambassadors, but like, oh, it has this thing with security ambassadors.
+
+And so like I read these announcements there and go, oh my God,
+
+I need to update my computer and tell everyone, um, which is of course, the most important security.
+
+Huh. Recommended for all users. Yeah.
+
+So I spent the last like half hour with my computer unusable and wondering like if it was going to be back for class or not.
+
+Which for this class isn't as big of a deal because I can do stuff from the whiteboard,
+
+but my computer wasn't back for the next class to be a problem. Um, all right.
+
+So that's, um, public service announcement number one.
+
+Uh, Chris. Jack. Jack. Patrick.
+
+Pete. Eric. Will. Who has swapped spaces just to keep it confusing.
+
+Andy has also swapped spaces. No, wait.
+
+You wait. No, no, no, you're at least.
+
+Sorry, I just got confused. You're wearing, I guess, so much. Pop your jacket or.
+
+Oh, I'm also very tired right now. How you tab.
+
+That was embarrassing for me. Sorry. Alex. Theo.
+
+Billy. I tried to kill it and print off.
+
+Okay. Man. He's just not here. Uh.
+
+All right. Sorry. I'm very tired. I went to the gym and did, like, 90 minutes of the party this morning because,
+
+like, Fitbit insists that I need to get 300 cardio load, which is a lot.
+
+And I keep trying to do what Fitbit tells me on the days that I can and keep not improving.
+
+And it keeps being like you're maintaining because you didn't work out like eight days this week.
+
+And I'm like, Fitbit, come on, I got your 300 cardio load today.
+
+Isn't that enough? What do you mean? I have to work out all the rest of the day this week anyways, so I'm very tired.
+
+My apologies. Um, okay.
+
+What did we talk about last time? Yeah.
+
+Chris. Sometimes subtyping rules for functions.
+
+Okay. So bigger picture. We're talking about subtyping. We were talking about subtyping for type constructors.
+
+And what are kind of the two big rules for any type constructor on how the subtyping goes.
+
+Uh, well, so very controversial. Okay.
+
+So covariance is if you can. Read it and contravariant as if you can write it.
+
+Okay. And so we use that for the function rule.
+
+We saw how it's covariant in the return type because we read the return type
+
+contravariant in the argument type because we're writing the argument into the function.
+
+And we kind of saw both that rule and that explanation, but also thought through it in terms of like,
+
+what does it mean if we're using function subtyping with a cat cat function?
+
+And then what else did we do last time? Christian.
+
+Oh yeah. We started talking about parametric morphism, which is types that are for.
+
+All right. So like the map function in SML says for any types A and B you give me an A to B function.
+
+You give me a list of A's, I'll give you back a list of B's, because we don't need any specific information about those types to type.
+
+Check the map function that works for any type C.
+
+Now before we go into polymorphic type inference, which is, by the way, the last of our type stuff, and that's the last stuff on the midterm.
+
+Um, I just want to briefly mention that a lot of languages deal with the issue that for all is very constraining and different ways.
+
+Right. So like if you look at C plus plus and you say, oh, I want to write uh, a function that will sort of a vector of any type T.
+
+Well, now you have the problem that not all types are ordered, so you can't really sort just any type, right?
+
+C plus plus deals with this by saying we're going to make our parametric polymorphism work where we only type check it on the types you actually use.
+
+So it's not really truly for all T it's for all T's that you use.
+
+Um, which is one choice. How does Java deal with this problem?
+
+Yeah. Yeah. It's like nobody's like, um, you have to implement an interface like comparable.
+
+Yeah. So Java implements what's called type bounds, where you say for all t such that t is a subtype of comparable.
+
+Right. And then you can treat T as comparable in, in what you type, check and rely only on the things that are available in comparable.
+
+Um, but you also can only instantiate it with things that implement comparable.
+
+Right. So that's a different approach. Requires only type checking the body ones.
+
+And what does SML do. It's kind of a tricky question because there's like a couple different answers.
+
+The first is for normal, just like tick A, tick B kind of polymorphic types.
+
+There's basically two categories of for all.
+
+There's for any type like tick A and then there's for any type where equality is defined which is tick tick.
+
+Those are called inc types. Right. So it's basically says equality is a special thing.
+
+And we will let you we will let you write code that is for all types where equals is defined.
+
+Um, but we won't let you just write code for all types where less than is defined or something like that.
+
+But then what do they do for like, oh, I want to make a generic tree or something like that.
+
+What function. Yeah. Functors. So basically we can say, look, uh,
+
+you give me a signature that defines certain operations and I will create a structure that works for that particular type.
+
+Right. So like that's how org map works.
+
+It needs comparison.
+
+But it says you give me the ordered key structure and I will come up with something that, uh, that does an ordered map for that particular order to.
+
+All right. So with that in mind, I'm going to switch to actually SML for the rest of the class instead of doing Tiger,
+
+because we are going to talk about how SML does, uh, type inference.
+
+So the first thing I'm going to do is I'm going to write down. The links function.
+
+Okay. I already agree that that will take the length of a list.
+
+What type does this have? Crush like ticketless to.
+
+Take a list to end, right? So let's see how SML, uh, comes up with that.
+
+First, this is a little bit of syntactic sugar.
+
+So I'm going to just the sugar get into.
+
+Okay. I'm going to leave myself some space here.
+
+Think myself more space. Right.
+
+These these two things are equivalent. We just prefer to write this because it's a little bit shorter.
+
+But this is a little more explicit about what happens. Right.
+
+So the first thing we're going to do is everywhere.
+
+We have a new variable. We are going to give it a placeholder type inference.
+
+So we're going to say oh hey list. I don't know what that is.
+
+I'm going to call it a take a and I'm going to call the return type of land that take me.
+
+This is not actually a take a to be function. That is too general.
+
+But we're going to fix that in a moment okay. Oh why I don't know what that is.
+
+Call that a c and Z.
+
+We'll call that a D. Okay. No to Mike.
+
+The reason? I'm going to just take a second to rewrite this as an abstract syntax, to write the body of it as an abstract syntax tree.
+
+So it's going to basically be a case with.
+
+List being what we case on and then our different cases being.
+
+Uh. For the empty list.
+
+Goes to zero. Y constant Z.
+
+Goes to plots of one and call the function Len.
+
+On the. Right. I ran good so far.
+
+So when you type check in your compiler, the type checker, you're working on all that stuff.
+
+You recurse down this tree, you compute types at the bottom, and you propagate them back up.
+
+Computing new types all the way up. Right. We're going to do kind of the same thing where we're going to try and compute types.
+
+But because our types are going to be too general, like Z is not actually the can't just be any type.
+
+We're going to use this operation called unification.
+
+Okay. We're going to basically say I need to unify two types and the way that this works.
+
+So let's say we're going to unify and.
+
+Cross take a win in cross straight.
+
+Right. Unify takes two types, and it either fails if we can't do this,
+
+or it comes up with a mapping from the type variables that things with the text two types that makes the two types be the same.
+
+Right. So what would what mapping would would solve this?
+
+Jack Cade is trying to beat it, and he.
+
+Right. So if I apply this mapping to this type I get in cross string, apply this mapping to this type I get in cross string.
+
+And they're the same types I like that.
+
+Um, and so the way unify works. Well, before we try to.
+
+What if I had instead of this, you know, ant arrow take a and tick B.
+
+Across the street. What? What mapping would I need there?
+
+And almost the same. But I change this star to an arrow.
+
+Newtown aim to. Something extreme.
+
+Something close to a to something cross.
+
+Staring like a to see cross string.
+
+Yeah, well if I apply that I get yet to see cross string and B cross string and those aren't the same is and to something.
+
+Well even if I do that so. So let's say I did a goes to C cross string.
+
+And goes to. And to see that's not going to work because I'm going to have ENT goes to see Cross-train.
+
+All right. And uh, and.
+
+See cross stream. And these are two different things.
+
+And fundamentally, I can't do this because this is a function and this is a tuple.
+
+And I can't make them the same no matter how hard I try. Right.
+
+So this is going to fail. And it fails with the message that you all are going to learn to love.
+
+To hate. Python mismatch.
+
+Mismatch, which means this is short for type constructor.
+
+Which basically means this type constructor is around. This type constructor is star.
+
+There's no way I can make those two things be the same.
+
+And so as a rule, abbreviate that take on mismatch.
+
+Be a little helpful. If it was like hey, these are two different type constructors.
+
+I can't make them be the same type. But that's how unification fails okay.
+
+And so how does unification work? Recursively, as you might expect.
+
+I'm basically, if you think of it in terms of, you know, unify, um, t1 star T2 with S1 star S2,
+
+the way that we're going to do that is we're going to say let um, it will unify T1 with T with S1, right.
+
+So whatever the left arguments of the star are, go unify those.
+
+Then we're going to say, uh, T2 Prime is.
+
+How are you? Whatever. Whatever syntax you like. But we're going to apply that substitution to T2.
+
+S2 Prime is come. Applied to Esta.
+
+Am to is unify. Team to prime with S2 Prime and combine.
+
+The one. To end. All right.
+
+So what do I mean by combine like. Just take the mappings and squish them together.
+
+Right. Like before we had. Oh, like, unifying these two gives me, uh, a max to end and unifying these to give me a path.
+
+Maybe it was switch over to a maps to me maps a string, squish those together.
+
+You get a map. That's a map. Simply maps a string. Okay.
+
+Whatever we come up with for a mapping here, we need to apply to these before we can go do unifying of the rest.
+
+Because like if this has a and this has a and we decide A is an end, we got to turn that A into an.
+
+And before we go try and unify those. So we can't come up with a different a different thing there.
+
+Okay. Um, and so this basically works for any type constructor here.
+
+So I'm going to replace this with like two question marks. Like it can be start, it can be era.
+
+It can be whatever you want. Right. Star era.
+
+I don't know. Whatever you've got, if you have 31 type constructors, it's much simpler because you basically just just do this right.
+
+So it goes if if I need to unify a list with int list, I just rip off the list and just unify a with end.
+
+And then our base cases for this recursion are basically this up here.
+
+All right. If I get down to unifying a type variable with some other type, I just get back that mapping.
+
+Right. If I get down to unifying.
+
+Things where the type constructors mismatch, I fail.
+
+And if I get down to unifying like some type with itself, unify like.
+
+And with end. I just get the empty bag.
+
+And likewise, if I try to unify it with string or something like that, I can. Okay.
+
+So you could go write this if you needed to. You could go write this recursively in like ten minutes.
+
+All right, everyone understand the idea of unification. Yes.
+
+Though maybe. Also, probably why we don't let, uh, political scientists double major in case.
+
+It's a joke, right? Like, political scientists have like a very different unifying to countries thing.
+
+Okay. And you guys, one day I'm going to get a joke.
+
+You guys are like, one day, one that. That's the goal.
+
+All right, so what are we going to do now? Like now, me erasing the board is funny.
+
+No, let me guess. One of you is a political science double major.
+
+Sorry, I didn't mean to offend. Okay. My wife is a political scientist.
+
+I have nothing against political scientists. I love her very much.
+
+Even if she does programing. Ah. Which is the worst programing language ever?
+
+Oh my God, have any of you ever programed in. Ah, okay.
+
+You know, it's the worst programing language. Okay. I know not to be a Scotsman.
+
+Let it convince me not to be a stats major. Good choice. I know you just erase this, but I you, everybody.
+
+Just like looking back at my notes. I'm like, how do you have, like, how can we index like teen two?
+
+Oh, I was just meaning apply the map. Oh, right. So, like like, let's say that I have, um, like a cross, uh, a cross and.
+
+And then I want to unify that with um and across um and prosecute.
+
+Right. So when I go unify like the outer constructor carries star, I'm going to take the left things and I'm going to unify A with int.
+
+And I'm going to get the mapping. Any maps to get right.
+
+But before I unify these two things, I need to apply this mapping to these and say that I'm going to unify and cross and.
+
+With the cross. Right.
+
+Because if I don't apply this mapping and I just say I'm going to unify a cross with B cross, then I could end up just saying, um, like.
+
+Turn. Turn A is and ends and then turns into bees or something weird like that.
+
+I basically need to use the information I have here to go turn these into whatever I discovered and unify and with this and come up with a isn't it?
+
+Okay, Billy. And if you're like, let's say your that's B instead of a uh, that maps to the end.
+
+And when you like do um, like brackets a you're like base case is like it doesn't exist.
+
+That mapping doesn't exist. Yeah. So if you have if so.
+
+So applying the mapping just means go transform those variables.
+
+Uh, like if I had a, if I apply this mapping to this, the b just gets left alone.
+
+That's not what you're asking. Yeah. Yeah. Because then I'm just going to like recurse on this and that's okay.
+
+Um, like, I know it looks. So what do you have like. Take a start to unify like into Cross Street.
+
+Then we will like what kind of. Um.
+
+So if we have. You.
+
+All right. So that basically means we know we need a tuple with two things of the same type.
+
+But it also has to be a tuple that's telling it and a string.
+
+And so we would go recursively unify the using a maps to and we'd apply that substitution to these and get it and string.
+
+We'd go try and unify those and we'd get type constructor mismatch.
+
+One of these is in and one of these is string, which by the way may or may not be our actual programing problem.
+
+Right. Like like the compiler might say this needs to be uh in cross int but this is and this is in cross string.
+
+But it may be the case that what that this was the problem in your code.
+
+And this really should have been string. Right. Like you forgot to like convert it into a string somewhere.
+
+So that can be a little bit confusing where you're like, why do you think this needs to be an end?
+
+This definitely needs to be a string. Um, and so just keep that in mind.
+
+Okay. Good. So far everyone happy with unification.
+
+Okay. Great.
+
+So the way that we're going to do this, uh,
+
+type inference is we're going to sort of start out like normal type checking where we recurse down the tree and try to figure out the types.
+
+But then at every step, as we come back up, instead of checking that the type is what we need, right.
+
+Like if I have, um, a plus B in in normal type checking, I'm like, oh, I need to do this.
+
+Plus this had better be an end and this had better be an int, right. But we might get a type like.
+
+Taxi. But we might find out that this turns into tight texae.
+
+And this turns into tight tech D. That's not a problem.
+
+We just need to unify the arguments to place which are C cross D with the argument types we expect which are in cross end.
+
+And figure out that C really needs to be int, and D really needs to be ENT.
+
+Does that make sense to everyone? And then we would say oh okay this has type int.
+
+And that would go back up the tree along with this this um substitution of variables.
+
+Pronominal look confused. When do we use unification.
+
+Like as if we don't explicitly have a type and we have to like infer what it is.
+
+So basically unification is going to be that we are going to have constraints like the types for the arguments to place had better begins.
+
+But we might have more general types where we haven't figured out those constraints yet.
+
+Right. So like if I, if I do this stuff with, you know, function f of a and b.
+
+Equals A plus B. I'm going to start out by just assigning these placeholder types.
+
+And I'm just going to C and D instead of A and B to avoid confusion. Right.
+
+And so I'm going to say this has type tick. This has type tick D.
+
+Oh I'm doing plus on them. They can't really be any types.
+
+I better go unify those. Figure out that these are ENT.
+
+And replace that everywhere with end. Okay, Billy.
+
+Um, I don't know if I don't think ASML does this, but, like, how do you manage the case where you want to use the plus operator,
+
+but like, with a string and an end, and then the end to turns into a string that is like added as one big string.
+
+Yeah. Um, so SML explicitly doesn't have implicit conversions, which I love because I hate implicit conversions.
+
+Okay. Everyone thinks like, oh, I like implicit conversions, but like.
+
+You should think it's like. It's like, I don't know.
+
+I'm trying to think of something that like, seems like a good idea, and they'll come back just, like, bite you in the ass later.
+
+Um, implicit conversions are like, especially it's like C plus.
+
+Plus they are a way where bugs can sneak in in various ways.
+
+Right. So like it's C plus. Plus, there are a very complex set of rules for what can be implicitly converted to what else and how.
+
+And it includes things like single argument constructors that are not declared explicit.
+
+Right. So if I have one, if I have a class image and it has a constructor.
+
+It takes a string. The file name.
+
+Ryan does whatever. Suddenly this is an implicit conversion from const char stars, string literals, or other constant strings to images.
+
+Like it's just an implicit conversion, right? So if I have some function that takes an image.
+
+And I decide that, you know, I want to just like, create or let's say it's better off.
+
+I, I want to, I want to draw an image that seems like a reasonable function to have.
+
+Right. And I somewhere lazily like draw.
+
+Maybe it takes like an x and a y. Matter.
+
+Okay, I do that and draws a flower.
+
+Those coordinates on the screen because that's what's in flower dot png. This uses this implicit conversion.
+
+Hey look, I saved myself all that typing. I didn't have to write image there.
+
+Look at me. I am an efficient developer. I saved.
+
+Six seven keystrokes. Okay.
+
+And like, your program is running and everything is great.
+
+And you're drawing flowers and, like, it's been working for years, and nobody's touched this part of the code at all.
+
+And then somebody goes, you know what? We need a function to draw text on the screen to.
+
+So we're going to write draw const char r s x and y which is intended to like go like, you know,
+
+draw that text literally on the screen and then put this code in and build everything.
+
+And suddenly instead of a field of flowers, you have a field of flow ERP and all over your screen and you're very confused what's going on.
+
+Right? And what happened was, once this function exists, this is a better match for this call.
+
+And so we don't need that implicit conversion anymore.
+
+And so somebody else coming along and writing a new function that's unrelated to this changes what it does.
+
+And that can be very hard to debug, right?
+
+Because you're like, wait, a flower drawing code.
+
+Why is our flower drawing code suddenly writing the name of the file on the screen, right, instead of drawing the picture?
+
+And like, maybe it's, you know, I mean, if it happens right away, it is. Maybe it's easier to find.
+
+But if you're not in drawing flowers all the time and it's like you run this and you're like, where did this weird bug come from?
+
+What's going on? Oh my gosh, this part of the code hasn't been touched in 30 years.
+
+This was working five versions ago. It's a nightmare to fix, right?
+
+And I would rather just type this, like I would rather just type.
+
+Explicit conversion there and waste those seven keystrokes then have.
+
+This evil bug lurking like evil potential bug lurking in my code,
+
+just waiting for somebody else to put in a better conversion that changes that function call.
+
+Okay, so that's why I think implicit conversions are evil. Um.
+
+If you have them. I'm trying to think like in something like.
+
+So in something like C plus plus you don't have type inference in this one.
+
+You do have auto which is different.
+
+That basically just like you guys know auto in C plus plus.
+
+Okay. That just says like give me the easiest type for the right hand side for the variable.
+
+I'm declaring, um, but that won't like that won't invoke any implicit conversions on the outside.
+
+Anything on the inside would just kind of happen in a situation where you don't have any type inference.
+
+Um, uh, and then beyond that is basically just a like what type of my like what type of my expecting what type do I have?
+
+Can I find a conversion? Which conversion is the best rule matching when like the type type.
+
+Um, if you wanted it in this. You could probably do it.
+
+It would just get nastier. Like, that's my that's my simple but also not very deep cancer.
+
+Okay. But also now you know why I hit implicit increase.
+
+Okay, so where were we?
+
+All right. Oh, yeah. So what we're going to do is we're going to recurse down the tree as normal.
+
+And then everywhere that we expect a specific type instead of checking are these equal?
+
+We're going to unify the type we expect with the type that we have which might fail.
+
+Or it might give us a substitution mapping. So we're like recurse all the way down here and like, oh hey, see what type is Z.
+
+It's a deep. Yeah. Because look, that's so right there. That's why we put these things in here.
+
+So we're going to say, oh, hey, this is a, this is uh, and oh we're calling that on let we're the function we're calling is Len.
+
+What type is Len. 18.
+
+Yeah, it's an Adobe function. Right.
+
+So if I'm calling this function, um, I basically really only need to unify a with the right.
+
+Because this like I don't need to unify unified with this whole thing.
+
+They're not we're not trying to, like, make those equal to each other, but we're passing Z to them.
+
+So this type had better be the parameter type of the function.
+
+Do you all agree? So what we're going to do is we're going to say, hey, you know what?
+
+I need to unify. And with me.
+
+And here there's two possible answers, and it doesn't really matter which one you come up with.
+
+You can either say A's turn into D's, or D's turn into X. You come up with like an equivalent answer.
+
+So we're just going to say A's turn into this. Right.
+
+Oh, hey, he's turned into these. That's great. So what are we going to do when it is turned into these?
+
+We're going to go find all our A's. Determine the needs.
+
+And I'm going to just market. This is going to turn.
+
+Okay. Now what does this mean?
+
+So if we call this function, it results in a B, right.
+
+So the type of this is a b. What's the type of this?
+
+An end? What is the type of plus?
+
+And crossing. Okay, well, that means I better be able to unify and cross, be with and cross and.
+
+Right. Life changing marker colors here in impossible, inconsistent ways.
+
+And how do I unify Inc Crosby with cross and. Please become.
+
+Comments. And so I'm going to say, oh hey, this be here.
+
+That's actually going to be an end. This be.
+
+And by the way, in actually implementing this, you wouldn't want to like, rewrite these things all the time.
+
+You just kind of keep this mapping around. Uh, but it's easier on the whiteboard for me to rewrite them as we go.
+
+And so this is going to give me back. What? An end.
+
+Hooray! Somehow erase.
+
+Now, uh, when I'm writing these arrows here, these are these are my cases, right.
+
+So y con zonda Z is going to evaluate to to this expression here.
+
+So this case produces an int. And um let's look at this for a second.
+
+So we're going to go go down into this side of the case and figure out what the patterns type is.
+
+So uh what type is Z. He.
+
+What type is y cc. What type is cons?
+
+It's okay. It's all right to get. Yeah, I'm.
+
+I'm using a fresh variable every time we need a new one.
+
+So I'm going to call it e cross list to do list.
+
+Right. So I need to unify.
+
+E cross E list with C cross D.
+
+How would you unify E cross e list with C cross D? But you can see and you must be eat.
+
+I have a bunch of different people. Chris is, uh.
+
+Is. Well, if I say e turns into c and d b, so I can't turn you listed to D, I can only turn variables into things.
+
+If I say d turns into e last. I've now lost the fact that these have to be the same type, right?
+
+Billy. Um, well, you can make E go to C and then D to go to a C list.
+
+Yes. So if I unify these I can either say E's go to Caesar's.
+
+He's going to ese Billy chose ese.
+
+Go to C's. Right. And then remember I'm going to apply this substitution to both of these before I try and do anything else.
+
+Right. So I'm going to say uh, uh I'm going to turn this into a C list.
+
+So now DS had better become C list.
+
+Okay. And I could I could turn season at us and ease into illness or whatever.
+
+But the important thing is the other two variables have turned into things we're I'm going to get.
+
+I know I've gotten the same type because it's CNC list. So with that in mind we're going to say, oh this D over here.
+
+Thank you. Can you go to her. Well e kind of went away.
+
+I don't have that anywhere else. These are going to turn into C lists.
+
+See list. Um. And so that is basically going to be a.
+
+And now what type is this going to produce. It is a see list.
+
+Yeah. So this pattern right here says I will match against a c list and produce an end.
+
+Okay. So now let's go do this one. What type is this.
+
+What? Well, afterwards.
+
+Yeah. So this is an EF list. And this is an int.
+
+Right. So this basically says I'm a pattern who takes f lists and produces.
+
+And this says I'm a pattern. Who produces C. That goes from C since.
+
+And so what do you think we need to unify. Fancy.
+
+Yeah. Basically f list f list Tennant and C lists.
+
+And they're basically like many little functions, but.
+
+So we could say that what we're unifying here is. And so we're going to turn off the indices.
+
+Right. Which basically means we're just going to say that. Okay.
+
+And so this says, hey, I'm cases where all of my cases take see lists.
+
+I'm just trying to the double arrow. I think we need to unify all these together.
+
+And it says I'm I'm, I'm doing pattern matching cases where my pattern is a c list and I produce an end.
+
+So far, so good. What type is left?
+
+And see, you know, since it's already a C list.
+
+Right. And so I need to unify that with this, because we're matching this against these cases that there's nothing to do from that.
+
+But now this is going to produce an event.
+
+Right. And we need to unify it with the return type of, of Len, because that's the body of the function, the type of the whole body.
+
+But that's just unifying in, you know, so we have nothing to do.
+
+And we've concluded that this is a C list and function.
+
+Hurray! I feel like I should like, I don't know, have kids out of my sleeves or something.
+
+You know, some kind of magic trick, right? He.
+
+What do you all think? Hi!
+
+Yay, drew! I could totally do that if you asked me to do it on the midterm or.
+
+Oh my gosh, that's scary. Like, can you something something something.
+
+Utah. I'll do it as a last step. What has these things?
+
+So what does this whole case expression produce in an end?
+
+Right. It basically is going to like pattern match list against um, those patterns and all the patterns are going to produce in the end.
+
+Right. So I basically need to for a case I need to unify this case with this case.
+
+And if I have other cases, unify each of those consecutively to make sure my cases match against the same type of produce the same type,
+
+and then the type they're matching against has to match the type of this expression here.
+
+Right. Okay, Ethan, was that last step a unification like recent cases?
+
+And or was it just like. Yeah. So basically like I need so.
+
+So here I have two cases, this one and this one, which is why I would unify.
+
+Well it was originally this was effortless to end and this was seamless to end.
+
+So I unified efforts to end with see list end and concluded that this can't just be any type.
+
+This had better be seamless.
+
+I guess I meant like the the case above, that the very top case on the board, like we said it was an end was that for me like that was just using.
+
+So after that I unified this with this.
+
+That is the type for the patterns with the type of the expression I'm matching against.
+
+And then after that was done, the type of the case is just what all the patterns produce.
+
+Okay. But then the last unification I did was I said the body of this function.
+
+Has type and I have to unify that with the return type.
+
+In this case, that's just, you know, right. But in some cases I might not have.
+
+Sorted that out yet to say what the return type of the function is.
+
+Okay. You all like it?
+
+Okay. Um, so really, there's basically a few steps.
+
+First, put placeholders in. Second, go do type checking on the AST as normal where you're like recursing down it.
+
+But on the way back up instead of checking.
+
+Are these equal? Like you say, I would normally want to say, is this type equal to this type?
+
+You instead say unify the types I have with the types I expect okay.
+
+And that may fail if the program is ill typed or it might give you it might do nothing, it might be like you already have NS,
+
+or it might give you mappings that that tell you more information about the type variables in your program.
+
+Okay. All right, so you all said you're pros at this now, right?
+
+Okay. Well, I'll just give you, like, a little easy function.
+
+I'll only be like. Like one line long. No.
+
+If no case, it's just a little easy function to, uh, to practice on.
+
+So it's a function called f takes one parameter x and it just returns f.
+
+It returns itself. Okay. So can you all go, uh, come up with the type for this little function for me, please?
+
+Hmm. And you will have a time for this.
+
+Anyone think I mean? I'm the nicest professor there is.
+
+What problem did you run into? Crash. See?
+
+Like this. I take it it took me, like, access to credit.
+
+And then it just took me, like place holder. An F is again to get it to be.
+
+So it's like, should be is to get it to me and then just, like, keep going.
+
+Yeah. So you start by saying like, okay, uh, x is a take a and um, uh, it returns a tick B.
+
+And so I need to just unify this body with because that's all there is, which is a tick A to take B with tick B.
+
+All right. So how do I unify. How do I make those two things the same?
+
+And this is difficult because the only way to do it is to replace B with something infinite, right?
+
+If B is. Is the infinite stream that gets mapped onto the infinite string of.
+
+So, you know, whatever. It doesn't matter what it be in the end.
+
+But like then if this isn't if however many of these there are there's going to be one more over here.
+
+But if this is infinite infinity and infinity plus one or the same number,
+
+no matter what you tried to do in third grade by telling somebody that they were infinity plus one stupid when they called you infinity stupid.
+
+Um, and so this has to be an infinite type for and and equal in plus one.
+
+Uh. That sucks. Um, so if you try to put this into SML, it just won't take it.
+
+Right? Because this fails the occurs check and occurs is one of those words I literally can't spell no matter how hard I tried.
+
+Um, which basically means that when you're trying to map B to some other type, B can't appear in that type.
+
+Otherwise the type will be invalid.
+
+There's variations on this that like you can have ways that B could occur in something and it wouldn't be infinite and so on.
+
+Um, but just at its simplest, this doesn't work.
+
+Though. Can we make it work?
+
+Of course we can, because we are badass programmers.
+
+What if I write this data type? What if I write letters?
+
+You're supposed to. So here's the data type. It's a totally valid SML data type.
+
+It has one constructor, capital F, and it takes a tick A to take a hungry function.
+
+And the data type itself is called take a hungry draw.
+
+Like this. This type is totally finite, right?
+
+I can just write down what does this take? It takes a function with one thing and another thing.
+
+Everything. Like my data type SML will happily, happily, happily take this data type.
+
+But now I can write this. Okay.
+
+It's a little different. I'm not just returning F, but I'm returning big f of little F.
+
+Right and this function is easy to type. This function f has type.
+
+Take a. All right.
+
+Because if f has type decay to decay hungry this expects attenuated.
+
+To get hungry it gives me to take a hungry. This takes a K. It returns it to get hungry.
+
+Everyone's happy. You can run type inference on it. Type check it.
+
+SML will happily accept this code. Anyone's had hurt yet.
+
+He came over again. Oh, yeah? Why is it called hungry?
+
+Yeah. Okay. Well, well, well, I think it's catching on.
+
+Right? So. So, uh, what what can I do with this function now?
+
+Right? So, uh, I can pattern match like a big F to get a little f, apply it to Y,
+
+and that will give me back to hungry and so I can keep having it, eat more things and keep getting back the same function.
+
+It's very hungry because I can just see if I, if I could do this,
+
+I could basically just take like f and apply it to one and get back to F and apply for two and apply for three and apply it to 42 and apply it to 70,
+
+whatever. And at every step I get F and it just keeps eating its inputs, just keeps eating its inputs, no matter how much it's always hungry.
+
+That's why I call it to get hungry. Okay. So besides, just like, oh sure, my brain hurts.
+
+Oh gosh. Why? Why is this interesting?
+
+Well. The first is SML data types give us a way to take an infinite type and represent it in a finite way.
+
+Because this type is recursive, and this recursion lets us turn what would be an infinite type into a finite type.
+
+Right. Recursion lets you turn infinite things into finite things.
+
+That's kind of the trick if you're doing the extra credit of like, purely functional record types like,
+
+oh, we're going to have this function that basically like we only call as many times as we want.
+
+Um, with this type, could this type be useful for anything or a type like it?
+
+Like this function by itself is pretty useless, but you could imagine a type like it that is useful in terms of like some kind of output thing, right?
+
+Like you have a function, you give it something and it gives you back the same type.
+
+So you can keep giving it all the things you want.
+
+It keeps giving you back the same type, but does something useful with the print them out or whatever, right?
+
+Or the opposite way around where you might want something that produces values.
+
+Write unit could take a hungry cross, but you might want something with like unit and take a cross.
+
+Take a column. Uh. Well, he was the opposite of hungry vomiting.
+
+I. Also can't spell that right.
+
+Well, you can just apply the function, get a thing, get back the same type of function plant and get another thing.
+
+Which could be like a random number generator, right?
+
+Like a function on a functional interface around a random number generator, where you just keep getting the same things back in a functional way.
+
+This is also, uh.
+
+Uh, the same kind of trick is really useful if you are interested in things like the Y Combinator.
+
+Scheme. Which, by the way, uh, the startup accelerator incubator or whatever it is,
+
+is named after something from functional programing that's called the Y Combinator.
+
+I won't go into it in class. I'm happy to go into it on discussions.
+
+Or if you want to come see me in my office. But if we were to make a functional language that did not have recursion in it,
+
+like you can only like you can't refer to a function name until that function is finished, but it has it has functions.
+
+The Y combinator lets us create recursion out of nothing but other functions.
+
+Or even if we don't have names or functions, even if we can only write down anonymous functions, we can use the Y combinator to create recursion.
+
+Which, like your head, will just, like, explode.
+
+Um, but to make the white commentator well typed, we have to do something like this, because otherwise it has with the type.
+
+Okay. Ever intense enough. Anyone need their head to hurt more?
+
+Okay. Because I, you know, like I said the other day, my job is to make you all your medicines.
+
+Well, yes, but there is, of course, a special case in the smell of like an end to option return, like with, with cases.
+
+So if we, we like seeing none does that like there's that type like take for it.
+
+Like if we try to unify and with into option into option just becomes you know, so if you try and unify it with an option it will fail.
+
+That's why you need some of your end. Right. So some has type take a to take a option.
+
+None has type take a option. So if I write.
+
+Case. Something, something something. Whatever goes to none.
+
+Something like something goes to 42.
+
+I did write the number four. There we go. This will fail because it'll say, hey, this has type ticker option.
+
+This has type two okay. That's not cool. But if you write some.
+
+42 and it'll say, oh, this has type.
+
+Take a to take a option you're applying it to.
+
+And and so I'm going to unify. It would take a that means that this produces an option.
+
+That's cool because this is an option. And this is a tick B option.
+
+So I'll just unify tick b and int and c that I need to treat none as a as an option crossing.
+
+That. I love options. They should put them in every language like.
+
+We should. We should go back. Like if I had a time machine first, I'd take a bunch of type theory back to the 1960s.
+
+Second, I'd go buy a bunch of Nvidia stock in like 1999, right?
+
+Maybe 2000, I don't know. I didn't have much money then. I was in college. But like, still, I would have like spent all my money on Nvidia stock then.
+
+Right. Um or Bitcoin.
+
+Yeah. I remember at some point someone's like hey there's this bitcoin thing.
+
+Like you can go like buy one for, what can you do with it.
+
+Nothing. But it's cool. Like it's this new guy. Why would I want to spend a dollar on like this?
+
+Because I don't know. It's like you can have it in your wallet, like, whatever.
+
+Go away. It's probably best that I didn't do that because that was like 18 hard drives ago and, like, probably be like,
+
+yeah, I be one of those people was like, yeah, I have $20 million in Bitcoin somewhere, but I can't get it.
+
+All right. Utah. Do you have extra bitcoin you need to give away?
+
+Sorry. Oh okay. Well close.
+
+One day, one day someone's going to be like yeah drew you know what I got extra bitcoin.
+
+You need something. What's up? Uh what do you have a hundred after the bitcoin.
+
+Where you say that? Oh, yeah.
+
+Well, so I'm declaring a datatype named Hungary. This is a parametrically polymorphic data type.
+
+Take a hungry, just like I can do. Like take a tree or take a list.
+
+This is now a type constructor that requires one parameter.
+
+So if I didn't do this, I could do like int to hungry. Right?
+
+But this says you can give me any type and I will produce. I took a hungry.
+
+Okay. Oh. All right.
+
+Everyone's head hurt, like, a lot. Okay, good.
+
+This is the end of type theory. I mean, for this class, it's not all of type theory in the world.
+
+Uh, you know, there's lots of type theory.
+
+Um, sometimes I have students who are really excited about type theory and what environment types and programing languages book from grad school.
+
+Um, somewhere, um, if you're really, really excited about it, there's like.
+
+People who do research on that stuff. But not here. We don't we don't do we don't do that stuff here.
+
+Um, at least not that I've heard of.
+
+Uh, but the important thing for you all is that's also the end of the material for the midterm.
+
+Okay, so everything after this is still important.
+
+Don't just go. All right, I'm done. 10 to 2 now.
+
+Um, but it won't be on the midterm, which is coming up in two weeks.
+
+Anyone want to write a midterm for me? Okay. Uh, you write the software engineering midterm, so I have time for the compilers.
+
+What things? Oh, you guys find that funny?
+
+Okay. All right. I hate writing exams so much.
+
+Um. All right. We're now going to change gears just a little bit and, um, make things a little.
+
+We're going to be a little easier on your brain.
+
+We're going to just kind of, um, talk a little bit about like, names calling convention, which should be like a review from 250 or 550.
+
+And like the last ten minutes of class, your brains can be having it a little easier.
+
+They need to cool down. So first, what can you all remind me about?
+
+MIPs added to registers? And I know I just told you, this can be easier and then made you think.
+
+Eric, you're 32 of them. There are 32 of them.
+
+Can you use all 32 of them? Well defined use.
+
+Zero is hardwired to zero. Okay. True.
+
+And. Um, age 31.
+
+Long term. Uh, return address.
+
+Register. Right. All right.
+
+All right. Also true.
+
+Although you can you can use that for other things than you don't need what's in it.
+
+You can kind of general purpose that P 16 to 23.
+
+Or maybe you guys like you guys don't just know there are some S registers.
+
+You know there's 16 to 23. Like I'm not sure okay I'm going I said whether to.
+
+Yeah. Yes or kind of concern.
+
+Yeah. Um I just created a midterm on this yesterday.
+
+Uh, it what? You asked them what specific register number.
+
+S0, there's like a question about do you get, like, a table?
+
+The only reason I know that you're right is I literally have this, like, in front of me in my notes.
+
+Well, there are in there for argument registers and then to returning registers,
+
+which is not true and risk by for some reason they just always do argument registers.
+
+Turns out. All right.
+
+What else you got? P is temporary registered.
+
+I don't know where all that number is. Good. Yeah. Go ahead.
+
+Because if you do remember all of the numbers, your homework for this weekend would be go do something unrelated to computer engineering.
+
+Like are you old enough that I can tell you go get drunk?
+
+I don't know if I can get like a month of like a month.
+
+You can tell me. Okay, then don't do that. Go have orange juice and cookies with somebody who is not a computer engineer.
+
+Okay. Um, yeah. It's like our 8 to 5, 15, 24, 25.
+
+For some reason, those are the T registers. And, uh, crash.
+
+Uh, 29 and 30 or stacking them. Yep.
+
+Okay. Uh, what happened to 26, 27 and 28?
+
+Well, two of them are like specifics. Yeah. So you can't touch those?
+
+Yeah, one of them's the global point or whatever the [INAUDIBLE] that is. Okay.
+
+Um, global pointer is basically like we have global variables.
+
+We want a pointer to the start of the light. Global variables like.
+
+Your global variable offset 402.
+
+Um R1. Yeah. What happened to R1?
+
+So that crash was reserved for us? Yeah.
+
+You can make like if you know where you're actually using real instructions and where you're using pseudo instructions.
+
+You know what I mean when I say pseudo instructions, like MIPs doesn't actually have branches less than.
+
+Right. MIPs has said if less than and then branch of zero or branch if not zero.
+
+So when you write branch of less than, you turn that into two instructions.
+
+The first is set less than and it produces its value into R1 because it knows you're not using R1.
+
+If you are clever and ambitious and no where you're not doing that, you can put R1 to use.
+
+You need some directives to tell the assembler I know what I'm doing generally, but just leave it alone.
+
+We don't need to mess with it. We have lots of other registers, so we're not going to use these.
+
+And we're not going to use this. And I mean you're going to read that one but not right.
+
+Okay. So you've got uh 1234.
+
+Five that you're not really going to use. And these kind of special purposes.
+
+So you've got maybe like 20 something registers, which is a lot.
+
+When I was growing up, we had eight and we liked it. Um, all right.
+
+So what's the difference between these s and these T registers?
+
+Pete. Okay. Somebody who's not attuned to.
+
+Who's not stupid. Yeah. Chris.
+
+Uh, like you just convention. Um, from the caller, the colleague said from.
+
+Yeah. So, uh, the t registers are not like if you are going to make a function call.
+
+Either don't put a value in a T register, or if the values in the T register,
+
+save it somewhere else because the call is allowed to trash that right, the S registers.
+
+We expect the colleague to save those so they're left alone when we come back to the function.
+
+Okay. And by the way, you know, I think I told you all.
+
+I'm tired. I went to the gym this morning. I always think of this as, like, the treadmills at the gym.
+
+Right? Like you go to the gym. You don't know if the person before you wipe down the treadmill, right?
+
+So you wipe it down, but then you don't want to be a jerk. So you wipe it down at the end.
+
+And that's like the opposite of calling him in. That would be like if both both the caller and the caller, you had to save it.
+
+So why don't we have the like, you like,
+
+wipe down before and the wipe down after section of the gym for treadmills that are kind of like call you caller saved registers, right?
+
+Um, okay. Um, anyways, so we have four minutes.
+
+All right. Oh. Uh, yeah.
+
+So when you're going to start a function. So like you have some function.
+
+My church built like assembly for the function. There's a part that comes before and a part that comes after.
+
+Did they teach you what those are called in 250? One starts with a key and the other starts that he remember the Prolog, the Prolog and Epilog.
+
+Yeah, the prolog and what comes before.
+
+This is the capital. Can you spell that with a cube?
+
+Yeah. Okay. Um, and your compiler is going to have to generate these.
+
+Right. Like in 250. Maybe you wrote these by hand. Your compiler is going to have to spit these out.
+
+So what goes in the prolog? Okay, so the first thing we need to do in the prolog is stack pointer minus equals some size.
+
+How do we know how big that size is? Your compiler is going to have to look and see what it needs to store in this frame and make it that big crash.
+
+It's a lot of arguments into obedience. Um, we would like for one to put arguments in a row that's done by the caller.
+
+Right. So, uh, the caller expects the arguments to already be an A0 through A or like sorry, the caller Li expects them to already be there.
+
+The caller has to put them in there for the call. We are going to need to do something with them, um, in a bit.
+
+We may not get to that today. We need to save the old, uh, frame pointer.
+
+Set up the new frame pointer. All right.
+
+Right. So basically the stack pointer points at the bottom of the frame pointer points at the top.
+
+I know that in 250 they tell you all there's this thing called the frame pointer.
+
+But don't worry you don't need it. Did I mention that half of this class is learning the 250 is a lie?
+
+Sorry. Yeah, that's a lie.
+
+Okay, there's some functions where we'll get rid of the frame pointer, but we want the frame pointer.
+
+Um, we need to save any as registers.
+
+That we're going to use. We don't have to save them all. But if we're going to use them, we better save them and maybe save the return address.
+
+How do we know if we're going to need to save the return address? If we're a leaf function, meaning we don't call any other functions.
+
+We don't need to save the return address because we're not going to mess with it. If we are not a leaf function, we should say to return address.
+
+Okay. We're basically out of time. So we're going to wrap up there.
+
+We'll talk about the epilog and stuff next time. Um, I hope everyone has a good weekend.
+
+Um, yeah. I don't know.
+
+I feel like I should have something more to say, but. Okay. Random funny story from from kids yesterday.
+
+So, like, I was like.
+

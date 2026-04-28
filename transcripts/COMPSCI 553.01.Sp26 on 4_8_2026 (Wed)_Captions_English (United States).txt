@@ -1,0 +1,1365 @@
+[Auto-generated transcript. Edits may have been applied for clarity.]
+Uh, yeah. My game. Like, uh, random things before we start.
+
+So I don't know. I don't know when the last time I told you about this is.
+
+But now you can fight multiple monsters so you can fight three slimes instead of just one slime.
+
+The slimes can be on, like, the front, back, or middle row to fight you.
+
+Um, you can have two heroes now. It's going to be three at some point.
+
+I assume that's a trivial change, and your heroes can level up and they get like, you get to choose like a special ability each level.
+
+Um, and so, uh, yeah, that's a bunch more code that it can do that.
+
+So there's still a win, but there is still a win button. Yeah. Um, but the win button only, like, decreases the wildness around you.
+
+It doesn't, like, give you experience or, um, loot.
+
+But there is a level up. The button just does leveling up.
+
+And so you can just level up as much as you want. Um, and there is an admin command that just gives you items.
+
+So like I can just say like give me character 100, 100 iron.
+
+Um, and it'll do that. So like there's, there's things, uh, that are not permanent features.
+
+Um, those things will be there until very late in the process.
+
+Xanthan gum, although it is a product of all abilities.
+
+Where did you go? No, I gave it a list. I was like here.
+
+Like ability, like lingering.
+
+Five fireball spell leaves a dot for 3% of its damage per tick for three ticks every this long.
+
+Etc., etc., etc. Um, and so like if you put all those in, uh, and then some point we're gonna like leave more classes and more or whatever.
+
+But like right now we basically are in a business and like the main thing there was getting like a
+
+couple of paths and before level up did ability to have damage over time instead of aggression.
+
+I'm just crazy to try it off like Gemini clock. I'm not.
+
+So that basically like was a thing last summer, but like, uh,
+
+by the time everyone else was like trying it out at Google, I didn't really know what I was doing.
+
+Um, because a lot of what I was doing at the end of the summer was like put together a slide presentation and like,
+
+tried to analyze micro benchmarks and stuff. Um, but Jason said that it was great.
+
+So like, okay. Yeah, it's okay.
+
+Well, um, may depend on what you're trying to do with it.
+
+Uh, but he, he basically is like something in Gen five.
+
+He was like, fix this bug. And like, when you got coffee and came back and it was like, here's the bug fix.
+
+Also fix this unrelated thing that was wrong too.
+
+Um, so anyways, yeah, the big the big thing in my experiment so far is just you have good software engineers as the last.
+
+Yeah. Anyways, so, uh, what did we talk about last time?
+
+Garbage collection. Garbage collection? Why do we want the garbage collection?
+
+What? That's what I'm leaking. So we don't leak memory, and we don't have to clean it up ourselves, right?
+
+It's like exactly what my seven year old wants to not have to clean up after himself.
+
+Uh, which, by the way, was a source of some contention yesterday because he had to clean his room up and it took him an hour because,
+
+like, he wanted every toy he put away to stop and read the Lego manual.
+
+And we agreed on every ten toys. Stop and read the Lego manual.
+
+Like, not the whole thing, but like a page. But that made for a very slow process.
+
+And then afterwards he was very upset that he missed the chance to play outside with the neighborhood kids
+
+and screamed and yelled about how she wants to have fun and shouldn't have to just work all the time.
+
+And Margaret and I like, looked at each other like. Oh man, are you in for a well, no surprise when you're a grown up.
+
+Um, and then we played in the, you know, the sun girls just want to have fun.
+
+Yeah, he didn't know that song, so we played him the music video for that, like screen time, so called write.
+
+For at least three minutes, I probably watched a video. Okay, so garbage collection.
+
+Every seven year olds dream, somebody else comes along and cleans up your mess for you.
+
+Hey, that's a seven year old. So that's my dream. Um, okay.
+
+And so what garbage collectors did we talk about last time? Reference counting.
+
+Reference counting. Do we like reference counting? No, no.
+
+Does Python like reference counting? Yes, yes.
+
+Did you guys know that in Python? True and false are reference counting like all things are reference counted.
+
+So like when you access false it is reference counted,
+
+but it like has an extra reference count just to like all objects are reference counted the same way, so it never gets garbage collected.
+
+But like the false object like just has that reference count.
+
+Anyways, yes, I don't like also keeping like a set of integers.
+
+Negative five I don't remember what we. But yes it does.
+
+Um, yeah. Um, okay, so I could make some interesting design choices.
+
+Uh, so we don't like reference counting. It's slow. And what happened?
+
+What else? Something we like about it. Jack. Yeah, like if there's a cycle of things, they'll all keep each other alive and never, um.
+
+Never get collected. So what else did we talk about? Mark and Mark and Steve.
+
+How does that work? Mark.
+
+And then we saw you first. Okay.
+
+Um, if I ask you to describe Mark and sweep garbage collection on the final, please say more than you, Mark, and then you sweep.
+
+How do we mark? People just like you.
+
+You start in the reception and then you, like follow all the pointers there until like DFS or whatever, it works.
+
+Oh my God, what's wrong with that? Okay. And then what is sweeping?
+
+Crush anything. You didn't work. That is your business. Yeah.
+
+Anything. We didn't Mark. Anything. We didn't Mark. We're going to unmarked for next time.
+
+And anything we didn't Mark, we're going to put it on a free list.
+
+And we can do that because the heap is just really like a consecutive chunk of memory.
+
+So we can go like one object at a time, even if we can't delete the program.
+
+Okay. So now we are going to talk about another kind of garbage collection.
+
+On stop and copying. And so this garbage collection says what we're going to do is we're going to divide our heap into two halves.
+
+We have the act to pass, and we have the enact and the enact of half.
+
+There's nothing. It's just kind of wasted space. And in the act of half, we're going to allocate objects just linearly along.
+
+So here's an object. Say it's a here's my route like my register.
+
+So maybe that's pointing in a here's my allocation pointer which might be a register but.
+
+I'm going to bump that over to allocate B and maybe b a and something in my room set points and b now and then here c.
+
+I think it's a like that that I'm going to get D maybe this pointer is now going to point to um,
+
+and D let's say is also going to point over uh, and um let's see here.
+
+Can we get the. Um, let's say he ends up pointing at the.
+
+Just because over here and I'm not drawing the pointer everytime it is moving this way and then we get f.
+
+Once. Maybe this moves over here again on the phone.
+
+Then we get Genie, which references a lot.
+
+I don't know being. There.
+
+Up. And now I want to allocate maybe my pointers here. That's where again, I want an allocated object, but I'm out of space.
+
+Okay, so we're in there. When the next object I want to allocate, uh, doesn't fit in this half of the heap.
+
+I need to stop and copy, as the name says. So where do you think we copy things to?
+
+The inactive part of the heap. And what do you think?
+
+We copy? What?
+
+Only the live objects. So one of the things about stuff in copy is we're not even going to touch the dead objects at all.
+
+Right. Remember, Mark and sweep had to go traverse them to put them in the free list.
+
+But stop and copy is not even going to look at them. Right. So we're going to start here in our route set.
+
+And we're going to say oh hey look I'm here's D so I'm going to put D up here.
+
+Right. And now what was this. This one. This is going to point up here now Arthur dead.
+
+And he's also going to leave behind a little thing called a forwarding point.
+
+Her. Where any other objects referenced.
+
+D as we're stopping and copying, we're not going to copy it again.
+
+We're going to know we've already copied it and use that same one, right?
+
+And in this case, nothing else references D so we're not going to see that yet.
+
+But then we're going to go copy G. All right.
+
+I'm going to say that's Virginia's G.
+
+Oh, wait. Hold on. I messed up. Do you references other objects?
+
+Better do those two. Hang on. We're not going to get.
+
+Sorry. Dereference is B, right. So we better go copy B up here.
+
+And B is going to remember that it was here. And B references A.
+
+So we're going to copy that up here. Leave a little forwarding pointer.
+
+Okay. And now we're done following all the things that do reference.
+
+So we're just going to do uh depth or breadth first search whichever one you like through this object graph.
+
+But we're going to copy things into the inactive space. Now when we go to G we're going to copy it up here.
+
+Oh I should make this actual and g it references B.
+
+But when we go examine B we're going to see we've already copied it up here.
+
+So we don't copy it. Again. Use its forwarding pointer to link the g that to the already copied B.
+
+You all see that. And since B is already referencing A, we don't need to do anything special.
+
+So now we're done with G. We can change this pointer.
+
+Around there. And um, this is pointing at B, which is already copied.
+
+So we just use its forwarding pointer. To update the register file.
+
+And then C, E and F are dead and we don't ever even look at them.
+
+And then we're going to basically start from right here with our allocation pointer.
+
+And whatever allocation failed, we can just retry it from that half of the heap.
+
+And everything here. When I race it up like nothing is actually happening to erase it.
+
+It just meaningless bits in memory now because we swap and this is now the active part and this is the inactive part,
+
+and we just go from there and we do that same process until we run out of heap again, and then we copy everything back to the other half.
+
+What do you all think of this? Really does not seem memory efficient.
+
+It does not seem memory efficient. In what way? Um, essentially, you need to have an inactive portion of the heap in order to do all this copying.
+
+Um, and you probably have to develop some wonky algorithms to maybe get around that.
+
+But from my perspective, it seems like it's like half, half.
+
+Yeah. So we're wasting half our heat. We don't need any wonky algorithms to get around it.
+
+It's just that like, half our heap is useless space so that we know we have a space to copy everything next time.
+
+Yeah. I like how I assumed this would be better for fragmentation compared to, uh, marking switch.
+
+Yeah, we have no fragmentation because we get automatic compaction.
+
+Right? Like, when we finish first, all of our free space is contiguous here, so we never have fragmentation anymore.
+
+Right. I feel like that copy operation would take, like, a really long time.
+
+Like, much longer than just like, a modern sweep. Okay.
+
+So we are. So when we talk about, like, big O's of things, we ignore constant factors.
+
+So the mark can sweep. If we have a gigantic object, it's hundreds and hundreds of bytes.
+
+We're messing with its object header and not the hundreds and hundreds of bytes for that object.
+
+Now, in practice, how big are most objects? Isn't that big.
+
+Not that big. Right. So like, oh, it's going to copy a 16 byte object rather than just messing with the object header.
+
+Like, you know, that still will use some processor instructions that will use some memory bandwidth.
+
+Um, potentially it seems like it would be kind of inefficient with the cache is really copying all these things to like these other spots and like,
+
+you kind of want to keep things in the same spot like that.
+
+That's true.
+
+Well, okay, so the fact that objects which reference each other get squished next to each other is actually kind of helpful for our cache, right?
+
+So like, you know, DB an A they were kind of like scattered all around here.
+
+But since they reference each other, they're right next to each other. Right, Billy.
+
+I guess this one, um, each point is like it would increase the downtime, I guess, of when you could, like, not use it.
+
+Okay. Um, so I don't know. In my mind, I picture, like, a thing where, like, somehow you can figure out how much fragmentation you have with,
+
+like, move and sweep, and then you're like, oh, like, there's a lot of fragmentation and we have some downtime.
+
+Let's do a stop and copy. Um, or something like that.
+
+So just from what I have to this is an interesting idea.
+
+I was like, going to go like what you can say because I feel like you're essentially having,
+
+like, reset, like your entire like the category is completely coding.
+
+And every time you do a copy operation, it's completely called like the cache because all the objects in there moved to new location.
+
+It's not like I feel like that would be a pretty big hit. Um.
+
+Uh, let's hold that thought for a second. And let's also note that one other advantage we get is super fast allocation.
+
+Right. Normal.
+
+Malik, you have to, like, go traverse a free list and you have first fit and best fit and whatever here allocation is just increment pointer.
+
+I need 128 by triple increment pointer by 125 to make sure it didn't fall off the end of my right.
+
+And so that means that heap allocation is now as fast as stack allocation.
+
+Okay. So we have these interesting trade offs.
+
+Any time that we have trade offs, what do we do? Either.
+
+Uh, look for a way to, like, combine them. Yeah.
+
+We try to figure out how to get all the things we want and none of the things we don't want.
+
+Right? And so we squish things together. I'm sorry.
+
+I'm having some, like, acid reflux or something.
+
+Uh. We squish them all together and we find a way to get the best of all worlds.
+
+So none of you like. Like if my heap is, let's say, eight gigabytes.
+
+None of you like the fact that I now need to buy 16GB of Ram, which cost, I think an extra $2 million these days.
+
+I don't know. Um, but, uh, uh, none of you like wasting that much space, right?
+
+And you're also concerned that if each of these things is like eight gigabytes, I'm going to, like,
+
+suck all this stuff through memory, and maybe that's bad, but what if what if we sized these to fit entirely in the L2 cache?
+
+Then would you like that better? Like, let's suppose that this is.
+
+Let's suppose we have, uh, I don't know, 512 megabyte.
+
+Uh, 512. Uh, kilobyte L2.
+
+And so this is 256kB. And this is 256kB.
+
+You care if I waste 256kB? No, because you run Python.
+
+So you've wasted more than that in your life, right? Um, you just you just take Python three.
+
+I'm pretty sure the memory usage is about a gigabyte, right?
+
+So if I'm just wasting 256kB, maybe we don't care, right?
+
+If this is all L2 cache hits, we're much more okay with copying all of the stuff within the L2 cache than if we were going to remember.
+
+Right now, we're not consuming memory bandwidth. Those loads in stores don't take anywhere near as long.
+
+That seems. That seems pretty nice. Yeah. Okay.
+
+How many of you write programs these days that fit into 256kB?
+
+You do what you do with you? Yeah, I think so.
+
+Like if you're just wearing something in, like. With the C standard library that this is like.
+
+Hello, world. Yay! It's 256 billion.
+
+But I mean like big, real programs, right? Like post graphs.
+
+Like it probably would not be happy if you were like, you get a 256 kilobyte.
+
+So we need somewhere else to put all of the, the, um, the data that doesn't have been here.
+
+So this brings us to a generational garbage collection.
+
+So we'll make this our youngest generation. Generation zero aka the nursery.
+
+Okay. And objects start their life in generation zero.
+
+So when you want to go allocate memory. Oh, look, I have this fast allocation.
+
+It's going to be right here. And then after they survive a couple collections let's say you know survive them three x we move them to generation one.
+
+Right. And maybe that's, I don't know, four megabytes.
+
+Mark and sweep, right? And then things that survive.
+
+Some number here. Snake.
+
+Bites. Whatever. Six gigabytes. Right.
+
+You bring them over to here, and this is also marked. Okay.
+
+And so now what's going to happen? Well, in generation zero you're going to have mostly newly allocated objects.
+
+Okay. Do you think that a newly allocated object is more likely to become garbage or an object that's been around for a long time?
+
+Huh? Well, probably the newly allocated stuff, because I'm pretty quick to make stuff.
+
+Throw it away. Yeah, like if you make an object. And like, chances are good it will become garbage quickly.
+
+The longer it survives, the longer it's likely to survive.
+
+Right. And so over here, we're going to have lots of garbage.
+
+Like 95% plus garbage and lots of.
+
+But I mean, it's hard to say these things in general,
+
+but like if you have 95% garbage and mark and stop and coffee, you're in really good shape, right?
+
+Because you only ever touch the live data. So you're gonna like, go touch some small band 5%, you know, 12kB of data.
+
+You're going to copy that over and you're going to have a huge chunk of huge space for you, right?
+
+And then as we go to older and older generations, things survive longer, right?
+
+This this is called infant mortality because it matches what happens in people less so now that we have wonderful medicine.
+
+But like, especially in like 200 years ago or whatever, the longer you live until you get old, the more likely you are to keep living, right?
+
+Like babies are fragile. Um, fortunately, these days we, like, understand babies should sleep on their backs and blood and a lot.
+
+And we have medicine and so forth. So it's less of a thing.
+
+But, um, it's still, you know, termed infant mortality of your data.
+
+Right. So things that you, you allocate are very likely to die and become garbage.
+
+Things that live, you move them over here. And so now we have our mark and sweep in this generation.
+
+But this is filling up very slowly. Right. This isn't every allocation.
+
+Let's let's just say 95% of our our data lives through each collection.
+
+Right? So our is Identity's collection. So every 256kB we allocate, we're going to keep 12kB.
+
+And so to to to bring things over here we're going to be allocating 20 times as much stuff before we put it over here.
+
+Right. And so this is going to fill very slowly. And these collections are super fast right.
+
+Because they're on a very small amount of data and a very small amount of light. Likely this is going to fill slowly, slowly, slowly, slowly.
+
+And then when it fills what are we going to do? Collect it.
+
+Some stuff will have died, but maybe not as much. Right?
+
+But Mark and sweet, we've got to go touch all that dead data anyways, right?
+
+It's fine. Okay. We're not wasting the space over here. We're only wasting 256 K.
+
+And then, you know, after some couple collections or something surviving,
+
+we move it over here into a really big generation, which we collect really rarely.
+
+Right. Does that seem cool? Does that seem like.
+
+Is there any, um.
+
+Can anyone spot a difficulty with this that I haven't? I haven't told you that.
+
+Eric is a Tech Love storage store.
+
+How many times each item is being garbage collected?
+
+I mean, if I only wanted to survive three times, that's two bits, right?
+
+So basically, like every object is going to have a header anyways. And I just need two bits in there that like start at zero.
+
+And when I finish a collection and they're one one and I just move it over.
+
+Right. Any other thoughts?
+
+Billy? I mean, are there any issues with, like, pointing between generations and stuff like that?
+
+Well, yeah. So. So if I have pointers that go from this generation to this generation, that's not a problem.
+
+Right? Because I'm happy when I need to do a collection here.
+
+I'm happy to basically like, explore through this as part of my route set,
+
+like explore from my route, set through here, over to here and be a good shape, right?
+
+But I don't want to have to explore this to find pointers into here, right?
+
+Because if I have to go look through all of this to figure out which of these objects are live from an older generation,
+
+I basically wasted all my performance gains.
+
+Because if there's some object in here age.
+
+And the only pointer to it. You know, comes from some object here, which may be like my roots set.
+
+To. Right.
+
+Like if that if that object is alive because of some chain of pointers to an older generation.
+
+I don't want to have to go explore that generation. I basically just done marking on it already.
+
+Um, and so, yeah, it is the case that I have a purely functional language like Haskell.
+
+Then this can't happen because objects can only point at objects that are older than themselves.
+
+Oh, right. If I, if I have no side effects.
+
+So let's say here's an object I created it.
+
+Here's an object. When I create it, I can tell it to reference something that's older.
+
+But I can't have this older object reference this younger object unless I can side effect it after it's created by that.
+
+So the more functional our language is, the less this problem happens.
+
+But if it can happen at all, we need to account for it.
+
+So one way in languages that are.
+
+Actually mostly functional. Like how simple as we can play some, um, page table tricks where we can mark this whole part of memory as read only.
+
+And then if something in it gets written that point at a younger generation,
+
+we can basically remember that particular page as needing special treatment.
+
+Anything in there could reference could, could keep things in the younger generation alive.
+
+And we marked that. Pages Writeable. So that other writes go through and pulls.
+
+Okay. You can do this by the like. This isn't magic.
+
+You use the M protect system called to grow region of memory as, uh, read only.
+
+So M protect let you change the protection that's on regions of memory.
+
+Um, you can use it for something like this where you want to say, hey,
+
+this is read only if you want wanted to dynamically allocate memory and write executable instructions into it.
+
+Like when you malloc something, it's not marked as executable, but you can use you know protect to market is executable.
+
+Um, but in this case we can say, hey, I'm going to mark my, my, uh, generation one as read only.
+
+And then what happens when you try to write to read only memory.
+
+My 250 tags. So you get a seg fault, right?
+
+Six seg v but I'm sure they tell you in 250 like you should never touch six five.
+
+It's totally legit. In this case to catch six seg v record which page it was on market as writeable with another important system call.
+
+And then you just have like a vector or whatever of pages that need special treatment.
+
+Right. Um, and so you could, you could go implement this with no like crazy.
+
+No. So it's just standard unit system calls. And then we can do the same thing for this generation.
+
+Um, also. Right. And there's some other techniques your book talks about them.
+
+Um, but like that's kind of the tricky part of generational garbage collection is we
+
+have to worry about pointers from older generations back to younger generations.
+
+If we didn't have those, it would be, uh, easy mode.
+
+Okay, but this gives us kind of the best of both worlds. For now, we're only wasting a small bit of our heat.
+
+We've got fast allocation in, um, in the young generation, if we're doing stopping,
+
+copying these collections can get slower, but much more infrequent as we go to older and older generations.
+
+Um, and lots of implementations of Java also have like a special generation of things that will never die.
+
+And they're just in their own special region of the heap, and that's never garbage collected.
+
+Right? So I don't know how much you all know about Java, but like.
+
+Every class you write has a class object in memory associated with it.
+
+Not just that you write that is in your program. You all know this.
+
+No. Yeah. Are you a hardcore Java hacker in here?
+
+Uh, they taught a lot about it in, like, 3 to 8. Uh, okay.
+
+Yeah. Uh, yeah. So there is a class, like, for every class you have, like, you've written class calf blood in the blood and block.
+
+There is a class object in memory for cat. But once that is created, it will never be destroyed.
+
+Right. And so, um, that goes in the this will never be destroyed region of memory,
+
+along with all of the method and field objects that go with that class object and so on,
+
+because there's no point in trying to garbage collect them, because they're just inherently live through the whole program.
+
+Random geometry class and reflection.
+
+All right, so that is garbage collection. A couple of you asked me about concurrent garbage collection.
+
+Like, could we run this on another thread? It's hard.
+
+There's like, there's there's there's research papers about it and stuff.
+
+But it's really hard because the program is modifying the state, like while you're trying to collect things.
+
+Um, and so not feel. Do you know anything about, like, distributed garbage collection across multiple lake systems,
+
+or is it just you treat all as one big distributed across multiple systems like you want it like a center, like.
+
+So, uh. So if you're doing something across multiple different systems in a data center,
+
+you are probably talking about something very different from normal human memory, right?
+
+Because like, this machine can't really have a pointer on this machine unless you have some.
+
+Abstraction layer that, like, treats all of their memories as like one unified address space and like a pointer to something makes a like.
+
+I could imagine something like this, but I don't think it's very common.
+
+Right? Um, in in, in in that case, you're probably talking about something more higher level where it's like,
+
+I need to clean up some kind of object that I'm done with.
+
+Um, and there we'd have to look at specifically what you're wanting to do.
+
+Is there a specific like. Is this just a like? I like to ask about distributed systems or did you have a particular use case in mind?
+
+I mean, yeah, I just I was wondering if you had experience with that.
+
+Use out. So when we moved something from the younger generation to the latest move of and.
+
+Uh, child that should be able to come out or to apply to anything it points at.
+
+Yeah. Yeah. Like yeah that that would upset what like, for example a rapper's key and a move a to, to the older generation.
+
+And you also need to get like if I'm moving D to an older generation I want to move B and A over there also.
+
+Right? Because, um. Because if if I'm assuming D is going to live a long time,
+
+I'm going to assume B and I are going to live a long time also because they're reference fighting.
+
+So how do we get a, uh, like point of view?
+
+So when I go to copy D, instead of copying it up there, I move it over there and I put its forwarding pointer over there.
+
+And then I just remember that, like I'm, I'm currently doing a copy over into that region.
+
+And so I just like set up a bit in my search that's like recurse with move to that generation.
+
+Everything over there. Any other questions about garbage collection?
+
+No, bill, you look, I you know, I was just thinking about how, um, like, this might be the reason.
+
+This might be a good reason why video games are better in functional programing.
+
+Um, like a side note of, like, you have a gun and you're shooting, like, 200 bullets a second or whatever,
+
+and you're trying to manage the, uh, your gun is going to be there for a while, and then whatever.
+
+You just want to go, like, garbage, collect those bullets really badly.
+
+So, uh. This is also one of those things where like if you're doing something advanced,
+
+especially something like video games or whatever, you may not want normal memory allocation, right?
+
+Like if over and over you might want just something where you're just not dynamically allocating everything, right.
+
+Like if I know that my gun is going to have at most 200 bullets in flight,
+
+I just want to pre allocate an array of 200 things and just cycle through it,
+
+possibly 256 things, so that I can use like and instead of mod, because that's a big difference in performance.
+
+Um and just like. Circulate through this and not like malloc and free every single one of those.
+
+Um, you can either do that like just for that.
+
+It would kind of be like the most straightforward of just like my gun has a vector and when it's allocated, it makes this vector hold 256 bullets.
+
+And I remember an index for the next thing and whatever.
+
+Um, but for other things you can do, you can do what's called placement new, which comes up very rarely, but you can basically tell new in C plus.
+
+Plus don't allocate memory. Use this particular pointer, but do initialize the object like it's getting new.
+
+So it will still set up the vtable and run the constructor.
+
+Um, but it won't it won't do the malloc part because you're providing that memory to it.
+
+So if you if you have this vector but we're like, oh my gosh, I need to do new bullet each time.
+
+You could do placement new where you tell it like that's the memory.
+
+Just make me a new bullet there. But in that case, I would argue you should probably just keep those objects the same in line.
+
+Change the state that needs to be changed when you. Create.
+
+Other questions about garbage collection. All right.
+
+So, uh, now we are to the part of the class where we basically are going to spend today and Wednesday on other topics in compilers.
+
+If you have particular topics, post on edX about them. I'm going to start, uh, since I didn't see anything on the edX this morning when I looked,
+
+I'm going to start by talking a little bit about continuation passing style.
+
+Just make your heads explode. I mean, because it's a part of compiling functional language and also it will make your heads explode.
+
+Sorry to. The garbage collector on the board is really slow.
+
+We. Fine, I just.
+
+But, you know, this is like in some rooms they have like the stop and copy version where you just go through like swap the boards.
+
+But that only works once because nothing like this really. Mhm.
+
+Oh, man. Oh that reminds me back when I was an undergrad and this guy Jim Greenlee who taught our like sophomore level class and he hated PowerPoint.
+
+So he I mean I use how I use keynote for something I think PowerPoint.
+
+But you know I do whiteboard in here. But he like did did chalkboard only and would like rant about how awful PowerPoint was.
+
+And um, I had his class at like 830 in the morning or something terrible.
+
+But, uh, you know, he said in one of those rooms with like the sliding boards and, um, so, uh,
+
+a couple of us snuck in before class one day and wrote PowerPoint rocks and then split it up so that it was like the behind the board.
+
+And so, like, you know, he's like writing and writing and writing.
+
+And then he pulls down the board that's in front and it just says, point the words, and the whole class just starts laughing.
+
+But he's not looking at there. So he's like, what? What is going on?
+
+Um, yeah. You guys are probably like me.
+
+And drew was not a good, good kid. And, um. I'm getting more from this.
+
+Is that every concerned professor worth their salt just has to have a piece of software that they absolutely hate.
+
+Oh, yeah. Of course. Yeah. Oh, yeah. You don't have, like, software that you hate.
+
+Yeah. Okay. Yeah. The person on the planet has to have software they hate.
+
+Right. Um, okay. But, uh, all right.
+
+So we're going to talk about continuation passing style.
+
+So what if we make it so that functions never return.
+
+But wait. Hold on. Don't think I'm crazy yet. Instead of returning, we give them a function to call with their result.
+
+Okay, so let's write the factorial.
+
+Not Factorio, the game that would take us a little more than the rest of class.
+
+Factorial using continuation.
+
+Passive. So. How many parameters does factorial take?
+
+But what? Well, no, you guys are be normal programmers, remember?
+
+No function ever returns. Yeah, it takes two.
+
+It takes in. And then we can call this one.
+
+Okay. This is your continuation.
+
+And if you don't return an answer, you call K with your answer when you're done.
+
+And by the way, can k return? No.
+
+No. Because no function ever return okay.
+
+You're doing the jacks are laughing up here.
+
+They're like, oh God, our brains are going to hurt so much. This this feels like writing asynchronous JavaScript back before promises.
+
+Yes. Before you continue. What is the advantage of doing this?
+
+Or do you want to save after this? Yeah, let's save that. Okay, so, uh, how do you write factorial?
+
+Factorial. What's the first thing we compute?
+
+Factorial. In this case, uh, we need to check if it's the base case.
+
+Right. So how do we check if it's the base case? I mean not.
+
+Yeah, okay. We'll say. I'm going to write this in kind of like, um, scheme, Lisp notation.
+
+I want to see if less than or equal to.
+
+Of. In zero.
+
+Right. So I'm going to say is in less than or equal to zero.
+
+How many arguments does less than or equal to take to read.
+
+Three. Good job. Is that right? It's going to take, uh, end at zero and then add.
+
+To. A um a lambda.
+
+That's its continuation. Right. It's going to call this function. So remember lambda is like f n right.
+
+So small f n is just scheme and everything else lambda it's going to take a lambda that says I'm going to compute a boolean.
+
+And I'm going to call you with this boolean because I'm never going to return.
+
+Billy looks skeptical. And then what are we going to do with that?
+
+Give it to Kay. Bill is like my factorial.
+
+Just returns true or false. All it does is compute is less than or equal to zero because this is way too complicated.
+
+Um, we're going to see a b and b is true or false, right?
+
+Um, we're going to make PHP like primitive syntax. So if B.
+
+And else. Okay.
+
+Uh, what are we going to do if B is true?
+
+It is true, it is less than or equal to zero. So we want to.
+
+Ethan, I guess you call K, we're going to call K on.
+
+Uh, on itself.
+
+No no no no. What are we. If we were doing normal programing, what would we return?
+
+Can one. So we call Kate with one.
+
+Right. We're going to say my continuation. What you do after me is, is is getting one.
+
+Do you buy that? Yeah. Okay. Calling K is like returning otherwise.
+
+And I'm going to just do this back over here. What's the next thing we do in factorial.
+
+Uh, what, uh, a uh uh, so.
+
+And let us wait. We. Okay. Wait. Hold on. We can't call k on factorial of n minus one because factorial of n minus one never returns.
+
+When we call okay, we're done. We have to give it a value okay.
+
+And let. So your factorial is just going to.
+
+Well so first of all if I want to do n minus one I have to do like n minus one and give it a continuation.
+
+But if I do n minus one with two as its continuation, that would mean my factorial function just computes n minus one.
+
+That's not what I want to do. What would I do?
+
+What's the next thing that happens in factorial? Curry.
+
+Hi. What can I do better yet?
+
+Before I recurse, I need modification. I n minus one.
+
+Yeah, right. If I want to recurse next I need to compute minus n one.
+
+Right. That's the next thing I'm going to do is compute n minus one.
+
+And what am I going to do with n minus one.
+
+Right. So I'm going to say oh this is going to be lambda let's call it.
+
+I don't know r times something huh. I'm still.
+
+Time. Something I know know if I'm doing, if I'm doing if I'm doing let's I'm doing Kendrick version because you all want to recurse.
+
+The next thing I do is call factorial. Right. So I'm going to call.
+
+Factorial with r.
+
+And then what's its continuation. Lambda answer.
+
+Dot. What? What should I do?
+
+So remember this lambda. Here is what factorial is going to call when it's done right.
+
+Okay. Ah so this is just going to compute.
+
+What if I put this. This factorial will always compute one.
+
+So basically recurse to this base case and return one. And then when that returns back that would be oh what do I do.
+
+I call my continuation with a, I call my continuation with a. And so we'll just get one.
+
+What do you do when factorial returns? Time to multiply.
+
+Okay. Times a buy in.
+
+And what do I want to do with that result? The call came in.
+
+Very good. Eric. Okay, I can just make that be like it's continuation is okay.
+
+Bump bump bump. Okay.
+
+All right. Now. This is head recursive factorial.
+
+How do I know it's head recursive factorial. Because.
+
+Not just okay. Right.
+
+Any time I recurse, if I'm giving it a different continuation than my own continuation.
+
+I have work to do after that function returns and thus it is head recursive.
+
+So by that. So I'm going to write over here.
+
+Head recursive factorial. And.
+
+You know, all of this would be the same. Almost. Um.
+
+Uh, actually, I need to do a completely different parallel. Most of them would be the same.
+
+I want to do Taylor Cursive. Now I need.
+
+To take along an answer, right? Because that's how recursion works.
+
+I'm going to basically start out the same.
+
+But I'm going to call Kay on my answer instead of on one hand, and I'm going to just bring my else like way over here.
+
+Right? Otherwise, what am I going to do? I'm still going to need to do n minus one, right?
+
+But I also need to go ahead and compute end times.
+
+Answer right. Right.
+
+So I'm going to say compute in minus one. The continuation for that is uh lambda r.
+
+So r is going to be n times n minus one. But I don't want to worry about r.
+
+Yeah I want to multiply the answer by n. Right.
+
+The continuation for that is lambda p dot.
+
+What do I want to do once I have r and p. What call factorial okay.
+
+With what? Three arguments. P r p and what?
+
+There we go. And so in this case. When I recurse, I'm giving the same continuation that I was called with, which is how I know its tail recursion.
+
+Does that seem crazy like?
+
+Because this means, hey, when I'm done, there's nothing else to do but just return that value directly to whoever called right here.
+
+When I'm done, I need to do a multiplication before I can return an answer.
+
+Okay. Does everyone's head hurt? Like a lot? No.
+
+Jack's like, come on, this stuff for breakfast. Like, please pass, please pass the weeds.
+
+And I'm going to continuation passing convert Fibonacci this morning with my orange juice.
+
+Okay. So going back to someone saying like true why would we want to do this one.
+
+It makes it very explicit where we have tail recursion.
+
+Right. Because functional language compilers generally want to find tail calls and optimize them.
+
+Right. This turns into a jump because this continuation is the same.
+
+It also makes it very explicit what happens next, right?
+
+Like when I write in normal programing. Something like that.
+
+What happens next is not this. Right.
+
+What happens like this is the first thing that happens. This is the second thing that happens.
+
+This is the third thing that happens, right?
+
+But here, this is the first thing that happens. And this is the second thing that happens.
+
+And this is the third thing that happens. So we've made it completely explicit the order that all these things are going to happen.
+
+Um, and basically these now can turn into just uh, for the most part like instructions and function calls and so forth as we do all like that.
+
+Now? Uh, yeah. How do we solve one of them? Because they have multiple variables for.
+
+Multiple return lambdas. What do you mean we'll return.
+
+We'll talk about how we do that here. Um, well, okay.
+
+So. What does it mean to return multiple things?
+
+Um, if I wanted to have something that looked like it returned,
+
+multiple things can either do what SML does, which says you're returning one thing, that thing is a tuple.
+
+Or I could say, okay, K isn't a function that takes an n, k is a function that takes two minutes, right?
+
+And then everywhere I'm calling it, I'd call it K10 or K3X or whatever, um,
+
+which would basically be returning two values, which works just fine because, hey, it's a function.
+
+I'm just calling it. Okay. Um, so that's your basics of continuation passing.
+
+Uh, you can convert. All sorts of control flow things into continuation passing.
+
+So like exceptions with like try and catch.
+
+If you think about that, that is just having a special continuation.
+
+Right. So like if I, um, if I wanted to have something that's like, you know, try F of X catch, I'll just follow the plot.
+
+What we're basically saying by that is, um, there's two different places you can go after after this or at any point in this.
+
+Right. You can either continue along normally like F can return here, or F can kind of magically jump in here from wherever it is.
+
+Right. So you can think of that as.
+
+It taking a normal continuation which will come back here and just keep doing work as normal and an exception continuation that will come here.
+
+Right. And so the way that you throw an exception is you just call the exception continuation and you end up back in the appropriate catch block.
+
+Is that cool? Right. Um, and so that makes it internally, like if you're thinking about what's happening like, oh,
+
+I have tries and catch and throw and what does throw do, it unwinds the stack and so forth.
+
+Like or we're just calling this function and like no function never returns.
+
+Um. By the way, if you really want me to make your head hurt a little bit.
+
+Do you all remember I told you about the Kerry Howard isomorphism earlier in the semester?
+
+Library doing types just as a little brief reminder like functions.
+
+So if I have an end to end function right, that is a lot like an int to int implication in logic.
+
+When we're type checking this, we assume the parameter is an int.
+
+We conclude the body is an int based on the assumption that's an int that the same as the rule of logic.
+
+For getting an implication where we assume p and we conclude q and we get p implies q.
+
+Sounds familiar. And is like records, because if I have a record with x and y and x is an int and y is a string,
+
+I have something that is an int and a string I need to know to make it.
+
+I can pull out either piece whenever I want, which is just like happens with. Smiles.
+
+Data types are like war. There are disjoint union. Right?
+
+Where? Um. When I make them, like if I have a data type that has constructors A, B, C, and D,
+
+and it takes an end and B takes a string and whatever and whatever, when I make it, I only need one of those.
+
+I need an int for the constructor A or a string for a constructor B, which is like making or.
+
+And when I want to use them, I have to write a case for each of the possible different things.
+
+Yeah. So I think at that point, maybe one of you asked me, well, what about not.
+
+Did one of you ask me that? That sound like a thing you wanted to know?
+
+Well, it turns out that continuation passing corresponds to double negation.
+
+So. Yeah. What? Oh, hang on, I need some space to prevent important.
+
+Yeah. And we're just going to make your head hurt instead of what, at the same time.
+
+So, um. Do you all believe that not pee is logically equivalent?
+
+To pee implies false. I.
+
+Really thinking about this. Right.
+
+So if I tell you that, not assume not P, then if you assume P, you have a contradiction because you have no Panopto.
+
+So if we know not p, then p implies false, right?
+
+The p implies false. Kind of the opposite way around.
+
+Like this is. This is syntactic sugar for not p or false.
+
+And since false can't be true, it has to be not p, right?
+
+Okay. So with that in mind. False is in non termination.
+
+And in kind of the correspondence between functions and logic.
+
+False means it doesn't return. So if we look at our type for k, it takes an end.
+
+And it never returns. You'll buy that.
+
+I mean, do we know that? Did we define k earlier as like.
+
+Well, we said that none of our functions ever return. Right.
+
+And K doesn't return either because it's a function and nothing returns and continuation passing.
+
+So it takes an int and it never returns. Utah survives.
+
+Over 55. Why is false non termination?
+
+Um. That is a much more complicated question.
+
+Um. Can you just take my word for that, at least for a minute?
+
+Okay. Okay. Do you all. Now, believe me that Kane is, uh, uh, into false beliefs.
+
+So our programs. My brain is exploding. Yeah, that's the point.
+
+I need your heads to explode before the end of the semester. Programs must end.
+
+Yes. So, okay, at some point does end, but it doesn't return.
+
+So it must go to a different program. Can, like can you call that list?
+
+So. Yes. He makes a good point.
+
+Um, so I so at some point.
+
+Your program exits, which also doesn't return.
+
+Right. So like at some point you have a top level continuation of like.
+
+That or just that. Right.
+
+And so, you know, we might have like main does call factorial print exit.
+
+At some point my top level continuation will be exit the program.
+
+Right. And then you say. But true. What happens after that? Well, these are our ways of representing the program to optimize it and so forth.
+
+Our program will exit as normal and the OS won't care how we like optimized it.
+
+It will just tear down our virtual address space and we're all gone. So like a print function doesn't work in this context.
+
+So print I mean so we can have print right.
+
+So let's just say we have print int right.
+
+It would basically be like and.
+
+Cross. Uh, unit continuation.
+
+Uh, to. And I'm going to buy that for false or non termination.
+
+Right. So and unit continuation would be. Cute, right?
+
+So it's good to have a continuation that we pass no arguments to. It's going to have a side effect.
+
+We're going to say print and thought like we might do um, so Maine might look like um.
+
+Factorial of three.
+
+Lambda a dot print. And, uh, a lambda.
+
+Uh, no arguments. Dot exit.
+
+Right. So like what's factorial going to do.
+
+It's when it returns an answer it's going to call this lambda which says I print out and my continuation calls exit with zero.
+
+Right. And exit is just like. A thing that ends.
+
+Exit has type and exit has type.
+
+Its to bottom. Where bottom is the same things.
+
+Also this context and these is not in termination. Okay.
+
+Ever since had heard a lot. Because when course evaluations come along, I don't want you to say drew didn't make my head hurt.
+
+This class was too easy, right?
+
+Oh, that's not how you all score evaluations. Okay.
+
+Uh, so so if if factorial takes a continuation, this type is int to false.
+
+Let's just let's just do something a little simpler where we just have, you know, f of k.
+
+Right. So if this has type int to false.
+
+Oh no. No. It's uh. Yeah.
+
+But then what type does this return? Does this function never return?
+
+No. So the type of f is end to false and false.
+
+Right. Which this. Is not the end to false.
+
+But this is not. Not. And. Right.
+
+So this function that takes and get continuation has type not not yet.
+
+That is you give me you give me a function that takes an end and never returns.
+
+And I will also never return by consuming that end, its head ready to explode.
+
+But the original function that, uh.
+
+Um. Did this would just produce an end?
+
+Oh that's right. Do you want me out of the way, or do you want me to pose next to this?
+
+No. Okay.
+
+Uh. Utah. What is?
+
+So so. If K has Typekit to false and has Typekit to false to false because it never returns.
+
+So this arrow falls as we talked about here is not yet.
+
+Uh, okay. Which means that. Not in Arrow Falls is not.
+
+Not in. Which is that?
+
+Which is isn't. Right. And so, uh, this function would just produce an event right?
+
+In our normal thing, we're going to have like f of unit equals three.
+
+And here this would be like K3.
+
+This produces an end. This calls an int continuation with an end.
+
+Uh just never returns. Um which has type not not end.
+
+So continuation passing in the land of current Howard isomorphism to logic corresponds to double negating all of your types.
+
+And now you can impress all your like this. We can't be like at a party and be like, huh?
+
+This wine is excellent.
+
+Also, did you know that in the query Howard isomorphism continuation passing conversion corresponds a double negating all your.
+
+Why are you guys walking away? All right.
+
+So is this a way of just taking this normal, this normal idea of having a function that turns it and making it work under a continuation?
+
+Assume. So this was just a little aside on the types.
+
+And also one, if you asked me like how does not fit in to this earlier in the semester.
+
+And I said I can't really answer that now, but I'll tell you later when I'm ready to make your heads explode.
+
+The actual like continuation passing conversion is what's done by a lot of functional compilers to get their intermediate representation,
+
+like their intermediate representation. Is the CPS converted?
+
+Version of your code where everything is explicit about what happens next, because it's like n minus one lambda blah to do da da da.
+
+And it's very easy to tell what is and isn't a tail call, not just tail recursion.
+
+Right? So we can I don't know if they tell you with us in other classes,
+
+but you can have a tail call that is not tail recursion and optimize it in the same way.
+
+Right like F called G and G is the last line of that function.
+
+We can just destroy fs frame and have g returned directly to where f returned.
+
+Um, and we can see that because GS continuation will just be FS continuation, and we have nothing else to do after that.
+
+Right. Um, and so that becomes very explicit in CPS continuation passing style.
+
+And that's, it's really easy to do tail call optimizations which functional compilers love,
+
+because functional programmers write tail recursion and expect it to look like a weak, immediate, simple.
+
+But it also works nicely for like exceptions and stuff like that, right?
+
+Like. C plus plus exceptions involve a lot of excess of stack unwinding logic to go with them.
+
+Small exceptions just look like you called another function, and then a bunch of other frames get garbage collected.
+
+But we also don't have destructors, right? By the way, SML, NJ, your stack frames are all on the heap.
+
+They just get garbage collected. Right.
+
+And that works well because if you have a young generation stopping copy collector.
+
+Allocating on the heap is just as fast as allocating on the stack.
+
+And when you have functions that can that can be closures with variables and other
+
+functions and non-local control flow by exception handling through CPS call and so forth.
+
+You don't have to worry about cleaning anything up. You just like, let the garbage collector handle it.
+
+Will you look unhappy? What you like?
+
+Like. I can't believe there are types with knots in them.
+
+This offends me. I don't know. Maybe you're not unhappy. If you're unhappy, I want to make you happy.
+
+Give me a second. Okay. Hold on. My rage is building.
+
+I will be unhappy soon as I figure out what I'm unhappy about.
+
+Um. Yeah.
+
+Every good. The other thing I'm going to mention and not go into details up because we have four minutes about compiling functional languages,
+
+is that, uh, when you see, you know,
+
+F of x in some functional language, you don't necessarily know what f is right in,
+
+like C or like original plain C, unless it's a function pointer which is less often.
+
+Um, like if I see f of x, I'm like, oh, I'm calling f.
+
+But here, like if f is a print, if this is map and f is a parameter to our function, we don't know what that is.
+
+That can make analysis of lots of things really hard because we don't know our control
+
+flow or we don't know like our call graph or our control flow graph or what's going on.
+
+And it seems like to figure that out, we kind of need to know what f is.
+
+Right, like, oh, we need to know what f is to figure out what eff could be.
+
+Oh my gosh, what does that sound like? Iterate to a fixed point, right?
+
+We start by saying F can't be any lambda in our program for all the call sites, and then we start doing a big data flow where we're like,
+
+oh, well, this function could be this, and this function could be this, and if this was this or this or this, this could be this and so on.
+
+And um, this is basically. Control Flow Analysis, which is my master's advisor and compilers.
+
+Professor's thesis was how to do that.
+
+Um, and like before that, it was like, uh, guess we can't do lots of optimizations in functional languages and all and went and like,
+
+figured out how to do control flow analysis. It actually comes with like a K on the front.
+
+Specifying some basics, like how much context you keep as you flow that around.
+
+Um, and that turns out to be a really big hammer for not only optimizing functional languages,
+
+but also object oriented languages, because in an O language, if I say object dot method, what method does that call?
+
+I don't know, it could be a lot of things with dynamic dispatch.
+
+And the same idea applies to figuring out what dynamic types could reach that call side and thus what method you're actually call.
+
+All right, everyone's head ready to explode. Okay, I have done my job for the day.
+
+Your heads are all ready to explode. Good. Uh, next time, we'll talk about compiling our languages.
+
+Um, like I said, if you all have things that you want, throw them on and discussions.
+
+I'll try and give everything at least a little attention.
+
+Um, depends in part on, like, how much I know about it and and what can easily be said in a reasonable amount of time.
+
+Um, but I'll try and say something about anything you all ask for.
+
+And then next week we have review for the final, and we have the Monday review for the final.
+
+Come with questions. Uh, Wednesday, Friday, Wednesday in the next Monday compiler's hacking day.
+
+And then we are done. Except the final. Harry.
+

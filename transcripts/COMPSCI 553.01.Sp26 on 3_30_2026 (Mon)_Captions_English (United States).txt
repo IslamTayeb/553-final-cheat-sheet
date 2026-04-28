@@ -1,0 +1,1191 @@
+[Auto-generated transcript. Edits may have been applied for clarity.]
+Like tell it how to do better. Like. Um.
+
+Yes. Cool. You've been writing these features. They're all in one gigantic class that is 5000 lines long.
+
+Could you please refactor this? Oh, great. Like, yes, I can refactor that.
+
+This is a GUI class. You couldn't have figured that out earlier. Um.
+
+But anyways. Um, okay.
+
+We've got. Oh, it's time to start. How are you all doing today? Um.
+
+Uh uh. That bad.
+
+That's why bad Duke lost. Oh, I kind of like a like a bad loss.
+
+Like. Like a bad loss. Meaning? Like it was really close and you thought we were going to win or like, we were up 927 of the half.
+
+19 is our biggest lead. And then we lost the game on a buzzer beater. Wow.
+
+Who did we lose to? UConn okay. He also threw the ball like directly.
+
+We threw the ball directly into their hands it seems I don't I don't I don't much sports but that seems bad.
+
+And then I'm. Sorry you all need like something before class starts I already done I've already done like that.
+
+Good. Um, we're going to do this is Duke provide like, extra therapy to everyone after like that happened here before this.
+
+Uh, they should watch what round where we have to look.
+
+So you're. Well, at least we were in the key.
+
+Um, okay. Uh, not really, but. All right.
+
+That's okay. Um, so we can say.
+
+All right. So. Yeah. Um, well, I'm sorry that your basketball team can dream for project timing, but, um, at least it wasn't you would say.
+
+Thankfully, I don't get too close, but you can't get too close.
+
+I don't really know what to say. Like I'm sorry. Let me see if hallmark has an I'm sorry your basketball team lost cards.
+
+Um, okay. Uh, so back to compilers.
+
+Um, I think I need to. I've graded some of your tasks.
+
+Your T.A. told me he was going to grade your test the other morning, like Friday morning.
+
+He said he was going to finish Thursday. He said he was gonna finish it Friday.
+
+And you? He has made no progress on that.
+
+So hold on one second. Just want to check back on this test.
+
+You are getting anxious and bringing pitchforks and torches to these great before riots.
+
+Yeah. Okay. Sure. I mean, you're all blue devils.
+
+I'm sure you have pitchforks, right? Just like whenever.
+
+Okay. Um, anyways.
+
+All right, so, uh, you some of your test is graded, the questions I graded, and most people did pretty well on a couple people to add a couple people.
+
+Your answer? Like, I couldn't make sense of what you were trying to write, so I couldn't figure out too much partial credit to give you.
+
+So, like, please come see me to explain what you're trying to do.
+
+Um, but most people are pretty good on those. Um, hopefully, Sean, I'll finish up the other couple questions soon, and we will get that.
+
+Uh, back to you. I know it's getting a little late. Um, so what do we talk about last time?
+
+Cash register allocation. Why do we need register allocation also?
+
+Christian don't have anything. We don't have any registers, Jack, to talk about.
+
+And we kind of need to get these into finite registers to have working maps.
+
+Um, how do we do register allocation? Yeah.
+
+By creating and introducing. Okay, creating an interference graph and then doing what to it or coloring it.
+
+Right. So we went through that last time.
+
+We ended up with a couple things that I needed to remember, uh, to mention to you all at the start of this time.
+
+And then we're going to talk, um, a little bit about data flow.
+
+So the first thing I need to mention is there's this thing.
+
+Pre colored temps because in your, um, in your code up to this point, certain things have to happen in certain registers.
+
+Right. So like you have a tell let's say temp 100 and a zero and temp 101 is a one and so on.
+
+You have these specific temps that you're using when you need a particular architectural register.
+
+And so your register allocator has to precut or has to end up with temp 100 being colored a zero.
+
+Or you have a problem because you're calling convention won't match up. Right.
+
+Um, and so the way that the register allocator handles these is these basically end up in special nodes in the graph.
+
+And draw elements like. Bigger circles.
+
+Bigger circles. And if you do so.
+
+And then you have all your other regular. You know, he's over here doing whatever.
+
+I know those would be like ten, 200 and whatever, but it seems a little nice for our family.
+
+Um, and so this means that you basically can make the same edges.
+
+So like if you're trying to, like, if you have, uh, move.
+
+Into temp 100 from a right.
+
+You can put a move edge. And remember, call us.
+
+Thing is extra credit. You don't have to do it. But if you do do it, then this would try and try to put a into temp 100 to um eliminate that.
+
+But. Uh, no. Uh, these pre colored temps all interfere with each other.
+
+You can't. You can't, um, you can't make A0 and A1 be the same register in the processor.
+
+That just doesn't work. Um, but this also, even if you're not doing, uh, move coalescing,
+
+this is also important because when you do something like after you do this, you're doing, you know, whatever, and then you jump in.
+
+Link, let's say that D is live from here down to here.
+
+Well now D is going to interfere with ten 100.
+
+All right. That's going to mean that we can't put D into A0 because we need it across this call.
+
+Your jump and lane construction. Should have destinations of all the T registers.
+
+And anything else that can be clobbered by a call. Which means that if D is live across this call.
+
+It's going to interfere with all the tea registers. Everything that's written by this jump and like written by this jumping link,
+
+which will prevent us from allocating that register or that 10th that's live across a call into one of the T registers.
+
+It will naturally be S registers. Okay.
+
+Which is important. And then things which aren't live across.
+
+Cause like if we just have some little calculation here involving EE,
+
+they won't interfere with these two registers, which means that they have a chance to get allocated into them.
+
+Um, if all the other things around them don't need the T registers. Okay.
+
+So these colors tell you never simplify them.
+
+Well and and not even the potential spill. Never.
+
+And our actual terminating condition for our recursion is just when you only have the colored temps left,
+
+and then you start rebuilding the graph from there. Okay, so we'll start off with those.
+
+And there will be one pre colored temp per register that we can actually register allocate into.
+
+So things like a stack pointer that's not really available for general register allocation.
+
+So we don't really need a week. I mean we're going to have a temp for the stack pointer.
+
+But it doesn't have to participate in this graph algorithm. We just don't make that available to our register allocator.
+
+Things like the global pointer in the kernel registers. We just don't.
+
+We just pretend they don't exist. Like like um, the frame pointer.
+
+You if you want to get fancy and have like leaf procedures, not use the frame pointer and stuff, you could do that.
+
+But like it's easier to just keep the frame pointer special and then just use all the other registers for register allocation.
+
+Okay. Don't try to use ATM there.
+
+Um, because like then you have to think explicitly about which instructions are if you want to,
+
+as long as you know which instructions are real instructions and which are pseudo instructions, that's fine.
+
+You have to both, um, make the pseudo instructions right at as a destination,
+
+and you have to put some extra like stuff in there for them to be happy with you using it.
+
+Like I think it's like, no AT&T that says, I know what I'm doing.
+
+It's okay for me. Fast rules. Um, okay.
+
+But I don't remember to just. See what else on the register allocation.
+
+Right. So if you fail to register, allocate, uh, what do you do?
+
+Well, first you all shouldn't fail to register allocate because you have to go try really hard to run out of MIPs registers.
+
+But, um, if you do want to do a little bit of extra credit with spelling, you can do that.
+
+And that's one of those things where, um, as with most things in compilers, kind of the sky's the limit, right?
+
+Like the simplest thing you can do is say, well, I'll just go, Mark.
+
+I'll just go pick one of my variables and say, put it in the frame.
+
+Right. Like it doesn't actually escape, but I'll go back and market as escaping, rerun all the phases of my compiler.
+
+And now every time I use that variable, it's going to be loaded and stored off the stack, so it won't itself have any live range.
+
+It'll just have different short lived temps. And yeah, now I can use more variables.
+
+If I failed it again. Do it again. Do it again. Right.
+
+That's not a very clever or, um.
+
+Sophisticated approach, but it will get you further.
+
+You could you you probably would be very, very.
+
+If you just do that, you become very hard pressed but not impossible to write a program you can't register allocate.
+
+Right? Because at some point all your variables end up on the stack.
+
+Now you need something where you have 25 more than 25 things live at once.
+
+And like to have that happen, you basically have to have like an incredibly complex arithmetic expression.
+
+Right.
+
+Where you have like a bunch of different temporary things that need to be combined together, and you could try really hard to come up with something.
+
+But like I said, it's not very efficient, right? It's going to just pick something.
+
+And, um, maybe we don't need to spill everywhere, right?
+
+We can be more clever. We could go and say, oh, what?
+
+Where are the problems coming? Right. What part of our program is actually generating these hard to allocate pieces of our graph?
+
+Right. We can go back through, um. We don't.
+
+So, um, asking if a graph has a k click click in.
+
+It is NP complete.
+
+But we don't even really need or want to do that, because we kind of know at every point in the program how many things are alive, right?
+
+So we can go look for where's there a lot of live stuff where hasn't been used in a while and put some loads
+
+in stores to kind of split things across that you can go do all sorts of crazy things you can think about.
+
+Am I in a loop? Am I not know? O is there something I could save before this loop and load after this loop?
+
+That might be much better than loading and storing it in the. Is there an optimal thing?
+
+Probably. Probably not. Probably.
+
+Probably that. But anyway, um. But you can just go do whatever you want.
+
+Like, you could go do all sorts of stuff. And so if you want to put spelling in, you're welcome to do it.
+
+How much extra credit depends on how interesting and sophisticated your algorithm is.
+
+Um, and you need to have some test cases that show it actually works.
+
+And not just like, well, nothing is built on like, compiled it because, like, most test cases won't spill anything.
+
+That's okay. Any questions about register allocation before we wrap that up and move on to other data flow?
+
+New York. Uh uh.
+
+Excuse me. Uh, I assume we don't need to prioritize putting variables into s registers when we're coloring.
+
+Because the child thing. Because having a map of the T registers automatically does that for us.
+
+It says anything that's live across the child must be in an S register.
+
+Yeah. You don't need to prioritize these registers at all.
+
+The algorithm should naturally pick them for.
+
+Things that, um, are alive across cause because it can't pick t registers and it will naturally pick t registers like if the S registers,
+
+if there's things around it that are using the S registers, then like the T registers will be what's available.
+
+That's if it's not live across whole system. Um oh.
+
+One other thing I want to mention is kind of the default is to just save and restore all the S registers so that you have them available.
+
+Um. For many functions.
+
+That's overkill, right? Like, I want to compute the max of these two integers.
+
+Save all edge registers. Do one conditional branch and write result into v0.
+
+Restore all else registers.
+
+Um, it's it's it's one of those things where if you just feel like like if you're just like, yeah, I just want that simple thing.
+
+I'm just gonna save all your registers. Restore all your gestures. That's fine.
+
+You can also try register allocation without saving any registers and see if it works.
+
+And if it fails, save one as register like save zero.
+
+And if that fails, save two of them. And so on and so on and so on.
+
+Um, that's not really sophisticated enough to get extra credit because it's just a for loop with like a.
+
+S register saved. Plus, plus. Uh, but it is like, if you just feel like it's really ugly and icky to omit, like, the main function with.
+
+Eight loads in eight stores. Then like you can, you can make yourself feel better because like, I know if I were to do, uh,
+
+the main function and it would have all the registers saved and restored, I would like throw up a little bit.
+
+Well, is there a way to give the coloring algorithm like priority to certain colors?
+
+Like the algorithm prefers to color things that use in with the colors that map to the T registers.
+
+And then in that way, it only uses S registers when none of the T registers are available.
+
+Um. I mean, you can easily like.
+
+You can always use a sure stick of like lowest numbered color available, right?
+
+Which basically tries as hard as possible to reuse the same things to give more open registers later.
+
+If you feel it's really important to put the two registers first, like how you number your colors.
+
+Like you could just have a list of available registers. Put the T ones at the start of it.
+
+Um. That's that's not a thing that's actually that important.
+
+Like, as long as we register allocate without spills, we don't really care whether things ended up in the S or the T registers.
+
+Right. So like in in 250 they probably are like oh my gosh, this has to be in an asset register and this has to be in a T register.
+
+It's not what you say. No. Okay. Oh, God.
+
+Uh, I don't know. That seems like a thing to 15 would would say of like.
+
+This is a temporary thing. Put it in empty register. Um, but, you know, in terms of just like, uh, this algorithm.
+
+Right? Like if, if you end up with, um, a bunch of stuff in S registers, well, are you going to like, how many registers do I need to save?
+
+Yeah. Uh, yeah. So if I say, like I'm going to register allocate having only saved zero then like.
+
+S1 through S7 are basically unavailable.
+
+Yeah. Or I'm saying like so they won't do register allocation, prefer to use as few as registers as possible and then like choose to save up.
+
+Yeah. So the register allocator says the easiest like the easiest way to do that is what I just described of like can I do this with no s registers?
+
+Like lots of functions. You can do that min of two integers dot square, these integers dot okay.
+
+Can I do this with one s register? Um.
+
+Can I do this with two eyes registered? Can you do this with three?
+
+And so if you say I'm going to try and register allocate with only s0,
+
+S1 and S2 available from my S registers, you can probably like register allocate factorial with that.
+
+Right. Um and then only save and restore those.
+
+And you basically just pretend that like s three through S seven just aren't available or that or that these conflict with everything.
+
+Um. Depending on how you want to do it.
+
+That makes sense. Okay, Pete, can you not like register allocated.
+
+And then after you register. Okay, go back and look which ones you look to see.
+
+Um. I'm thinking about that.
+
+I. You may, uh.
+
+There may be cases, especially depending on other choices you make where, like, you could do it saving three registers,
+
+and you'd end up with four registers that you use because, like, you're less constrained.
+
+Um, but, you know, and I mean, there's also questions in there, like,
+
+would you rather like, save and restore this register or be able to eliminate this move?
+
+Right. So it may be the case that like, oh yeah, if you save these three extra registers like you save six registers,
+
+we can register, allocate and eliminate these moves. If you save three registers, uh, you can register allocate.
+
+But we can give up on that move elimination. Right. And so there's trade offs.
+
+And it's complicated to figure out exactly which one you want. Other questions.
+
+All right. That concludes what needs to go into your compiler, so you now know everything you need to know to finish your compiler.
+
+Oh, by the way, somebody asked some, how has the T.A. gotten back to you with, like, graves on your type checker?
+
+Good. When did that happen? Week.
+
+That's okay because somebody has something on ed discussions about like.
+
+Type. Check our grade back versus, um.
+
+Er, translation deadline and stuff, and I don't know if I actually.
+
+Got a chance to answer that or not. But if if you run into a problem where,
+
+like something that was wrong with your type checker caused the problem of something that was wrong with your er,
+
+translation, and like you didn't get your grade back before that was due.
+
+Just like talk to your Ta about not double penalizing you and we can be reasonable about these things okay.
+
+All right. So now. We're is going to, um.
+
+We're going to talk about optimization also limited in scope.
+
+So this falls into this realm of stuff that you don't have to do.
+
+You can add anything you want to your compiler for extra credit. So if you were like, hey, I want to add more analysis and optimization, that's cool.
+
+As we'll see, a lot of these things actually follow a very similar algorithm with some changes in terms of the data flow analysis part,
+
+which means that if you do good software engineering, there's some low hanging fruit here.
+
+Um, but I need to write a bunch of, um, stuff about.
+
+Three. Uh uh.
+
+Almost time. Which is.
+
+Almost. And I just start playing.
+
+Yeah. I hope you're not on my last.
+
+Huh? Okay, I started writing B5 all over again because I looked at the wrong place on my notes.
+
+Now this is what I'm going to work with and start doing.
+
+Optimization. Um, yeah.
+
+I'm going to just say this is, uh, basically what we'd get if we were just naively meaning, you know, what?
+
+What your competitors would do right now without any optimizations.
+
+Compile. Just code. Which is not in exactly any particular programing language.
+
+Uh, I. Wait, wait.
+
+So I'm writing up this code on the right.
+
+Not because like we need to go through how this compiles into this, but because I want you to see that we've written some pretty reasonable code.
+
+It's not like we're trying to optimize something where our programmer was crazy.
+
+And in fact, what, uh, what does this code on the right here do?
+
+So we're going to say I get low minus one j gets high v equals r array a at high and in.
+
+While true we're going to increment I as long as a and I is less than v we're going to decrement in j.
+
+As long as a at j is greater than v. And if they've crossed we break out of this loop and we're done.
+
+And if they haven't we swap the data in our array.
+
+And then we do this loop again. And at the end we swap the data with our at high.
+
+So what is that. So it's the partition part of quicksort.
+
+So we need a little bit of like recursion around the edges to make it actually be quicksort.
+
+Okay. Um and so this compiles like if you just ran some, if you just ran quicksort through your Tiger compiler,
+
+you're going to get something like this where each of these array accesses, um, like when I do array I equals array j.
+
+We're going to need to compute for times. And we're going to need to compute four times j.
+
+We're going to need to load from our array with what we computed for four times j and store into our array with what we computed for four times r.
+
+Right. Um, and so that compiles roughly into this.
+
+And let me ask you all, what would you like to do to make this pseudo assembly better.
+
+I er ish assembly ish stuff that we have up here.
+
+How would you make it better? Krish.
+
+I mean, you're right. It seems like you're competing for time. Time? I'm.
+
+I'm computing four times, AI a number of times. It's find all my four times.
+
+Art tied here. Computing four times I here computing four times I there.
+
+Computing four times I there.
+
+Okay, so what would you like to do about the fact that I have four different four times AI computation, you know, a real strength of a problem?
+
+Oh, you're right and right there I have five different four times AI computations.
+
+What would you like to do about it? You tell your computer or something?
+
+What? Computers and toys. Is everything okay?
+
+Okay. So precomputed. So can I just compute four times I like right here.
+
+I'm letting him think for a second. And then there's like a queue of three hands in the air.
+
+Chris. Jack. Zero. Can I compute it right here?
+
+No. No. Why not? Yes, I changed because I was changing here.
+
+Eric. Uh, I was thinking we could at least replace the more expensive multiplication operation with the left shift.
+
+Okay, we could do that, too. Um, we could change all of those into.
+
+I shifted by two. But even if we do that, we're still computing.
+
+I shifted by 2 in 5 places. Right? So we might prefer to do that, but could we get rid of all those?
+
+I shifted by twos. Krish, does that mean you can just leave?
+
+The one at the top of P5? Can leave the one at the top of B5 and have the rest, like just reference T6.
+
+So you want to change this to basically use this one.
+
+Why not? This was. You know what I'm doing.
+
+I'm going to it to you. Let's come back to that fight in a second and see what you zero.
+
+And then he can have time. I was going to say the same thing about me.
+
+Okay. You said me. I don't really know if we fully understand how this is working, but I'm wondering if we could use if Eyes Only like changing in V2?
+
+Yeah. Then can we just replace it with AI plus four?
+
+Yeah. So you've jumped ahead even further.
+
+Okay. Um, so let's let's break.
+
+There's three things here. So first is can we do strength reduction where we just replace uh, four times I with I shifted by two.
+
+We can do that pretty easily. That doesn't need data flow. That's something we can just do in the instruction section.
+
+Eason is jumping ahead to induction variable elimination, which is a thing we can do.
+
+We're going to save that for a little later in our discussion, and let's focus on what we've heard from a few other people of just.
+
+Can we um uh uh uh uh, make these things in common.
+
+So here, this is pretty easy, right? We could just say, hey, you know what?
+
+We could just get rid of this and rewrite, uh, all our T7 to just be two seconds.
+
+You'll buy that. And we can do that just by looking here because these are like in the same basic block.
+
+Now, uh, we just make this blue one here a little bit better.
+
+We could do that same thing over here and get rid of this one.
+
+And we've gotten rid of two of these instructions. But there's a little bit of a question of can we do even better?
+
+Do we can we get this down to just one of these? Well, let's look at this.
+
+Where do we write to I. Do I have any other rights to I.
+
+And in fact, if we look at my source code, we'll see that I write to I here.
+
+And here. Right? Utah can be announced, so it's unveiled.
+
+While I retired as less than being number one, while I rated J is greater than B, and then it's a semicolon.
+
+A semicolon if I is greater than equal to j break and then a swap or some test the body for that.
+
+Well. This is a do while loop here.
+
+I mean the foot events. Oh, do I do?
+
+I'll do. Wild. Yes. Okay. Okay. All right.
+
+So, uh, I'm going to try to convince you that.
+
+We really only need this four times.
+
+I right here. Okay. So once I've computed four times I into temp two, if I go around the loop and change I, I'm going to recompute four times.
+
+I immediately. Right. If I go down here I'm not going to change.
+
+I if I go over here these are going to happen before I've changed.
+
+I and if I come back over here and change I I'm going to compute four times I can.
+
+Right. If I go over here instead I'm going to use those and be all done.
+
+And so I'm going to argue that I can just change all of these.
+
+She use the four times I that I already have. Do you all buy it?
+
+So to do that, we need to not only see that we've computed four times AI in the past,
+
+but that we have not changed AI in between computing four times AI and the place that we want to use it.
+
+This is going to be a, uh,
+
+data flow analysis called available expressions and an optimization that goes with it called common Subexpression elimination.
+
+Now you might also say, but true, you still have those instructions there.
+
+Why don't you just get rid of this instruction completely and put that as to.
+
+Right. And, um, this is a slightly different thing called reaching definition.
+
+So everything's going to be an analysis and an optimization that goes with it.
+
+Reaching definitions. The only definition of T6 that reaches this point is T6 gets T2.
+
+And when the only definition that reaches a use is a move, we can do a move elimination.
+
+And get rid of those move instructions and just replace the destination.
+
+Well, we can replace the destination with the source register.
+
+And then once we see that this definition reaches nothing, we can do dead code elimination by getting rid of that instruction.
+
+And those both get driven by the definition.
+
+Oh, well, that was nice. We just got rid of four multiplies.
+
+And to make, uh, Eric happy, I'll just turn this into, um.
+
+There we go. We turn five multiplies into one big shift, Ray.
+
+Well, we can do it for I. Can we do it for Jay? So. All right.
+
+Well let's see here we write j. Here we compute four times j here.
+
+So four times j is available. Coming out of this it's available into the top of this block because we haven't written J.
+
+And on all paths to get here it's available. It's also available to this block.
+
+And if we go around this loop whenever and when we write J it's going to become available again because are going to be computed.
+
+So we can do the same thing where we're going to basically turn that into T.
+
+And I just kind of do these optimizations in one whack.
+
+Or other forms. A lot four times over here.
+
+That was a little less profitable. But, uh, we'll also turn this into a.
+
+We've got some four times highs. Four times high is computed up here.
+
+Lots of stuff changes. Uh. Can we do that same thing?
+
+Well, hi. Never changes. Right. So we can, since hi never changes.
+
+This, uh. You know, since high never changes.
+
+We can make all of these four times high. Just want.
+
+I think I left out a line of code here because there's nothing that went city teatown.
+
+Oops. Oh, yeah.
+
+I wonder if. T10 was supposed to be four times Jake because I'm swapping.
+
+I'm Jake and so now I can just get rid of that and make that, uh, T4.
+
+Okay, man, this code is messy, but we're getting rid of lots of instructions.
+
+Are you all good? If I erase the instructions that I've gotten rid of? Oh, we can get rid of this thing completely.
+
+This thing, this thing, this thing.
+
+The one that I forgot. And now this is just a load.
+
+A load in a store. That's better. This is just a load, a load a store in a store.
+
+You have two stores over here. You just have two stores over here.
+
+I think you might have a raised one. When you raise them off. Hang on.
+
+I better put that back in. My bad. Um.
+
+Yes, I did a race, one that I shouldn't have. Array at T7 get.
+
+You know I mayor T7 was replaced with.
+
+There we go. Okay. I override.
+
+So we've got two loads and two stores. And then over here we've got two loads in two stores.
+
+Can we do any better by trying to just eliminate things we've already computed like.
+
+Oh, hey. Uh, we've loaded array at T2 here.
+
+Is array at T2 available over here. Do we even need to do this load.
+
+Well, let's see here. If I go this way, I'm not changing array.
+
+I'm not changing T2. You know we're here.
+
+That seems good. So we can just change this to be.
+
+G3. Right.
+
+Hey, now we've got rid of a load and turned into a register to register. Move.
+
+What about this one? Oh, I've computed T4 here.
+
+Neither T4 nor array is changing, so we could just change this.
+
+And the T5. Oh.
+
+Well, uh.
+
+Why do you even have these instructions? Right? So I have these instructions.
+
+Now let's get rid of them. You just make that T5 and that.
+
+Three. Now this block is just two stores and a branch.
+
+There we go. Okay. It used to be a whole bunch of multiplies and some loads, but now it's just two stores.
+
+It's going over here. Um.
+
+We can do the same thing for this. Can we do the same thing for this one.
+
+So this T14 equals array at t1.
+
+That's where we're reading array at hi. Which we computed over here.
+
+So array A isn't changing. High isn't changing.
+
+Can we do this. Can we change this just into uh the.
+
+B also isn't changing. It's tricky.
+
+Why is it tricky? Because we also need to know that, like the contents of that memory location isn't changed.
+
+Right. Because we are doing right to memory in here.
+
+And so we need to know if I want to change this into just t equals b, I need to know here if two is equal to t1, here if T4 is equal to t1.
+
+When I do these stores to tell if I might be changing the value of array at T1 before I get to this load.
+
+Do you see that? Now you all might say.
+
+Aha! I know how quicksort partition works. I know that this will never happen.
+
+Therefore, we can do it for copilot if you get that out is pretty hard.
+
+Right, because you're basically relying on like the way this algorithm works and the fact that, like your scan gets to to AI equals high,
+
+you're going to break out of this loop and you're going to break out of this loop without doing these stores.
+
+Um, we're going to say our compiler can't figure that out, but you a smart programmer, can.
+
+Um, and so we're going to leave this load in there.
+
+Uh, but we can also do move elimination on this and just make this be three and get rid of that instruction.
+
+And now our code is looking way better, right? Just this block used to be multiply, load, multiply, multiply, load store multiply store brand.
+
+And now it's just store store branch. It's like a lot faster, right?
+
+This one doesn't matter as much because we're going to do it once per per partition iteration.
+
+Other than like every time we have to swap things. But we've also gotten rid of a pretty similar set of stuff there.
+
+Okay. And so far what we've needed and we'll talk about how to do these is available
+
+expressions to figure out if we've already computed a value without changing it,
+
+which drives common subexpression elimination where we reuse that value,
+
+and then reaching definitions which says what definitions can reach a use to drive move elimination,
+
+where we've gotten rid of these moves and directly replace them with resource,
+
+and then dead code elimination to get rid of instructions that don't have side effects and whose value is never used.
+
+We also did strength reduction, because I think you will probably learn that in two 5350.
+
+Had to like where did they tell you? Like don't multiply. Convert to a bit shift.
+
+You're just like, I don't know. Okay. I've known that since I was a kid because, like, mommy, why are you trying to multiply?
+
+Just shift. Okay, son. Computer graphics.
+
+That's where I would meet. People, are you going to say something or.
+
+No. It's like, uh, one of the problems I struggle with and setting up for the algorithms course in the fall is that,
+
+to me, like discrete math, fundamentals are things that you just always know.
+
+And people are like, no, like. People don't know, like sets and like functions and proof by induction.
+
+But like, didn't you learn that in third grade?
+
+Uh. What was it?
+
+I was. So my son's school has, like, a family night where parents are supposed to come and see what their kids are doing.
+
+They do this every quarter. And so, like, I went to one with him, and Margaret and Ali were doing something else.
+
+And somehow we were talking about, like he was doing showing me one of his, like, math problems and stuff.
+
+And somehow, like I mentioned, something about complex numbers.
+
+He's like, what? And I was like, don't worry, that's like an eighth grade concept.
+
+And one of the other parents was like, no, there's no way that's an eighth grade concept.
+
+That's like way later. And I'm like, didn't you guys learn complex numbers later?
+
+So, uh.
+
+Because I feel like that's when we learned about, like quadratic equations and it's like, oh, what if we have like x squared plus one equals zero.
+
+Like, oh my gosh, how are we going to solve that? Like let's teach you complex numbers.
+
+But apparently I'm crazy. Are you going to say something we just said there is no solutions.
+
+Yeah, I feel like we started with no solutions, but then I feel like it was like.
+
+But there are solutions. Great, huh? And I was like, 10th grade.
+
+Well, I expect Alex to understand complex numbers by the end of eighth grade.
+
+We have some standards. Okay. Um.
+
+What else? So our code is getting way better. What else would you like to do to this?
+
+Jack, but it seems like we assign AI and then immediately we're going to be assigned to be.
+
+I was like, I'd like to assign it to low immediately and assign J to be like like this one.
+
+I would not like to do this. And the reason why?
+
+Is that? Um. So first of all, this is this is all in code, all in shivers with my compilers, professor.
+
+Um, you all can go, like, find him on the internet.
+
+He's very famous for the, um, introduction to the scheme shell manual, where he rants about his grad students.
+
+Uh oh. You know, the acknowledgments, the acknowledgments. He's like acknowledgments.
+
+Now, I did this myself. Um, but, uh, uh, he is the person who taught me to really think about invariants in my code.
+
+Right. And so, uh, this is set up this way with basically, um,
+
+one thing to think carefully about the invariants of where I and J are scanning and what's inclusive and exclusive of what could be above and below,
+
+uh, partitioned. And so Olan has set this up so that you're basically, you know, you're always going to move.
+
+And then that way after you swap, you've swapped things and you're in the right position and you're going to move each thing before you keep going.
+
+Right. And so, um, there's not really an easy like, I see what you're saying, but this just set these loops up or like a success.
+
+Okay. Other things. Eric.
+
+There was the optimization mentioned earlier. I don't remember who said it.
+
+Where we can replace the I and T2 business with just an AI plus equals AI plus four.
+
+Yeah, that was Ethan who pointed out that really, the only way AI is changing is it's doing AI equals AI plus one.
+
+And the only way J is changing is it's doing j equals j minus one.
+
+And so we know that every time we do I equals I plus one.
+
+This is going to just step by four right.
+
+And so we could if we wanted do what's called induction variable elimination.
+
+Just sounds fancy, but we have to be careful about a few things.
+
+And the way we can do that is we could say here, before we do this, I prime get I shifted by two and j prime get some j should I do.
+
+And then in here we can say I prime plus equals four.
+
+And J actually go really like this.
+
+I prime plus equals four right here j prime minus equals four.
+
+And then all we can do is we can look at where we are using um.
+
+Or actually. Sorry. This week. Yeah. Thank you for the best.
+
+I'm, I'm going to just call these t two and t four because they already have names.
+
+Two. Okay.
+
+And now. Uh, what have we done?
+
+We've turned a shift into an ad. That doesn't help that much.
+
+Unless we can also do what? Get rid of this ad right now.
+
+We basically just got rid of the show. So there are I and J still being used anywhere.
+
+Before they're being used in B4 to compare AI.
+
+Greater than or equal to J. So now there's basically a question of can we replace this with.
+
+That. If we can replace that, we can get rid of these instructions.
+
+And we've basically turned. A shift in ad into just an ad.
+
+So we've eliminated an ad instruction. Is that safe to do?
+
+Is four times AI greater than or equal to four times J.
+
+Always the same thing as I. Greater than or equal to J. I hear mostly yeses, but Thomas is saying no, I do agree.
+
+Okay. Um, what if four times I overflows and four times J does not, uh, overflow?
+
+Why can't we just have infinite precision numbers? Right?
+
+So in math class, they teach you that for all positive integers I and J.
+
+Uh, four times I is greater than four times j.
+
+If I is greater than J, those are the same thing. But if if this were, you know, Max and minus one and this were one.
+
+Unless you know something like that. Like, I don't know, these could.
+
+Weird things could happen? Yeah. Wouldn't. Would it be equivalent to four times doing it four times?
+
+This shift is equivalent to four times what my point was.
+
+So let's just imagine I have, uh, four bit numbers, which are easy to think about as a 0 to 15.
+
+Right. And let's do uh, two times.
+
+So if, if I have ten and five. Right.
+
+Ten is bigger than five. Two times 10 in 4 bit math is not 20 because we get overflows, so we end up with two times ten actually is five, right?
+
+And two times five is ten. So two times ten is smaller than two times 5 in 4 bit math.
+
+Uh, so on the one hand, this might not be safe.
+
+On the other hand. Knowing that we use these things to index arrays means that if this math is going to overflow, our program will crash rest.
+
+Right? Like. Like in order for four times I to overflow, we're having our array indexing wrap around off the end of memory.
+
+And like, bad, bad things will happen. Okay.
+
+So in this particular case this is safe because other other bad things will happen first.
+
+But it's something that we have to be wary of in general because math rules don't apply to us.
+
+So we can do that. And then I and J aren't used anywhere so we can do that.
+
+And now we are much happier with our code. I think that's quite.
+
+Okay. Does this mean to write this kind of optimization?
+
+We have to have some kind of checker to see that those variables are only used for indexing into arrays.
+
+Um. It's.
+
+Well, okay.
+
+It's a little bit complicated because it's basically like the big picture is we have to be wary of overflow because overflow does weird effects.
+
+Different languages define different. Um.
+
+Semantics on overflow at the programing level.
+
+Right. So like if you, if you write x equals x plus one and that overflows, what happens after that is that behavior defined or not.
+
+How is it defined and so on. But here we have to be a little more careful because even if I and J didn't overflow the programing level,
+
+if we write a loop where I goes up to max and over four four times, I might overflow.
+
+But what we are exploiting here is the fact that if I overflows,
+
+or even in if four times I overflows, as soon as that's happening, this is going to segfault, right?
+
+And so we're basically saying that because we know like in this case because we know the program will crash.
+
+If those overflow from segfault, we can assume that they're not like we can assume that this will kill the program.
+
+We can basically put downs on how big like that increment is going to be,
+
+because this or this will crash if we're over or under flowing, and then we know that that is not going to be.
+
+Over a wacky overflowed situation. So it's not an easy thing to conclude.
+
+Is that assumed for every case of this, or just when it's used prior to indexing the lists?
+
+Because, um, so yeah, let me reiterate, this is not an easy thing.
+
+This is not an easy thing and is not going to fit into what we're like.
+
+It's not going to just be what we talk about. But. If like, uh, how do you.
+
+In order for in order for that to be invalid four times, AI has to overflow or four times J has fallen.
+
+Therefore. Right. In order for that to happen.
+
+This use of four times I has to wrap from.
+
+The high end of memory, which we can't really touch anyways.
+
+Like that's where the OS lives, to the low end of memory, which we can't really touch anyways, because that's null.
+
+And that means that we've somehow like cycled around our array like arrays don't go that way, arrays only go that way.
+
+So we would know that in order for this to be in order for this to have produced a value where T2 here is smaller than T2 here,
+
+meaning we overflowed, this access will definitely segfault.
+
+The same thing is true here, which means that we can tell that this follows the rules of normal math and not weird overflow underflow conditions.
+
+Okay, does that make sense? We can basically conclude that if we got to this point in the program, neither of these.
+
+Over under float. Utah, uh, committed the instruction before going into this stage.
+
+Can we do instruction reordering in this stage? Sure.
+
+And in fact, we might want to now that we've gotten rid of a lot of instructions.
+
+Yeah. So, uh, we might want to take this.
+
+We might want we might want to do all this stuff and then do another instruction scheduling pass after we've eliminated,
+
+um, a bunch of instructions, but.
+
+So we do it in this digital after the real, uh, instruction after that register.
+
+You want another instruction scheduling pass after register allocation?
+
+Sure. Why not? It's better to do it after.
+
+Yes. Um, like, I think GCC does three different instruction scheduling classes.
+
+Like, what are the problems with compiler optimizations?
+
+Is there's no right order. Sometimes you may want sometimes one optimization may change the results of another optimization.
+
+And sometimes two optimizations may even fight each other where, you know, uh, we, for example,
+
+have made, um, T1 go from a life range of here to here to a live range of here to here.
+
+Right. And so I can.
+
+Yeah. If,
+
+if this if I mean obviously not much register pressure here but if doing this caused register spills because now T1 is live across the whole program,
+
+we would rather just re multiply it over on the other side and then have another spill.
+
+Right. Although in this case we also shorten the live range of Hai.
+
+So it's all a little complicated right. Okay.
+
+We have nine minutes. I mean good with all with the big picture this okay.
+
+So we are going to um. Just barely start on talking about common subjects while data data flow in general, common subexpression in particular.
+
+And um, the next time we'll pick this up and talk about, uh, more optimization.
+
+Uh, and we're going to have some that didn't even come up in this.
+
+All right. Nine minutes. Oh, while I'm erasing this.
+
+So those of you who are here a couple of minutes before class, I was saying that my seven year old is now addicted to this little prototype game,
+
+um, that I have, uh, that I've been making as an exploration of, like what the pedagogy and learning objectives are around, like AI coding.
+
+And, um,
+
+one of the test development features I have in it is there is a win button which simulates you defeating a monster and like helps clear territory.
+
+So I don't have to like battle a thousand slimes to test features around like, uh, territory, wildness.
+
+So my son is obsessed with pressing this button is a win win win win win.
+
+Um. And building guard towers and whatever.
+
+And so he's going to be in for this big shock win if this ever becomes a thing that's not just in development.
+
+You. Daddy, where's the wind button like sorry, sorry.
+
+Do let me introduce you to the term grinding monsters.
+
+Uh, you've got to go kill some slimes or whatever.
+
+Right now, the only monster in the game is a slime. Um.
+
+I was just thinking about this in terms of, like optimizations and like really making it better.
+
+Okay. Who? All right, so, um, who can remind me of the data flow equations for liveness?
+
+Which by the way like we have equations. So this is an acceptable class in engineering right.
+
+So remember we have some block. It has some, uh, uses which generate liveness and some definitions.
+
+Chill liveness. And we have live out down here and we have live in.
+
+Right there in this block and you know life here as possible successors.
+
+Y'all remember that? My goodness. So what's the equation for life in trash?
+
+It's the life out of a block. Minus the deaths in uses.
+
+Which I'm going to just replace Dustin uses with Jen for generated.
+
+Uh, kill or like the uses generated in the definition of kill it because our other data flow equations.
+
+I want you to see the similarity with them. And they're not going to use, uh, uses in deaths.
+
+They're going to use other things that also will generate and kill things.
+
+And then what about, um, the life out to the block track one, that's the union over all the life and all those accesses.
+
+So I'm getting, you know, all the successors of the block. There are a lot of Indians, and that's what's laid out of this block.
+
+And so, as you remember from last time. We are going to, um, take the least fixed point of this by starting at the empty set everywhere,
+
+iterating to a fixed point, and then we have our likeness. And not last time, I mean like two times.
+
+So let's talk about available expressions.
+
+So remember when we were trying to like compute.
+
+Um. Or like we wanted to take out those four times eyes.
+
+I said, we need available expressions. An expression is available.
+
+Yes, we have computed it. And not written any component.
+
+I'm only, um.
+
+Right. So if I have x times y, if I write either x or y, that will kill it.
+
+And when I compute it, that will generate it.
+
+So when I do, something equals x times y that generates the availability of x times y.
+
+When I write to x or I write to y, that kills the availability of x times y because the previous x times y is no longer what I what I've got,
+
+or because I've got the previous x times y. But that's no longer x times y.
+
+So. Does this sound like a thing where we're going to do something really similar to this?
+
+So we've got kill. So I'll write to X kills.
+
+Any availability availability of anything in X right to memory is going to
+
+kill anything that uses memory unless we bring alias analysis to bear on it.
+
+And anytime I compute an expression it becomes available.
+
+So let me ask you this. Do I need to look down here or up here?
+
+Do I need to look into the well, what I'm going to do in the future like I do for liveness, or do I need to look into the past?
+
+That's the past, right? I need to know not about my successors, but about my predecessors.
+
+Right. So my available expression in of some block, is this going to be a union or an intersection?
+
+If I computed x times y here, but not here. Is it available here?
+
+Okay, so you don't know how you got to this box?
+
+Yeah. Like, if I, if I, if coming this way, it means x y is available.
+
+But coming this y means it's not. I can't rely on x times y having been computed here.
+
+Right. So I now need to the intersection over my predecessors.
+
+Of the available expressions.
+
+Out of that predecessor.
+
+And then my available expressions out.
+
+Is going to be my available expressions in.
+
+Minus what I kill. Union what I generate.
+
+Okay. So now we have a different set of data flow equations.
+
+They kind of look the same. We've got gen and kills and a union or intersection over predecessors or successors.
+
+But we've turned.
+

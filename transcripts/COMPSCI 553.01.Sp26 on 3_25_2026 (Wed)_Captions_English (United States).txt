@@ -1,0 +1,1393 @@
+[Auto-generated transcript. Edits may have been applied for clarity.]
+With the stochastic process. So I'm trying to get you.
+
+On the cover of this.
+
+All right. Let me get some markers. Thank you for finishing here.
+
+We are still working on grading your exams. We've made progress like two.
+
+Well, depending on how you want to count it, either 2 or 3 questions have been great.
+
+Uh, there are like, two questions in the big question numbers, but they, like,
+
+show best three questions in grade scope because they're like different questions.
+
+Fifth grade school principal. Yeah. Got it.
+
+Uh, I mean, that's the easiest way for me to grade some of the exam in your to grade some of the exam,
+
+um, is to, like, scan them and dump them into grade scope. Um.
+
+Okay. Oh, wait. Well. Well, I didn't for not until, like, Friday, because I need it.
+
+Right? Um, okay.
+
+Hang on. Let me let me write some stuff up here.
+
+I'm going to be hard at work in Washington, DC. I'll be honest.
+
+Just kind of like. Alternate the final one.
+
+I'll try and market them because, you know, that's totally accurate.
+
+Like 97. You want to try to do something with I will be 24.
+
+I can make you like this. Like I wasn't able.
+
+This looks like, you know, to get two different things.
+
+Like carried the like this. So, like, you know, I feel like.
+
+I feel like. All right, this is just so welcome to the last day of things that you actually put in here to Tyler.
+
+Everything after this is just full optimization and garbage collection and how to compile functional languages, um, and stuff like that.
+
+So, um, what did we talk about last time?
+
+Five minutes. Why do we need liveness? Oh, really?
+
+It's important for register allocation because we want to know when to.
+
+Um, two variables are live at the same time.
+
+They can't go in the same register. And when they're live at completely disjoint times, meaning they could go into the same register.
+
+Um, and so last time we talked about liveness, what is, uh, what is tricky about liveness.
+
+A question with many possible answers. You talk about undecidable okay.
+
+It's undecidable right? But we solve undecidable problems all the time.
+
+We just have to do what with them. Uh, if you have the issue, the answer.
+
+Right. Well, okay. So that's the way that we're going to do this.
+
+But in general, if we want to solve an undecidable problem isn't approximate.
+
+We approximate it. And how do we approximate liveness.
+
+Do we allow false positives or false negatives. We are willing to say it's.
+
+Or Maryland set. We want to do the safer option.
+
+We want to do the safer option, which is to say that it's live when it's not live, right.
+
+So if we're thinking of it as liveness, it's false positives.
+
+We say it's live. We may have the worse register pressure.
+
+Um, but if we say it's dead when it's actually alive, then we may have incorrect code.
+
+Okay. Um. And so, Alex.
+
+What what how do we approach this?
+
+We need to we iterate to a fixed point because we have these, like recursive equations where if there were no loops, we could just do it.
+
+But since there's loops, we have to keep doing it and doing it and doing it until we get better.
+
+Uh, until we get till we converge each iteration, we get better and better.
+
+And, um, do we want the least fixed point or the greatest fixed point?
+
+The least fixed point? So we start at empty set. All right.
+
+So. That brought us to, uh.
+
+So you all need to go do liveness. Um, it's a graph problem.
+
+Uh, as I mentioned, a gives you an imperative graph.
+
+If you all remind me, I'll post the functional graph that we have, uh, which requires some slight changes to temp so that it can,
+
+like, be used in maps and sets, which I think, um, a pal should have done anyways.
+
+But, you know, if you know me, I have strong opinions about, uh, pretty much everything.
+
+Um, and so today we're going to do register allocation and to do register allocation, we need some, uh, liveness information.
+
+And uh, rather than having like a whole big, complicated program where we need to do, um.
+
+Where we need to do lignans and take all class.
+
+We're just going to have straight line code, because if we have straight line code,
+
+we can just go backwards through it and uh, come up with the likeness information.
+
+So here's our code. You'll notice that the font gets smaller and smaller as I go down,
+
+which is what happens when you're writing on a whiteboard and you're like, I'm going to write big.
+
+Oh my gosh, I have many lines to write still. Um, oh, well, uh, but we're just going to go around and say that struct live out is D, k and j.
+
+I'm sure that's written nicely and clearly. Okay.
+
+And, um, then we're going to work backwards to say, what is life at every point in here?
+
+So, Chris, if DK and Jay are live after this, what is life?
+
+Well, I just drew this red arrow. Um, you can't just DMK.
+
+Anything else? Okay. Also be.
+
+Yeah. Because this kills the liveness of J but generates loudness of.
+
+Better be right. Um, I'm going to have to.
+
+I'm going to have to write these a little more compactly to, uh, fit them in everywhere.
+
+Okay. I'm also going to try writing in alphabetical order. Okay.
+
+Jack. Jack. Zero. What is here?
+
+Uh, the beacon and. The.
+
+You know. Okay. And Jack won. How about right going to be.
+
+All right. Uh. EMC.
+
+B, c, and D. Okay. And then, um, Patrick, how about right here?
+
+Uh, the, uh. Going to try and write them in alphabetical order, even when you all tell them to me.
+
+In other words, it's fine because there's only three of them.
+
+So even if you try, like whatever crazy orders, I think I can double sort that in my head.
+
+Um, how about right here, Eric?
+
+Um, so that would be b e and J right here.
+
+So right there. Yeah. Uh, e um, f e m and f so.
+
+All right. And, um, and then any.
+
+How about right here? Great.
+
+Alicia. How about right here? Um, I don't.
+
+Um. Um. Um.
+
+No, we're so we're right here. So after this e.f in our lives.
+
+So what does this do to the life? This right here. Huh?
+
+Um. F and J are live.
+
+He gets killed by us. Where are you getting him from? You're just thinking, man, there's got to be three things.
+
+You know, there are. Really? Huh? I was really what I have to, you know, a half inch long.
+
+Uh, okay. So what does this line due to the liveness.
+
+He gets memory J plus eight. You know, sign is so important to you, so you get killed and jackets generated.
+
+But we've already got Jay, so we're going to just take this off and take out.
+
+Okay. Oh, about right there.
+
+You. G.
+
+H, I, g h and j.
+
+Right. Utah.
+
+What about right here? Yeah, yeah.
+
+J G and J.
+
+Anything else? K and k k.
+
+Okay. Not necessary.
+
+GJ k. And what about right here, Alex?
+
+Okay. J and K. Yes. Okay.
+
+Um, and so this basically just is kind of like the lightness from before, but without all the data full complexities.
+
+And with that, what we need to do is build an interference graph.
+
+So in this graph, each um variable or each temp is going to be a node.
+
+And um, we're going to add edges to say if two uh, temps or variables can't be in the same register.
+
+Okay. So we're going to have um we need.
+
+A. F.
+
+Any. You know. Um.
+
+See? Let me know if I accidentally put the same thing up here twice D.
+
+Okay. And for.
+
+Okay. And the way we are going to make these edges is do my edges in red is for every right to a register.
+
+We need to know what is live out after that.
+
+Right. Other than itself. So when I write to G.
+
+This cannot go in the same register as j and K because I need those values.
+
+After I've written G Joe by that. So I'm going to come over to my graph.
+
+I'm going to first make G look like a G and not an ass.
+
+And I'm going to say okay G to J.
+
+And g to K. And those things can't go in the same registers.
+
+Then I'm going to come here and say, okay, h h can't go to the same register as G, and H can't go in the same register as J.
+
+F cannot go in the same register as J and J.
+
+Nobody wants to go on the same register as Jimmy. E cannot go in the same register as F or J.
+
+You know you can't go in the same register as yourself.
+
+We can't go in the same register as you or, you know, I'm.
+
+See can't go in the same register as BRM.
+
+And now when I get to D, gets to see there's something special about that.
+
+What's special about this next one? What's different about this from everything I've done before?
+
+So it's what I mean.
+
+It's a register to register move. Even though you're going to say.
+
+Yeah. Okay. Sorry. Um, I kind of process your hand being up just a second.
+
+Too late. Right. So this is a register to register move, which means d can't go in the same register as being, you know, just by the normal rules.
+
+But we would really like a DNC to go in the same register if possible.
+
+He. Okay. If they don't otherwise interfere.
+
+So we're going to put a special. Like a special other edge type between C and D.
+
+To say I would like these two to be in the same register if you can.
+
+And then we're going to do the normal stuff. Uh so d with b and d with M.
+
+Okay. And then we're going to have to go in the same registers as B or D.
+
+So oh oh. And then j gets b is um also a register to register move.
+
+So we're going to say. Dude.
+
+Dude. J B and then j can't go in the same registers as d or k, so JD.
+
+And K. Oh, okay.
+
+All right. There's a graph. What do you all like to do with graphs?
+
+Eric. I love the color of them. Hooray!
+
+So everyone, get out your crayons and make it look like Mickey Mouse.
+
+Well, this isn't an econ class, but this isn't an icon.
+
+This isn't an icon class. Meaning it's like you can't have colored cheese.
+
+Oh, I see. I'm sorry. That joke would have landed better if you said, like, this isn't a humanities class.
+
+Yeah, I should've said business school. Okay. Right. Yeah.
+
+Um, welcome to coloring for credit. Um, this is what computer graphics was, to be honest.
+
+I've read jokes about, like, business school being shapes and colors that are literally computer graphics.
+
+But, like, didn't you have to do a bunch of math and, like, matrix stuff?
+
+Yeah, I bounced shapes and colors. Okay. All right.
+
+So, um, what do you all know about graph coloring?
+
+I mean, it's NP hard.
+
+Well, depends on how many colors you're trying to use.
+
+It is, uh, not only NP hard, but NP complete, which means that it is both in in P and one of the hardest,
+
+probably a tie for the hardest problems in NP.
+
+What is NP mean? Non-deterministic?
+
+Yeah, it does not mean not polynomial. It means non-deterministic polynomial, non-deterministic polynomial time.
+
+Meaning if we had a non-deterministic Turing machine, then we can solve the problem in polynomial time.
+
+What is a non-deterministic Turing machine? For those of you who haven't taken an automata class.
+
+Imagine if you have like an F with a bunch of like an or like f f like this, this,
+
+this or this where there are recursive calls like f of this or f of that, or f of this.
+
+If you could magically pick which one of those would be true.
+
+And recurse that way first. That's nondeterministic Turing machine in a way that would make a theoretician cry.
+
+But that gives you the idea. Yeah. So it's like how in an NFA we automatically pick the best path.
+
+Yeah. It's like having an for you automatically pick the best path.
+
+You could think of it as basically, if I wrote a recursive function where there was a bunch of orders,
+
+like in this case, like if I could call this one or like red or blue or yellow, I could try coloring it red.
+
+Go color the rest of the graph. If that succeeds, we win or color blue.
+
+And then how am I going to do this one? Try calling it red or blue or yellow.
+
+Why can't color red? Try calling it blue and so on. And just magically picking like, oh, I want to recurse on red.
+
+I want to curse on blue. I honor curse on yellow, I want a curse on red, etc., etc., etc. then um, that magic is what makes it non-deterministic.
+
+And then you could do this in polynomial time. All right. It also means.
+
+That you can verify a solution. A yes solution in polynomial time.
+
+Meaning if I were to give you a graph coloring, you could verify that in polynomial time.
+
+Okay, I say this not because like this isn't a theory class, but a lot of people think NP means not polynomial.
+
+They say whatever. There may be polynomial time algorithms for NP complete problems, we just don't know them.
+
+That would mean P is equal to NP. If you can prove that you can write $1 million.
+
+If you can prove that it's not equal to NP, you can win $1 million.
+
+And like everyone will be happy with you and can prove they are equal to NP,
+
+you can win $1 million and everyone will be really happy with you because you just found a very efficient way to solve lots of very hard problems.
+
+Okay. Um, so why, for those of you who aren't as up on graph procession, make sure.
+
+Does everyone know graph coloring? Does anyone not know graph color?
+
+Okay, graph coloring says I have a graph and I have some finite number of colors like let's say these three.
+
+And I want the color of the graph. I want to give each node a color like let's say this one's blue and this one's red.
+
+And I don't know this one's blue. And the rule is I can't make two adjacent nodes be the same color.
+
+So like B cannot be blue and it cannot be red because it's next to a blue node already and it's next to a red node.
+
+So I'd have to make it green. Right. Um, and so on.
+
+And so if I can come up with, um.
+
+A valid coloring with three colors.
+
+This graph is three colorable. So colorable means I can come up with a valid coloring with k colors.
+
+Um, these other special edges don't come up in sort of the normal just graph coloring problem.
+
+But graph coloring comes up in a lot of resource allocation problems where each of these things needs to be allocated a resource.
+
+Each of my colors is a resource, and the lines between them are the constraints that, uh, they can't share the same resource.
+
+Right? So like if we had, let's say that we were, I don't know,
+
+some tech company where our workers are all trying to work remotely most of the time, but they need to be in the office some of the time.
+
+And we don't want to have a desk for every worker we want, like you tour in the office on different days so you can share a desk, right?
+
+Like you're here Monday, Wednesday, Friday. You're here Tuesday, Thursday.
+
+We could make each of our workers be nodes, and the desk could be a color, and work is in the office at the same time.
+
+Ever is an interference edge, right?
+
+And then we could color that graph to, uh, give our workers desks.
+
+And we want as few colors as possible. Right. So, so in that situation we might say, oh, I couldn't 20 color this.
+
+What if I 21 color it I'll just go buy one more desk right.
+
+Or keep one more desk in the office or whatever. Um, and the more colors you have, the easier it is to color it.
+
+Okay. And so in our case that those are the temps or the variables, the colors are the registers and the interference edge is live at the same time.
+
+Does that make sense? And so, um, for MIPs, like if you wanted to do this, this on MIPs, it's really easy to like register, you know, 123456789 ten.
+
+Oh, wow. That's easy. I still have 15 registers left over. Okay.
+
+But, uh, if I were to draw a graph up here that is hard to 25 color, we would be here all week trying to do it by hand.
+
+Right. Because we would need like, I don't know.
+
+I mean, okay, we can make a graph that's impossible to 25 color by making a 26 node graph where every edge connects every other edge.
+
+But that's also not an interesting example, right?
+
+But if we want something where we need 25 colors and to work at it, interestingly we have like hundreds of nodes and uh, it would take us a lot.
+
+So this is NP complete. Does that mean we can't solve it?
+
+No, of course not. We have to solve NP complete problems all the time.
+
+One option is to just brute force it, which as far as we know, the best way to do that takes.
+
+Exponential time. Does exponential time mean you can't do it?
+
+No, it just means you can't do it for large numbers where large is like 30.
+
+We're 50. Yeah. I mean, it depends on your your thing, but, like, you know this.
+
+Ten. Two to the 10th is 1000. Computers can handle 1000 pretty easily, I heard in 1985.
+
+That was a joke about computers or Python.
+
+Python 1000 might be for you. Okay.
+
+Um, and so I want to say, you know, remember, I teach you compilers, but I also teach you big software engineering lessons.
+
+If you're ever like, oh my gosh, my algorithm is going to take exponential time.
+
+That's a good thing to think about. But the next question you should ask yourself is but how big is it in?
+
+Because in tops out at 15. You're good.
+
+Okay. And tops out at 200. You're bad.
+
+So, um. And you could you could imagine your compiler just like brute forcing this for most functions.
+
+Like if you wanted to just brute force it for all the tiger test cases you have, it worked just fine, right?
+
+But what can we do? If we if it is too big to brute force for an NP complete problem, do we give up and go home?
+
+No. What do we do? We approximate it.
+
+This is what we do with all the things that seem like we can't do them. We just approximate them.
+
+And so again, when we approximate things, we have to figure out what's a safe approximation.
+
+So what would a safe approximation on this kind of problem be.
+
+Yeah I agree. Well no, I mean, uh, the constraints on it.
+
+Can we how can we mess up. Right. Because any time we approximate, we can get the wrong answer.
+
+So what wrong answer do we tolerate, Ethan?
+
+I guess you could say, like, use more colors and there are registers where or basically if we're constrained in the number of colors,
+
+like let's say we say there are 25 colors.
+
+Well,
+
+probably better to say it can't be colored than to try and come up with a like and then to report a wrong color and we will accept a false failure.
+
+That is, we'll say if your register allocator says, oh my gosh, I can't do this when it could if it spent 4000 hours on it.
+
+We're okay with that.
+
+Because what's going to happen when you have that false failure is that yeah, you're going to say, oh my gosh, let's go spill something to the stop.
+
+Your graph will get simpler, right?
+
+Because you'll have less things interfering because you'll have shorter ranges of variables and stuff.
+
+And then you'll really redo the register allocation and you'll end up with some spills to memory that you didn't need.
+
+So your program will be slower, but still. Correct. Right?
+
+If we have the other kind of thing where it's like, oh, we can't do this, but we'll make this blue and this blue or this, you know,
+
+this is s zero and this is s zero, then we have a problem because both of those values are going to try and b and C zero at the same time.
+
+One is going to overwrite the other. And we're going to compute the wrong thing. That's not okay.
+
+All right. So now that we know the rules of the game, uh, what are we going to do to do this?
+
+So first, um, we're going to introduce the idea of a node of trivial degree.
+
+And by the way, in everything I'm going to write and say, hey, is the number of colors.
+
+So whenever I talk about k, I mean the number of colors we're going to color with.
+
+And so trivial degree means the degree of the node.
+
+That's the number of edges. Please.
+
+You're not a fan. Graph theory is strictly less than k.
+
+Okay, so if I were to recolor your graph and I have a node of degree zero, 1 or 2, it would be trivial degree.
+
+And if it's 345678 whatever it's non-trivial degree.
+
+Now what's important about a note of trivial degree? So let's say I'm three coloring a graph and I have some node and it has trivial degree.
+
+It only has two edges. Ethan.
+
+It's always a color that you can play safely. Yeah. If I colored the whole rest of the graph, I can color this.
+
+I know I can color this nut, right. Because if this is one and this is two, I can pick three.
+
+If this is two and this is three, I can pick one.
+
+And you all the other permutations, you don't need me to do them but basically anything of trivial degree.
+
+I know if I color the rest of the graph, I can color that number.
+
+Okay. And, hey, you know what that means. That means I can rip out this node and then recurse on the rest of my graph.
+
+Right? And if I can rip something out and recurse on it, it's great because we love recursion, right?
+
+You all love recursion. Who sent a Valentine's Day card to recursion this year?
+
+What version exist? Who? Who wrote a recursive Valentine's Day card.
+
+Anyway. Okay, it's a joke. Uh, so.
+
+So we can just repeat that. No doubt. Recurse if we can color the rest of the graph.
+
+We can put this back in the in the night and say, oh, you were colored one and you were colored three.
+
+Great. I'm going to put you back in and color you. Two.
+
+Okay. Um, and so that's going to be our, uh, uh, main way of making progress in this algorithm.
+
+Okay. And, um, we're going to write our algorithm appears like a little flowchart.
+
+So it's going to called simplify remove node.
+
+No trivial degree. And push it on a stack.
+
+Why push it on the stack so that when we are done with the rest of the graph, we can rebuild our graph in the reverse order and, uh, color it.
+
+Right. So if all our nodes, if we had like a really nice graph, we could just simplify nodes out, ripping out nodes of trivial degree.
+
+And when we rip out a node of trivial degree, other nodes have their degree go down.
+
+Right. Because we just removed a node. And if we were really lucky, we could just rip out nodes till we get down to what would our base case be?
+
+One note if you have one note, how do you color it? You just like your color one at the end, right?
+
+Um, and then we pop our stack. And color things based on what colors are available.
+
+And if every node we removed was trivial degree, we always know there's one available.
+
+Okay. And so our first step in this is going to just be to simplify as much as we can.
+
+Now I'm going to put one more constraint on this which is any nodes with these little green edges these move edges.
+
+We can't simplify those because we want to try hard to um.
+
+To squish them together. Uh, to eliminate them. Okay, so we can't simplify those.
+
+So, like, C is trivial degree. We go first.
+
+We don't count the green edges in the degree. We can always just throw away the green edge.
+
+Okay. The red edges we can't throw away. But it's trivial degree.
+
+But we're not going to simplify it. Uh, yeah. It's not eligible for simplification, right?
+
+Uh, there's our graph, here's our stack.
+
+And, um, I'm going to put on our stack both the node that we're removing and what it's adjacent to so that I can rebuild our graph correctly.
+
+If you're doing an imperative graph like the whiteboard, you need to do that because you have to explicitly rebuild the graph.
+
+If you're doing a functional graph,
+
+removing a node leaves the original graph alone and creates another node or another graph just like it, without that node in it.
+
+And that's great, because rebuilding the graph just means going back to the original one that you had, right?
+
+Um, this stack tends to be your call stack as you recurse, and that works out really nice.
+
+That's why I like the graphs. All right.
+
+Uh, where did I leave off? I think you think you're.
+
+I think you're the next victim. I mean, volunteers. Um, so what node would you like to remove from our graph to simplify it?
+
+Uh, I'm going to say h h. Great choice.
+
+So h is adjacent to g and J.
+
+Correct. So we're going to come up here and we're going to just rip it out of the graph.
+
+We. Okay.
+
+And notice that in doing so some other nodes, namely G and J, that it was Json to have their degree go down.
+
+So Billy, what would you like to do with G removed G with?
+
+And it is currently adjacent to J and K.
+
+Okay. Right. Utah prank calls.
+
+Um oh. Uh 3030 yes, we have blue, red and green three colors.
+
+Good question. That was going to be your question tube jacket. We're going to three color.
+
+Um, I love how you two got by that without even, uh, asking because you just picked the lowest place.
+
+We have three for you. Oh. We shouldn't.
+
+What? Uh, um, just to be able to.
+
+Yeah. We've removed degree two notes at every step. Okay, Ethan, what would you like to do next?
+
+Uh, get rid of c o. Um, it seems like we'd like to get rid of C, but we can't get rid of C without giving up on murder.
+
+It was with the. Oh, God. Okay, okay, but does this mean you're kind of stuck?
+
+Yeah. So that means you want to say drew. How do I deal with the fact that C and D might, uh, be squished together?
+
+And so that is going to mean we go into the next step, which is.
+
+Oh, well, yes. By the way, uh, my spell.
+
+Is that how you spell collapse? Uh, another one.
+
+One. Well, look, I was close at a distance of one.
+
+Okay. This is. There were spell check on the whiteboard. I would have nailed it.
+
+We would have, like, autocorrect it before you walk, before you can move to wait door.
+
+Um, okay. So coalesce is going to be where we try to squish together two nodes that are move related into one.
+
+And by making them one node, we're going to say that they're the same register.
+
+You tack on this class. That's what I just said.
+
+That doesn't have a general meaning. Yeah. It means to put two things together, like, um, or like to, to to have things come together.
+
+So like, uh uh, like, um.
+
+Oh, our ideas coalesced. We took our ideas and put them together and came up with, like, a solution.
+
+And we were both happily executed. Um, and so, uh, the advantage of putting two nodes together is that we can get rid of that register to register.
+
+Move. Are there any disadvantages to putting two nodes together?
+
+My gosh, everyone. Uh, Pete, I haven't heard from you yet. Um.
+
+Imagine that this. With this situation, I feel, like, more constrained. Like you're going to be childlike for the longest time.
+
+Yeah. So is that what you all were going to say, too? Okay, great. The whole back row gets it all at once.
+
+Um, so if I have, if I have a node like this.
+
+Right. And another node like this or these are interfering with different things and I put them together instead of a three and a three,
+
+I now have a six, which may be a lot harder to simplify out.
+
+And would I prefer to have a register to register move or a split a memory?
+
+Register a register move. Okay. And so we want to only coalesce if we are sure that it won't introduce any new spills.
+
+How can we do that? Well, one option would be try the coalescing.
+
+See if we fail to register. Allocate. If so, try it without the coalescing and see what happens.
+
+But again, that gets pretty expensive, especially if we have lots of register to register moves.
+
+If figuring out, um, if we can in a color graph is in be complete,
+
+it's going to be really hard to figure out if combining two nodes changes the cake color ability.
+
+Right. So Billy would.
+
+You know, I can't tell if this is like. It's like mid-thigh. I don't know if you were going to answer your own question.
+
+Okay.
+
+Um, and so what we need is a heuristic that's going to say, hey, we can combine these if we know it's not going to make the graph any harder to color.
+
+And, um, it's okay if it says, uh, no, I don't think we can do this even if it would be okay to.
+
+Okay. And there's, um.
+
+Lots of them. And, uh, I just need to look up their names so I don't.
+
+We're going to learn two of them. I can never remember which is which.
+
+I don't want you all to, like, spend 47 hours with, like, flashcards of like, is this Briggs?
+
+Is this George? Because that's not the high order bit of this class.
+
+Um, they're named after people. Um, and so basically.
+
+Briggs. So if we look at combining these two nodes, let's say we have this.
+
+And we'll note some of these entries may be to like the same note anyway.
+
+Right. Okay, so if I look at combining these two nodes when I combine them they're gonna have this is going to go kind of down in degree.
+
+Right. Because it's now to just this one thing that's combined.
+
+So let's say this is like C and D and D.
+
+But then this is going to be. To all these other notes that we're not sure.
+
+Right? Well, if I look at this, I don't really care about any of the ones or any of the adjacencies that are of trivial degree.
+
+Right. So if we're doing three coloring still, this is degree two.
+
+This is degree two, this is degree two. This is degree two. This is not degree two.
+
+So I care about it. This is degree two or this is degree three.
+
+So I care about it. And so of these there's only one node that is not trivial degree.
+
+And all the rest are trivial degree. And I kind of don't care about. Right because they're trivial degree.
+
+I know I can simplify them later, right?
+
+How could I have nodes that are still trivial degree? Well, they can be connected to other nodes by move edges, right.
+
+Like this could have never. And this could be to something else and so on.
+
+That's why I might have trivial degree nodes. My graph.
+
+Um, and in fact, you'll notice that these these even though B is not trivial degree like if we're looking at C and D,
+
+it's connected to B which is also move related to something else.
+
+And so basically this says if this combined node has less than k neighbors.
+
+Lemurs. Uh. Non trivial.
+
+All right, so we don't count the ones I put cheese on. There's one.
+
+There is three. And so I know. And even after I combine this node I could simplify all of these things out.
+
+And then this would just be the green one. And so I could simplify it out. Ethan is so confused why we can't care about them.
+
+Because even if we can simplify them, they're going to have to have a color eventually and that will put a constraint on the working.
+
+Um, that will put a constraint on us, but because they're trivial degree.
+
+If I were to just stop caring about coalescing, I could simplify this out.
+
+Simplify this out, simplify this out, simplify this out, some of this out, some of this out.
+
+And then and I know I can simplify this out. And then after I'm done I've colored this.
+
+Let's I colored one say oh okay. You're two. You're you're only constrained by two.
+
+And whatever's over here so you're another one. You're constrained by this two.
+
+And whatever's over here so I can color you and I can color you and I can color you.
+
+And I know I can find colors for them because they're only constrained by this.
+
+And whatever's over on that side. All right. Everyone good with that?
+
+All right, so that's one heuristic. Um, and the other one.
+
+I'm just going to erase. So I'm gonna I'm going to erase this and write it and rewrite it here.
+
+Ooh. Briggs. He moved in as my nemesis on less than K neighbors.
+
+Um, non, you know, in TV stands for a non-trivial degree.
+
+And I'm just going to erase this. So I have space to write and we're going to need our stuff back to we're.
+
+The other one, George, is, uh, asymmetric.
+
+So that means I can think of it as C being combined with D or D being combined with C, and I might get a different answer.
+
+Okay. So um, I'm going to say if we're doing this for A and B, um, then for every.
+
+A tea interference. Either.
+
+A already interferes with our art. Sorry. Today interferes with me.
+
+So let me make these in the red so they match the graph over there.
+
+Right. So we're going to check if for every T.
+
+So here's a you know it's next to some nodes.
+
+So each of these is going to be a we consider for t either t already interferes with b.
+
+So here's a here's B right. That one already interferes with B or t is trivial degree.
+
+Right. Which basically means if they already interfere when I squish these together, we're not making anything worse.
+
+Right? Yeah. And as we saw before, if it's trivial degree, then we know we can simplify it out later.
+
+So we don't care about those. And these are not making anything worse.
+
+Okay. And like I said this one, if you do like CD where you say like for everything C interferes with this,
+
+you may get a yes or you may get a no and it may be the same or different from if you do it the other way around.
+
+Does that make sense? So I'm going to write that, uh, over here in short summary.
+
+And George. Either already introduced.
+
+Or is turbulent, like, great. That's like just kind of a deviation okay.
+
+So with those two heuristics in mind and by the way, you can come up with others.
+
+Um. We are going to think about.
+
+If we can squish together seed.
+
+And if we can squish together. Vijay. Okay.
+
+So first. So where did I leave off Ethan? All right, let's try George on CVS.
+
+So what would the combined c d node look like?
+
+What would be adjacent to it. Uh m b. Okay, so m which would be of what degree?
+
+Uh, 1234.
+
+These two would collapse into one thing, so it would be four.
+
+Okay. And then what else? Uh, b b.
+
+Okay. That would be degree four also.
+
+Um, three. Right. Because it would be E m and the combine CD.
+
+No. Oh, no. You're right. Four. And then also K which is okay.
+
+Three. Okay.
+
+Anything else? Uh oh. And Jay and Jay?
+
+Yeah. Which is going to be degree also for, uh.
+
+Um. Oh, yeah. For, uh. Okay. Yeah. All right.
+
+So how many neighbors are of non-trivial degree?
+
+Uh, four. Four. How many do we need?
+
+Less than. Less than K, right. Which is three. Yeah.
+
+So George says no don't do this crash for BS degree.
+
+Do not count the green dotted. Now the green dotted lines don't count in degree because those are just something we're hoping for.
+
+And we can get rid of them at any point. Right? I can just say I give up on B and J being in the same register.
+
+Let's keep going. Okay, so George says so for CB.
+
+George says no.
+
+All right. Didn't you just check? I mean bridge.
+
+God, I can't get the name of street. Okay.
+
+All right. Well, so if at least one of these heuristics says, yes, we can move forward with coalescing and we know that it's going to work.
+
+Yes. So as long so basically we should go if we wanted to implement both.
+
+If one of them says yes, we move forward. Okay.
+
+Yeah. You can come up with other heuristics, um, and see if you know any of them.
+
+Say yes. All right. Uh, next is.
+
+And what if we do this with, uh, George of sort of.
+
+Oh, I. See first.
+
+So we're going to say everything C interferes with.
+
+So C goes to M. And C goes to be all right.
+
+Is m trivial degree. No. Does M already interfere with D.
+
+Yes. Uh is B trivial degree.
+
+No. Does B already interfere with D. Yes.
+
+Yes. So this says yes. Okay.
+
+All right. That means we can combine them. But just for educational purposes, we're going to do George the other way.
+
+Just for practice and maybe seeing if it gets a different answer.
+
+So D is going to go to M.
+
+B, k, j and j.
+
+Right. So we already said m and b already interfere with c.
+
+Uh, what about K? Is it trivial degree? No no no.
+
+Does it already interfere with C. No, no. So this way I would say no.
+
+And that's why I would say yes. Okay. Um, and that's fine.
+
+We can still go ahead and squish these together. And so the next thing we're going to do here is coalesce these.
+
+So we're basically just going to turn this into a c d node.
+
+And since this already interferes with B and this already interferes with m, I don't need to add any edges to it.
+
+If it had something that um. You know, if she had something that didn't interfere with.
+
+I need to add that that Jen. Hey, hey, look at that.
+
+Our CD. You know, our CD combined into one thing.
+
+Um. And so then. After we coalesce, we're going to go back to simplify.
+
+You could say, well, gee, drew, couldn't we just keep trying to coalesce?
+
+We could. But to me, it's more natural to just go back to simplifying.
+
+Because if that opens up new opportunities, we want to try and simplify before we try and coalesce again,
+
+because the more we simplify, the more things can be coalesced.
+
+And if we just try to coalesce things that are like, oh no, I can't do it.
+
+Oh, look, I can simplify these 20 things. Oh, now I can coalesce them.
+
+We just wasted some work. Right? Um, and so it just makes it also just algorithmic implementation, just a little more natural.
+
+So coalesce once. If we succeed, we're going to go back and simplify.
+
+Uh, Ismael, I think you, uh, can we simplify anything?
+
+No. Okay, so what should I try and do? We're going to try and do B and J.
+
+All right. Uh, which of these would you like to do first? Briggs.
+
+George. Still brings.
+
+With GDP. Okay, great.
+
+So brick says we're going to look at the neighbors of nontrivial degrees.
+
+So B's adjacent to E is this trivial degree. No.
+
+So one means adjacent to m. Is that trivial degree. Two it's adjacent to c is not trivial degree three.
+
+We can stop now because we've already gotten three of them, right?
+
+So this is going to say no.
+
+Well, what would you like to do? Uh, George p j George b j.
+
+Okay, so B is adjacent to E.
+
+Am. Right?
+
+Okay. As as I'm doing that, I'm realizing that, uh, we may not, uh, I think I think we, I think we, uh,
+
+uh, messed up slightly in George because it's not it's not just trivial degree in this graph.
+
+It's trivial degree once we combine them. So case, um, thing is going to go down right.
+
+Let me pause. You let me come back to you. What do you mean for break.
+
+All right. So for for for. Yeah. Briggs.
+
+I think it's still three, though, and e I know, but I just want to do it right.
+
+So if BJ is going to be adjacent to E, which is going to be adjacent to.
+
+Uh, B, J, F and M, so that's still going to be three.
+
+Um, it's going to be adjacent to M which is going to be adjacent to.
+
+Yes, indeed. Uh c c d.
+
+So that's still non-trivial. It's going to be adjacent to k which is going to be um.
+
+Just adjacent to c d right.
+
+So that one is going to be trivial now. But then we also have KD right, which is going to be adjacent to M.
+
+K. And that's trivial. So it's still going to say no.
+
+But I just wanted to make sure we were clear that when we do k the BMJ of collapse into one.
+
+Okay. Sorry. Back to Willie. Okay.
+
+Um, so let's see. We've got K and KD.
+
+All right. That's what is adjacent to.
+
+All right. Not to you. We're doing George.
+
+Yeah. So B is adjacent to E, M, CB and K, right.
+
+Yes. Okay. Is e trivial degree? Yeah.
+
+And, uh, does it already interfere with J. Yes.
+
+Yeah it does. Okay. So that's fine. What about him? Trivial degree.
+
+No. Already interferes with J. No. No. So we're going to stop and say no.
+
+Right. All right.
+
+Pete? Yeah. Doing it the other way.
+
+We've got J which is adjacent to E C the.
+
+Okay. And.
+
+Yeah. Okay. Is it trivial degree or not?
+
+Is it already interfering with me? Okay, great. Is CD trivial degree the already interfering with E?
+
+I would be, yeah. Oh, so far, so good. What about K?
+
+Trivial. It's after combining. Uh, we don't think about after combining, but it's already interfering with B, right?
+
+Yeah. Oh, my gosh, can we win? Let's find out.
+
+What about f? Is it trivial degree? Is it already interfering with B?
+
+Oh, man, it's so close.
+
+Okay. Why don't you think about after combining with this one?
+
+Um. In large part because we're just thinking about does it already interfere with.
+
+Right. So yeah. So yeah, it wouldn't matter. Right.
+
+So the fact that it's already interfering with B means that, like if it's already interfering with B, we don't really care what its degree is.
+
+So maybe I should have been asking that question first. All right. Um.
+
+Okay. Huh? So we can't call out.
+
+So we're out of things to simplify. Listen, I'm going to just put, like, uh.
+
+Like, you know. Yes. Or.
+
+Now we're out of things to, um, coalesce also.
+
+So what should we do? Give up?
+
+Well, not on the whole thing. Just on a move edge. Okay.
+
+How you start? Um, no, we don't want to push anything to the stack yet.
+
+So remember, these green edges are constraining us from simplifying things, right?
+
+In this case, it may not be our main problem. But like, if J were low degree, we can't simplify it because it has a green edge.
+
+Okay. But. These green edges.
+
+We don't have to stick with them. We can give up on that move elimination opportunity.
+
+And so this is what appellate and appellate I cannot agree on how to name anything
+
+like proc entry exit 123I don't know could we have useful name for them.
+
+Freeze is what he calls this. I think we should call it unfreeze because to me these are frozen.
+
+We can't simplify them and by giving up on the green edge, we are unfreezing them.
+
+But he calls it freeze for some reason. So I'm going to put his name.
+
+Never remove a move edge.
+
+Uh, right now, in this case, we only have one move left.
+
+Um, but in general, you may have a whole bunch of move edges in your graph.
+
+How would you pick between them? Randomly?
+
+Randomly? I mean. Sure.
+
+Why not? Jack. We want to remove a volume that has like a node of low degree on it so that we can simplify later.
+
+Yeah, I would want to definitely pick something that has, uh, if possible, at least one node of trivial degree involved.
+
+Right. If both nodes are trivial degree, that's even better because I can simplify both of them.
+
+And I would like to pick like basically the heuristic I would use is if there's a node of trivial degree involved,
+
+the sum of the degrees of the trivial degree nodes involved, right?
+
+Like if it's two trivial degree nodes, let's add their degrees up because like if you can get rid of a two and a two, that frees up a lot, right?
+
+That's better if I have two nodes that are each trivial degree. That's better than just one node of trivial degree.
+
+And if it's like connected to two things, that's better than if it's connected to one thing is better than if it's connected to zero.
+
+But I guess I could be connected to zero things, but like that won't do as much good.
+
+Okay. Um, and if there's not any nodes of trivial degree, I would want to pick something of, um.
+
+It doesn't really matter, right? Like we're going to go spill something like whatever.
+
+Okay. And in this case we only have one. So we're just going to give up being J.
+
+I'm sorry. You're not going to go in the same register. Well, you might we might get lucky, right.
+
+If as we're putting this graph back together, we can put BMJ in the same register.
+
+Cool. We're just not going to combine their nodes. Well, do we add in interference between BMJ or do we just don't do that.
+
+Because if we get lucky and do put them in the same register, like if this isn't register one and this is in register one, then we're happy.
+
+Right. We're just not going to constrain them to be in the same register like we did for C and D.
+
+Um, okay. Freeze.
+
+All right. So if there were any move edges that we can remove.
+
+We'll go back to simplify. And if not, I'll figure that out in a moment.
+
+All right, Burnaby, can I simplify anything now? I don't think so now, man.
+
+So what are we going to do? What are your colors?
+
+And start to color this? Like, just like, hey, we simplify the graph as much as we can.
+
+Let's brute force this. It's smaller.
+
+Um, we're going to now have a potential spill.
+
+And what this means is that we are going to.
+
+Um, we're going to just pick any node we want and rip it out of the graph.
+
+Okay. But the difference between that and things in simplify is because it's not trivial degree.
+
+When we come back to color it, we might fail. We don't want this to happen.
+
+But you know, that's the way to make progress.
+
+Now, we might get lucky, right? Like, if we rip out of the graph and you just colored one.
+
+And, uh, you know, J is the same call.
+
+This is a little like you can, you can see here that E and M and J are all.
+
+Well, maybe. Yeah, maybe M and J are the same color, right.
+
+Like, if this is a one and this is a one and this is a two, we can get lucky.
+
+And this could be a three, right. That could happen.
+
+And so on the one hand we might want to rip out a low degree node in the hopes that we get lucky.
+
+Right. We are more likely to get lucky with f that.
+
+These two are the same color and um, and we still have have something available then a really high degree.
+
+Now at the same time, if we were to add a high degree node, we're going to basically make more progress by opening up more opportunities.
+
+We might also have more chances to get lucky in terms of um.
+
+Different. Different. Like more paths for a different color in the main.
+
+The same. So it's a little bit heuristic at this point.
+
+But you just get to pick any node you want. Rip it out. What would you like? There's no wrong answer.
+
+Okay, 3D app then? Yes. Okay, sure. Now would be really funny if I was like, I'm sorry.
+
+F is the wrong answer. E I am, and I mean, I guess there's wrong answers.
+
+Like if you were like, I pick Z. Um, but of any of the things on the board and, you know, do you want.
+
+So we're just going to hope we're going to hope that some of those ended up being the same calling.
+
+Okay. All right.
+
+And I'm going to put a little red star next to it. To me that was a potential spell.
+
+Like in your code it would be on a different code path or it's going to like return to a different place for recursion.
+
+Chris, what would you like to do now? Do we have anything of trivial degree?
+
+No, no. So we can't coalesce.
+
+We can't freeze. What would you like to do about this?
+
+We've got. Okay. This is adjacent to B and J and you know.
+
+Also a potential spill. All gone.
+
+Okay. You know, I was going to laugh.
+
+Keep coming up with you.
+
+But now, um, you tell essentially free up, you know, um, um, forget those times and come back at the very top, or just reverse one step.
+
+What? Like that? Potentially, like, uh, try to remove the attorney in this case, right?
+
+Um, if it's fail, eventually I have to go back one step or go back to the all of register allocation fails and you have to,
+
+like, spill something to the stack and redo it like, like you need to different live ranges.
+
+Do you need to go take something and store it to the stock after you write it and load it from the stack when you read it.
+
+And now it interferes with fewer things and you have a different graph that's easier to color.
+
+Just like a star from the beginning. Yeah. So you're going to restart register allocation from the start.
+
+Oh. Um, okay. Jack, what would you like to do?
+
+Uh, simplify and simplify.
+
+You know, which is adjacent to b and c d.
+
+Okay. You know. Oh, God.
+
+Jack one. What would you like to do on a simplified, simplified Jay?
+
+Jay has been the thorn in our side. I don't know about you guys, but I don't like Jay.
+
+I'm glad we're rid of it. If it weren't for Jay, we would have been in great shape on everything, right?
+
+Okay, Patrick. Well, you can.
+
+I really just can't. Okay. Patrick wants to just.
+
+Just skip to the fact that, hey, we've only got three nodes. We can just three.
+
+Call it a graph. If we were doing this algorithmically, we'd probably want a base case of one node.
+
+But. Sure. There we go.
+
+Okay, we three close the graph. So, Eric, what should I do next?
+
+Um, Jay, off the staff. Yep. And color it.
+
+Uh, not. Not red. So green. Green.
+
+Mhm. Okay. Now I need to keep like all three markers just handy.
+
+So. All right. Um, Annie what's next?
+
+Um. Okay.
+
+What color is it? Red. Okay.
+
+Oh, we're to our potential spill. Let's see what happens. Alicia.
+
+What should we do next? Yeah, and it is adjacent to B, J and M.
+
+Oh, hey, did we get lucky? We can color it blue.
+
+Okay. All right. So far, so good.
+
+Oh. Yes. And did we get lucky again?
+
+Let's find out next to E, M and J.
+
+No. Oh, no. We failed. Okay, so at this point we just basically say, oh my gosh, I give up.
+
+We can't color this. Um, this one fails.
+
+Right. And but if it didn't fail, we basically just keep going with the rest of it where we would put, uh, g.
+
+G back over here and it would be next to J and K and it could be blue.
+
+And we put H back over here and it would be next to Jane.
+
+Right. Right. So only that one one thing failed.
+
+You guys knew it was going to fail, right? Like from the start.
+
+It's like when you're watching, like a movie or a TV show, and the villain is like, oh, why don't you come here with no friends?
+
+You're like, no, no, don't do that. It's going to go badly.
+
+You guys. Did you know that? You didn't. You didn't guess that was going to.
+
+Okay, well, um, so if we had, if we so, so kind of going from here, when we get to one node, you basically pop in color.
+
+And then we repeat that process until we either win or lose.
+
+Right. We're lose as we have something we can't color.
+
+We need, um, we need, uh, a simpler graph.
+
+And when is we colored the whole graph? Okay.
+
+And so, um, let me just say a little bit about what you need to do.
+
+This is optional. This is optional.
+
+Any actual spilling is optional. Not so much that, but like optional, losing is optional.
+
+Okay. Um, you can register allocate all the Tiger programs Andrew Powell has given you and pretty much any
+
+reasonable program you can write without a spill because you have 25 registers to work with.
+
+And so like a graph that's not 25 colorable is pretty complicated.
+
+And people who want to do spilling. Have to go write a test case.
+
+That is isn't very complicated. Icky ugly looking code with lots of variables that get used all over the place.
+
+To have that much interference. Okay.
+
+Uh, but you need to be able to register allocate queens factorial.
+
+Uh, whatever the sorting program is that you get merge like any of those programs he gives
+
+you and kind of any other reasonable program you're to write that's easy to register,
+
+allocate for work that is register allocated but without spilling over 25 registers.
+
+Okay. Using this algorithm. Not using brute force. But yes, the rhythm proves that this graph itself is like.
+
+Like if we went through it slightly differently.
+
+We didn't pick that up. So this does not prove that this graph is not three colorable, but this graph is not three colorable.
+
+And then second question is there like uh, numerical point where like we reach a number of nodes and we're like, okay,
+
+let's just like brute force it, like, I don't know, like merge sort in quicksort, you like, go to insertion sort after a certain level.
+
+Um, so I think that's one of those things where 425 registers or four colors, if you have fewer than ten nodes, you can just assign all the colors.
+
+You might want to just keep recursing down to one. Anyways.
+
+Um, because you can use some, um, like if you say, here's 25 nodes, I'm just going to assign them all 25 colors.
+
+And then you had your 26 node that you potential spelled that was adjacent to all of those.
+
+You definitely lose, right? But if you keep going down to one and you use a heuristic like always, pick the lowest available color by number,
+
+then you may end up with those 25 nodes having like one, one two, two, two.
+
+And then like not using all 25 colors. So that 26 node might still win.
+
+Right. Um, just a second. Also, we're almost out of time.
+
+We may have a little bit of register allocation to talk about next time. Uh, Utah.
+
+So that's that. We've found our puppy out of that field.
+
+I think, uh, we just not give up and try to remove, uh, different nodes.
+
+What they did was to try, um, like, potential, spill something else and try again.
+
+That makes your, your, your runtime go from linear ish in the number of nodes, meaning.
+
+By which I mean you're going to have a linear number of like you're going to have one call per node you remove plus some analysis of,
+
+of degrees and heuristics and so forth.
+
+Um, so it's not quite linear but like low polynomial time to now you have exponential
+
+backtracking on figuring out what node to remove on that potential space. Right.
+
+And you may have multiple potential spills along that path.
+
+So you might have this potential spill in 27 choices and then do some things and then 27 more choices here.
+
+And like that blows up. Frankly. It's one of.
+

@@ -1,0 +1,1307 @@
+[Auto-generated transcript. Edits may have been applied for clarity.]
+Updating the, uh, the expiration time on this thing.
+
+The kind of keep requesting it. So I put that, like, to back off every five seconds.
+
+Right. I got to to do that at most every five seconds.
+
+Yeah, I've been around long enough to know that you don't just trust somebody's hunch on what the bug is like.
+
+You need more. So I was like, look, I don't want this to happen again.
+
+I want you to put in some measures so that, like, if you're making all these requests per second, we know before, like, it's opens my IP.
+
+So like it's like, okay, I'll put it in like the client side rate limiter and like,
+
+like when we hit that rate limit will pop a warning up on the screen and like block network connections until you click a button.
+
+Great. Do that.
+
+So what do you think happens as soon as I run the client again and you get the benefit of that screen pops up and it's like we hit the rate limit.
+
+Like here's the request. And was like, so here's what happened is like, oh,
+
+the bug was actually this other thing that happened where we were canceling and sending this request every frame.
+
+Um, so, you know, I don't know, I thought that was like an interesting, like, lesson in not trusting these things.
+
+What do you all think? Good lesson. Yeah, but make no mistake.
+
+Oh, you know what? That's what I've been doing wrong.
+
+No, I just have to make no mistakes. Hmm.
+
+I was, however, impressed that you, um.
+
+Used the word tank here without me using it first.
+
+Like, in terms of, like, combat classes.
+
+It's like. Oh, yeah. Tank, your classes can go in the front row. It's like a job.
+
+I mean, I know that word's all over the internet. I'm sure it's been trained on that.
+
+But, like. I thought it was good.
+
+Hmm. Anyways, welcome back o r your grades out with this research.
+
+Things I couldn't check last night because, you know, my connection was so bad, and so.
+
+You know. Midterm 100% graded.
+
+We're going to release them in class this.
+
+Yes. Am I going to release them in class? Yes. Is that a bad idea? Probably.
+
+But am I going to forget if I don't do that? Um.
+
+They can't be as bad as one professor. They handed out a midterm while we were taking a final.
+
+I mean, that's. Okay.
+
+Your grades are released. You can go ahead and look at that while I turn on regrade requests.
+
+Also, even though it's April Fool's Day, this is not an April Fool's here for praise.
+
+Well, let. Me rephrase it.
+
+Sometimes people just build a grade request, submit it within the next week.
+
+But not during class. Right? Uh, I know you're all going to just need a minute to do that, but that's fine.
+
+I need a minute to get my notes up and see what we're doing, because I was busy telling stories about adventures, and I was like.
+
+Oh, yeah. Didn't know. Yeah, very.
+
+Curious. So, yeah, go ahead and take a minute.
+
+I know you all want to look at the midterm grades, so I may use it, but instead of calling this a mistake,
+
+we're going to call this a benefit of coming to class because you'll see your grades.
+
+I guess grades go out to everyone or some of you have the benefit.
+
+Like, because I was thinking people who aren't here could just like, I don't know how to figure it out either.
+
+Mm. That's still really good.
+
+Yeah. Because I'm just curious.
+
+If it'll help. Right. So that's.
+
+All right. Um, I mean, overall, it looks like most of the grades are pretty good.
+
+There's, uh, a bit of a tail on that distribution, but that just kind of happened.
+
+Um. There's a significant outlier.
+
+Um. You can't say that. Not call it out. I cannot like it if I say who it was.
+
+That's like a federal crime. Um, but if you like, spin the bottle.
+
+What do you say? Like we've got a new report. It's not. That's all.
+
+It doesn't have to be awesome. Yeah, well, anything about that is called a workflow violation, and they can't do it.
+
+Looks like there was, like, one really low grade, one kind of low grade, and then kind of like a tail with some people doing.
+
+Really well. 2 or 3 people got 100%.
+
+So. The median was at 95% and the mean was at 90%.
+
+To tell you a house. Thank you. Distribution is not normal.
+
+It's a little skewed. Um, okay. There's.
+
+Yeah. Yeah. Morning class. Document statistics.
+
+Okay. Um. We're worried. So, what did we talk about last time?
+
+What? Interval of data flow? Data flow analysis and optimizations that go with it.
+
+So these are two things that are related but are slightly distinct. We can do an analysis to come up with information.
+
+But then we have to actually do an optimization with that analysis to make the code better.
+
+So what um what is the first data flow analysis that we learned?
+
+You're everybody. It's a trick question because that's the one we learned last time, but we learned a different one even further back.
+
+Liveliness. Liveness. Yeah, right.
+
+Like, remember we learned liveness back before we did register allocation.
+
+Back before we started this part. I know, I mean me tricky professor asking difficult questions, but it's good.
+
+It's good because Available expressions was what we did last time we learned liveness, which is the analysis.
+
+And we use that information to do register allocation, which is the optimization of better.
+
+And so last time we started talking about available expressions, that's the analysis that says,
+
+hey, you've already computed this in the past on all paths that get here.
+
+Um, and it drives the optimization common Subexpression elimination, which we didn't exactly talk about the details of that yet.
+
+Um, but we kind of saw an in action where, um, every where, where we can reuse that computation and not recompute.
+
+And so when we saw our heroes last time, we had just talked about the data flow equations for available expressions.
+
+And are they a union or an intersection? An intersection, right?
+
+Um, and so I said that we want the greatest fixed point and not the least fixed point.
+
+And I said we are going to. Which means we're going to start with the set of all expressions in our program,
+
+and then work down from there to the greatest solution, rather than starting with nothing and working up to the least solution.
+
+And to see why. Let's just imagine that I have this control flow graph here.
+
+So if I compute a equals x times y here I have like a little loop.
+
+It doesn't do anything to x or y or I like it messes with other variables like z and q.
+
+It doesn't really matter what it does. And then down here I have v equals x times y.
+
+So. Is x times Y available here.
+
+Yeah. Right. Like I've computed it I should be able to just say b equals A down here and uh, move on from there.
+
+Right. Um, and let's see what happens if we do this wrong, where we start with, uh, the empty set and compute the least fixed one.
+
+All right. So if I do that and I say, oh, uh, okay, there's nothing available here.
+
+Uh, what's available here? That's X times Y. Great.
+
+Okay. What's available here? Well, I need to look at the two predecessors.
+
+This one and this one and intersect. So what is X times Y intersect.
+
+Empty set. Empty set. Empty sets, I guess.
+
+Okay. Nothing's available here. Nothing's available here.
+
+Um, nothing's available here. And then we'll change from empty set to X times Y is available here.
+
+Um, I changed things, so I need to do it again. Right. So empty set x times y here.
+
+I've got two predecessors x times y and empty set. Okay.
+
+So this is still empty set. This is still empty set. This is still. And he said this is still empty set.
+
+And I've come up with the wrong answer. Right. And the reason for that wrong answer is that X times Y really is available here.
+
+We just started by assuming it wasn't available, and since we assumed it wasn't available,
+
+we could never make it available here, which meant it never became available here.
+
+Right? And so one way to think about least versus greatest fixed points is.
+
+What's the difference when something is going to be circular?
+
+Right. Like basically we're saying the availability of x times y here is the availability of x times y here and the availability of x times y.
+
+Here is the availability of x times y here right.
+
+And so if we either if we if we say x equals y and y equals x, we can have a whole bunch of different solutions to that.
+
+Right. And so if we start with empty set we're saying if something is just circular it's not available or live or whatever.
+
+And if we start with the universal set we're saying if something is just circular then it is right.
+
+If the circularity is kind of what's affecting it. So let me find the tracing plot.
+
+And let's really do this the right way. Just put like a little thing on.
+
+Nothing is available at the start because we haven't computed anything for all of our blocks.
+
+So we'll start with everything. Okay.
+
+So now we're going to say oh the predecessor this is like starting.
+
+So there's nothing there. This is x times Y.
+
+Oh now this is everything intersect X times y.
+
+That's going to be x times y. So now we can get x times y here.
+
+That's going to make x times y here. That's going to make x times y here.
+
+And it's going to make. Right.
+
+And now if we do this again, we're going to get the same answer. It's consistent.
+
+And now we'll see that x times Y is available at this point.
+
+And we can perform um, common subexpression elimination and not recompute.
+
+Okay. So do you all see the difference between the greatest and the least fixed points?
+
+All right. Um, and so in general, when we have an intersection, we want to start with everything and compute the greatest friction point.
+
+And when we have a union, we want to start with nothing and compute the least. Um, so that is how we do, uh, available expressions.
+
+But then what do we actually do? Let's just say that here I have c equals x times y.
+
+Right. And I'm here.
+
+I've said it feels like it's times like.
+
+Shows that he feels like this time is lying.
+
+So let's just suppose that I have this situation where I've computed x times y on all paths that can get to this computation of x times y.
+
+When it was really simple over here like this, I could just change this to b equals A,
+
+which is kind of what we did in our like quicksort partition example.
+
+But here I can't just make this equals a or c equals b or c equals d.
+
+But this expression is available. So how do I actually um.
+
+How do I actually do this transformation. So that, uh, my code gets rid of the x times Y and uh, works about it.
+
+Working correctly. Jack, you need to make sure that in all the predecessors like that result, it goes in the same register.
+
+Okay, so how can we make that result? Go to the same register?
+
+I hate these agents and so I may not be able to make a, B and D the same because I might like, I might be using, um, I might be using A and B,
+
+like maybe after that B gets incremented or something like that intermediate block, um, like vertical lines equals a tangent line.
+
+So. Almost we could, we can do that.
+
+But like slightly to similar we just say like ten. That equals a ten equals b ten equals d right here.
+
+And then we just say this is equal to ten. Right. And now we may have an extra register to register move.
+
+But hopefully um hopefully our register allocator at least can clean that up.
+
+Or maybe we can clean that up with um, a Google elimination optimization.
+
+And in general register to register moves are like simpler than multiplies, right?
+
+I think you may have said this already, but why can't we just like, hold the value in like A or B or D?
+
+If it's already available, then why can't we? What? Like why can't we just say like like why can't we just keep the value in A, B and D?
+
+Like, why do we have to move into C? Well, so one it's possible that A will change on this path okay.
+
+Right. Like if I do. A plus plus here.
+
+Some, like I still have computed x times y and put it in a, um, up here.
+
+Uh, and so I could still eliminate, uh, this common sub expression there,
+
+but also just doing this, like if I go pick a temp and move that result into it.
+
+Now, I know it's in the same town coming into this block, and I can just use that temp.
+
+And I also know that terms not going to change. I just picked it fresh so I'm good.
+
+Okay. So that's available expressions and, um, common subexpression elimination.
+
+By the way I'm going to draw a little chart over here. Um.
+
+I don't know why I abbreviated forward and backward. Go beyond consistency.
+
+Um, so available expressions was where the information flows forwards through the graph and we're doing intersection.
+
+Right. Uh, and by the way, since it's flowing forward, do we want to start here or start here.
+
+So start here right. Because I'll converge fast. Liveness was union and backwards.
+
+Okay. Um, and so I'm just going to put this chart up here so you can see that like we can get all sorts of different combinations of things.
+
+So the next, um, analysis we're going to do actually can drive a whole bunch of different, um, kinds of optimizations.
+
+Like. Three of them that come to mind, but also probably some others.
+
+All right. And so this is going to be called reaching definitions.
+
+Okay, so if I have some use of ax. When I use this ax, there may be lots of definitions of ax in the program.
+
+Ax equals something, right? So like, um, ax equals zero x equals a plus b x minus t.
+
+As opposed to. Right. Okay.
+
+And I've drawn this kind of intentionally with my squiggles. So here x equals zero.
+
+This you know we come along here and there's no definitions of x.
+
+This definition reaches this use. That is the value that we read here could come from this right.
+
+Here I have x equals a plus b.
+
+But going this way if we get into x equals c minus d this definition can't reach this because it will get reassigned before we get there.
+
+Right. But x equals c minus d can reach that.
+
+And of course here's another definition of x. X equals cube one two.
+
+But that never ends up here. So this definition doesn't reach this use right.
+
+So it's basically what writes could put the value into the register that then get read by this instruction.
+
+What definition to reach. Does this make sense to everyone.
+
+So let me ask you this. Does this flow forwards or backwards.
+
+Well. I heard it quietly and timidly say it boldly and loudly.
+
+Forward, forward. This is going to flow forwards, that is. I need to know the things in the past I need to.
+
+Union or intersection over my predecessors to know what's happened previously.
+
+So one of our equations is going to have like P in predecessor of B.
+
+Now, is this going to be a union or an intersection, a union, right.
+
+Because basically I'm going to take all the definitions that come this way, all the definitions that come this way and union them together.
+
+And so that's going to be reaching definitions, you know, and.
+
+Of a block, it's going to be the union over its predecessors of their reaching definitions out of that predecessor.
+
+And then of course the reaching definitions out is going to be.
+
+You know, as you might suspect, the other equation which is going to be the reaching definitions and.
+
+Block minus the kills of the block.
+
+Union. The gen. Of the block, right?
+
+It's pretty much like one. One equation is always this thing,
+
+and one equation is always this thing with like flipping things around and union our intersection predecessor and successor.
+
+So now the question is what's going to be a gin and what's going to be a kill here?
+
+What generates a reaching definition. Best.
+
+But usually definitions speak loudly definitions.
+
+Yeah. Like every definition, every time we say x equals two plus two or something, that's going to generate this particular.
+
+Definition. And then what are the chills.
+
+Also the definitions, right. This kills. All other.
+
+Dance of X. So my reaching definitions for X here were, you know, this one, this one and this one.
+
+And then I do this. Those all get killed.
+
+And this is the only definition that reaches right after here. Okay.
+
+So we're going to get multiple things when control Control4 comes together in the union set.
+
+But whenever we have a specific definition it's going to kill all the previous ones.
+
+And that's the only definition that reaches the point right off. Right.
+
+Are all. As I put this over here.
+
+I'm just going to note that, you know. Oh, yeah. Billy, you know, it's a question of like definition versus like reassignment.
+
+So like in Java, for example, you can like set your type and then give it an initial value.
+
+And then you can like change that value according to the type.
+
+And when you change the value you're not setting a new definition though. You're just you're just reassigning.
+
+So that's a declaration right. So here we're using definition to mean assignment.
+
+It sounds it sounds better than reaching assignment two.
+
+Right. Um, so and kind of from in terms of like deaths and uses, um, get used a lot in compilers.
+
+So this defines the value of x. We could call it a write whatever.
+
+Um, it's just the terminology, the thing. All right.
+
+Um, so a quick side note as I fill this in, right. You'll notice that basically we keep having these same equations with minor variations.
+
+Right. And so as I mentioned, I think the last time you know, to me this says if you software engineer your liveness,
+
+well there is low hanging fruit to put in the other um, the other analysis.
+
+Right. Like good software engineering of life.
+
+This means that if you say, oh, I want reaching definitions, you know, like, oh, I have to go write this whole algorithm all over again.
+
+Instead you're saying, oh, well, I just take that and parameterize, uh,
+
+union our intersection, which, by the way, in SML is a set cross set to set function.
+
+Right. I prune or I how do I generate get gens and killed I parameterize, you know, ins and outs on which way I go and stuff and then like boom,
+
+I have all the other analyzes by just passing parameters to my general analysis framework.
+
+And so let's say we do reaching definitions.
+
+Yeah Utah. And also for the second part let's uh have to go with that one.
+
+Yeah. So we have a uh zero a plus B.
+
+Yeah. Before we kill ambiguities ax equals C minus q.
+
+So yeah, it seems like we didn't change anything out on the static.
+
+And still the x x is doing the same. Well, yeah.
+
+But so. So if I wanted to know what could write the value of x in this range.
+
+This assignment statement is what could have produced the value of x in this range.
+
+This assignment is what kind of proves the value of x in this range.
+
+This is what kind of produced the assignment of x when these two control flow paths come together here.
+
+It's this or this that could have produced the value of x. So I can do the same thing for assignment like this.
+
+It is a specific assignment statement in the code like article or C minus these
+
+different electrical variable x equals c minus d is different than x equals a plus b.
+
+And in fact is different from all other x equals c minus ds.
+
+Like if I had a different x equals c minus d. Here I want to distinguish between this one and this one.
+
+It's like what could have written x here line 47 or line 12 of my program.
+
+And so. Are we going to do?
+
+At least fixed point. Our greatest fixed. Yeah, you can guess.
+
+It's at least because we're doing a union.
+
+And if you think about it, if we have few definitions that read something that gives us, um, a very powerful statement about the code,
+
+and if we have lots of definitions that read something, we don't know as much about what's going on.
+
+Right? And in fact, let's suppose we look at this. Let's say we have some use of X somewhere in here.
+
+Right. Um. So occupancy.
+
+So a equals x plus q. What do you know about this particular x here.
+
+If this is the only definition that reaches it. Crush plays.
+
+You know what? Yeah. Well, you know that zero.
+
+So A is Q and so you can say, oh hey I'm going to replace this.
+
+With a constant, because the only definition that reaches it is x equals a constant.
+
+And then you can do whatever you want to do based on it. You can say, oh, in this case a constant is zero.
+
+And I'm doing plus. So I can just say I equals Q. Or maybe I have lots of constants that reach an expression I can simplify in some other way.
+
+But this where if we see that the only definition that reaches use.
+
+We can see that the only definition of the use is variable equals constant.
+
+We can replace that variable with the constant. Doing what's called constant propagation.
+
+And then that may open up opportunities for constant folding where I can compute
+
+expressions that have constants in them like something plus zero equals zero.
+
+Or if I have two plus three, I can just replace that by five. And so on and so on.
+
+And that may open up other constant propagations.
+
+Um, and so that's really nice.
+
+If I have only that one definition that reaches really if you like, reach that scenario where like a is equal to Q, would you like just recolor your,
+
+your like register allocation and everything or like, um,
+
+we probably want to do this before we do register allocation because, well, for a couple of reasons.
+
+One is if we do this, um, we could do things like push x equals zero down this way.
+
+Right. Which makes that have a much shorter life range.
+
+Um, we're going to you know, this would change from, um, interference between a to move edge between A and Q, which would be nice.
+
+And we're going to see in a moment that we can also do something else with this information to make life even easier for Mr.
+
+Algebra. Okay. Um, what if no definitions are easy to use?
+
+Like this set of definitions that reaches this use of X is the empty set.
+
+Yeah yeah yeah yeah. Like, hey, you did not initialize this variable before you used it.
+
+Bad programmer. But that not be calling like the type checking for it.
+
+So. Um. So.
+
+That okay? In a language like Tiger, all variables are initialized when they're declared like that just can't happen in a language like Java.
+
+If you say int x and you don't say equals something, it gets initialized to zero.
+
+So that also can't happen because there's an implicit initialization.
+
+But in something like C it's totally valid to just write in X and then start writing code.
+
+Um, and that x doesn't get initialized until you say x equals something.
+
+And it can be harder to figure out if that can possibly be the case, right?
+
+Um, we might also have the only definition that reaches b like x equals y, right?
+
+In which case, if that's the only definition that reaches, we can do move elimination and just replace x of Y.
+
+And um, spare ourselves, uh, the register to register remove possibly spare ourselves the register to register.
+
+Right. The flip side of this is if a definition reaches no uses, like here's my x equals q plus two.
+
+Let's say that this just goes down here and never gets used.
+
+This definition reaches no uses. That's how we get rid of dead code.
+
+So remember when we were optimizing and we would take out we do some changes and then say oh now we can get rid of this.
+
+That's how we algorithmically can figure out that.
+
+We can get rid of maybe we maybe we common subexpression eliminated, uh, something or, you know, whatever.
+
+And and now we see that we can get rid of, um, a computation by seeing that that definition has no uses and also no other side effects.
+
+Okay. So that's great. Uh, what else can we do with this?
+
+Well, I'm gonna, um, erase the board and make a little bit of space.
+
+Um, let's suppose that I write, as many programmers do, all my four loops with.
+
+I. And let's say this is like, I don't know, C ish code because Tiger is a little different.
+
+Um. And so I have some uses of AI in here.
+
+Right. There's an implicit bypass clause. Maybe I do something with array I either array I call some math on that.
+
+Then here I do like it, I did I did not like that.
+
+And I was positive for loop. Um, the fact that these are called I at the source programing language may,
+
+depending on our language and how things get translated down or may not result in them being the same.
+
+Ten right? And Tiger, when we start up for loop, it's a new scope for that variable, and so we end up with different temps.
+
+But if this were like old school, see. When I was a kid you could not declare for an AI equal zero.
+
+You have to say in AI the start of your function. And like you couldn't declare new variables after you had any statements.
+
+That was how old I am. But like if I say an AI and these are all the same variable, we're going to run into, um,
+
+like kind of an unfortunate effect where, uh, let's say there's a bunch of variables in here, right?
+
+They get used to um, and uh, p and then here you are as t okay.
+
+Well, AI is going to interfere with a b m n o p q r s t, but it doesn't really interfere with them at the same time.
+
+Right. Like up here there's AI for this loop.
+
+And then in here we don't really care about the value of AI.
+
+And if you can register allocate this AI into register for this AI into register five.
+
+That's totally fine. Go by that because they're really different eyes.
+
+Like, my code would be the same. If I called this, I prime, I prime, I prime and I prime.
+
+And now they're different variables and different nodes in our register allocation graph.
+
+Right. But unless we can actually split these two into different variables,
+
+the way that our register allocator works is going to have one node for I and it's going to have edges for all m n o p abcd q r s t.
+
+And it's going to be really hard to allocate right.
+
+This is going to have two nodes, but they're going to both have much lower degree and be easier to allocate by that.
+
+So what we would like to do is have an algorithmic way that we can understand when
+
+one variable can be split into two different variables or in different variables.
+
+Right? Like we smart people look at this and go, ah, yes, this is a contrived example that drew wrote.
+
+It's very easy to do that, but what would be an algorithmic way to do it?
+
+And this is again going to come from reaching definitions.
+
+Right. So if I look at this I plus plus as you know an I equals I plus one.
+
+That's a definition in this market. Right.
+
+Here's an equal zero. I'm going to call this definition zero. This definition one.
+
+Um, this definition two I equals zero.
+
+And this definition three of I equals I plus one.
+
+Okay. And then I want another. My green marker.
+
+If I look at uses, I'm going to give these, I guess, uh, letters.
+
+A B just to keep it confusing.
+
+C is going to be that use of AI, right?
+
+Um, really there's also the comparison to Ng, but you know, quite matter D.
+
+Yeah. She. Right.
+
+So I'm just labeling by various definitions and uses so I can write them down easily here.
+
+We have four definitions I equals zero I equals I plus one equals zero I equals I plus one.
+
+And we have like eight uses this use which I'm calling a this use which I'm calling b.
+
+The use inside I equals I plus one. So this is both a def and a use and call that c.
+
+This is a comparison of elastin in. So I'm going to call that D.
+
+And then the same thing here with e f g and h okay.
+
+And so if I were to look at what definitions can reach these uses let me just put my uses over here.
+
+There's my various uses, and my definitions are going to be, uh, 0123.
+
+If I were to look at what definitions can we reach? What uses I'm going to see today is the definitions that reach it are zero and one.
+
+So by that. And the same for me.
+
+And the same for sea. And the same for D, and then E is going to be two and three, and F is going to be two and three,
+
+and g is going to be two and three, and h is going to be two.
+
+Right. If I just take the the users and connect them up with the deaths that reach them.
+
+Uh, I can make this little graph. And what is interesting about this graph.
+
+Jack. There are two. Yeah, there's two disjoint pieces of my graph where if I cut my graph into this piece and this piece.
+
+There's no edge that crosses the lines of iron right there.
+
+And and so once we've built this graph, you can take your favorite connected components graph algorithm or whatever.
+
+Um, and and then divide these into two variables I and I prime algorithmically.
+
+Because I prime never sees the definition of art and it never its definitions are never seen by AI.
+
+Okay. And so once we've done this we can do wide range splitting.
+
+Range. Split evenly split.
+
+Quitting will be bad at writing words where we basically say this part of the code is one life range of AI, and this is another life range of AI.
+
+And so we can split them into two different temps, register, allocate them separately,
+
+and make life much easier on our register allocator because these will be much potentially, and in this example certainly much lower degree nodes.
+
+And so it will have an easier time, uh, dealing with that register allocation.
+
+Like it. Also it gets you to like, I don't know, use graph algorithms that they like, I guess tell you all about in theory class, right?
+
+All right. Um. Do. I mean, just making sure I didn't miss anything, you know, because.
+
+So, um, anytime you see something that looks like what we have in the corner there with three things filled in, what is it you should naturally ask?
+
+That's the fourth thing. Yeah. What's the fourth thing? Um.
+
+And, uh, in this case. There's a fourth thing.
+
+It's a little less clear exactly how we want to use it, but, um, it is still useful.
+
+All this. Oh, and by the way, as we come up on the end of the semester, which, by the way,
+
+this semester is coming to an end really soon, I don't know if you all realize that.
+
+Um, but as we come to the end of the semester, if there's any particular topics you want me to talk about, um, let me know,
+
+because I generally like if it's a super huge, complex topic that's going to break everyone's brain, we probably won't fit it in.
+
+But like, sometimes people have some little thing they want.
+
+Um. It's not. I generally talk a little bit about compiling object oriented languages,
+
+compiling functional languages, garbage collection, um, in, uh, the last little bits of the semester.
+
+But if you're, like, really interested in some particular topic, um, you know, well,
+
+this is a question about like when this would be implemented in real compiler because we're doing all this after instruction selection.
+
+And the disadvantage of that is you'd have to like implement all of these analyzes for each assembly language.
+
+Yeah. So in a real compiler, would this be done on air or is it more practically done after instruction selection for each.
+
+Um. Yeah, so many real compilers have more than one level of air.
+
+Um, and so you might take kind of like, like if I were going to go from your Tiger compiler to something.
+
+Um. Oh, teacher, we need to write an industrial strength Tiger compiler this week.
+
+What are you going to do? Um, I would take your existing IR and translate it into a slightly more instruction by instruction looking IR,
+
+where like you have blocks that are lists of IR instructions.
+
+So we don't say add or add AI, but we know that like this is a, uh, an add of a constant plus ATM, which will, you know,
+
+instruction likes to add AI in whatever syntax of whatever assembly you're going to have for any reasonable assembly.
+
+Um, we would probably use what's called, say, static single assignment form.
+
+Um, unless we're compiling a functional language,
+
+in which case we're going to use this thing called continuation passing style and do things very differently anyways.
+
+But, um, you can use CPUs for lots of stuff, but, uh, static single assignment basically means every variable is only written once.
+
+Um, and then you have these things called v functions.
+
+So if I say x equals something and x equals something and control flow comes here, well x1 equals something x2 equals something.
+
+Control flow comes here I use act as an x one or x2 because every variables only written once we're going to have x three is p of X1X2,
+
+which means pick based on which path you came from.
+
+It doesn't map to a hardware instruction, but then we would use x three in that block.
+
+Um, and then when we'd go and make actual instructions, we have to basically like reverse out all those p functions.
+
+Okay. Um, and so if you look at like Llvm, it has an IR that's much lower level than your Tiger IR,
+
+where all these things get done before it turns into instructions. And that level of R is actually pretty suitable for like register allocation.
+
+Um, like yours, your R is not. Not I mean let's say a Pels is not.
+
+So you don't feel like I'm playing you right.
+
+Um but if you were to go down to something where each thing looks like an instruction, you can do register allocation.
+
+You've on that okay. Um.
+
+Oh, right. Compared to the expressions. Great question.
+
+And by the way, I love questions. My 651 class, they never asking questions and it's been really sad.
+
+I have one of the students who came in like I did badly on the midterm. I'm like, why aren't you asking questions in class?
+
+And like, I can ask questions in class, like, why are you in class?
+
+Oh my gosh, to ask questions. Um.
+
+Going. So when we were doing available expressions, if I knew I had already computed x times y on all paths to get here,
+
+that expression is available and I can avoid recomputing.
+
+So what if I turn this around and say, hey, what if I met this block?
+
+And I know that I'm going to compute x times y in the future, no matter which way I go, right?
+
+Doesn't matter. Like I'm going to maybe have a brand. Like most brand, most blocks don't leave like two different paths.
+
+Or like this looks like doom. Right.
+
+Whether I branch this way or this way. And if I branch out this way, there's another branch.
+
+Whatever I do, I'm going to compute x times y in the future. Eric.
+
+Would this be helpful if you were doing like MIP style delay, like branch delay,
+
+slopping out miss MIP style branch delays saw things are a whole different okay can of worms.
+
+They, um. I was two news doing an independent study and, like, making, like, little maps, functional simulator.
+
+And she was having some problems and she was like, oh, it's because, like, perhaps delay slots.
+
+Oh, my God. Um, you have to branch and then like, not do the instruction is to target the branch.
+
+You do the next instruction. Um, virtually slots come more and instructions scheduling.
+
+And you're going to take like for this branch I'm going to take a try to take an instruction from this block and stick it after the branch.
+
+Um, I don't want to try and take an instruction from like very busy expressions may be way far down there, so I don't want to take those.
+
+I mean, yeah, very busy.
+
+Um, I don't generally try and take something from the next block unless they both start with the same instruction for some reason.
+
+Okay. So these are called very busy expressions.
+
+Sharing means using actions.
+
+Meaning I know that I'm going to compute it in the future no matter what I do, barring like exceptions or my program or whatever.
+
+Um, and so this is going to be intersection and backwards flow.
+
+You all can just write down the equations by now yourself. Hopefully I don't have to like write them all up here.
+
+Um, where I'm going to have the out be the intersection of the ends of my successors,
+
+and then the gen and kill are going to look, um, basically like the gen and kill or available expressions.
+
+And so this will of course be, uh, outline is killing the engine.
+
+So why do I want this? Why do I care about very busy expressions?
+
+What can I do with that? Check pre-compute.
+
+Okay, I can precompute x times y. So I can say okay, I'll just like say like temp equals x times y.
+
+And then down here I'll use the temp instead of.
+
+For example, I. Well, have I reduced the number of instructions that I'm doing?
+
+As you can see, the signs, we speak a little more loudly here.
+
+I guess you reduce like your source code size a little. Okay, I reduced my source code size a little.
+
+Do you all care about source code size? Like, yes. Instruction size.
+
+Well, for I cache stuff, maybe. Oh, yeah. And somebody is, like, on fire with the 253 5552 stuff.
+
+Yeah. So back when I was a kid, the first computer we had had 640kB of Ram.
+
+And Bill gates is famous for saying he doesn't know why anybody would ever need more than 640 gram.
+
+But I'm pretty sure if you just type Python three at your command line, you need like two gigabytes of Ram for that to start.
+
+Okay, so today maybe we don't care so much in terms of just the Ram footprint.
+
+Oh, and by the way, that was a to the computer I had as a kid was a 26.
+
+So it didn't have this crazy virtual memory stuff that you all are used to.
+
+You had them. If you wanted more than 640 K of stuff in memory at a time, you had to manually manage it with overlays.
+
+Uh, which is basically like you kind of doing paging on your own, but keeping track of what's in memory.
+
+Um, so, so back, back in the day, we might really care about, like, squishing out a few bites.
+
+And if you paid ultra careful attention to 50, you know about the whole risk versus risk thing where,
+
+like, risk issues were how it was back in the day.
+
+And they liked variable length instruction encoding so that things like increment register could be like one byte.
+
+Or two bikes and things that needed big, complicated 15 byte encodings could use 15 byte.
+
+But they were trying to like save instruction word space by variable length encoding.
+
+Do you all remember that from 259? Oh yeah.
+
+That thing. And then MIPs is like whatever, everything is four bytes.
+
+It makes our life easier, but it might take a little more space, right?
+
+And these days, you know, we don't care so much. Our Ram is getting kind of expensive.
+
+I don't know if you all, but apparently not anymore because OpenAI was like, we're going to buy like $40 million of Ram.
+
+And micron was like, cool, we're going to stop selling Ram to anyone else but you.
+
+And then OpenAI, I was like, actually, we don't need $40 million of Ram. Sorry, micron stock.
+
+Like, I know if you open this up, that just happened.
+
+I think it was yesterday. It wasn't this morning. But like it was it was recent.
+
+Um. But but I thought you said something.
+
+31. No. Okay. Um, so, uh, we may not.
+
+Maybe we care. There are still things that are not like big, big onion systems with lots of Ram.
+
+Um, but. Maybe we don't care about that.
+
+But as Eric noted, we might still care about cash pressure, right?
+
+So even in the amount of program we can fit into, memory isn't the biggest deal to us.
+
+I cache misses are kind of a big deal, right?
+
+Uh, why are expenses a big deal? I mean, you're like, I don't know, cache misses Stone.
+
+Yeah. But, um. How about this wire eye cash is probably a bigger deal than the cash.
+
+Mrs. Like in terms of of of the cost of the Mis.
+
+Well, they're not multi-level, are they?
+
+I mean, your Aakash is going to go to your L2 feet and you probably have an eye catching for your next couple instructions too.
+
+Um, so that's actually pretty handleable by prefetching, right?
+
+So on the one hand, prefetching works really nicely for instructions, usually because we fetch instructions at least a mostly straight line.
+
+Eric gets out of order, doesn't save you here. There's no way you can schedule another instruction that may not conflict with that memory application.
+
+You basically like in an out of order car, you can reorder around an L1 cache miss pretty easily,
+
+but when I cache miss, just everything in the front end stops until that comes back.
+
+And like you can prefetch, but you can't. You can't really fetch the next instructions like out of order, at least not in any processor I know.
+
+Or could I? Could I conceive of a way to do that?
+
+Yes. Is it a horribly messy and probably not very good also.
+
+Yes. Right. Um.
+
+Prefetching is the best, best solution. Okay.
+
+So that's one thing. Uh.
+
+Yeah. Exactly. I know there were more things I wanted to mention, but.
+
+I'm a little confused that like. You.
+
+Yeah. Um. You know, we run into some potential difficulties moving things around in terms of potential exception behavior.
+
+Right. So.
+
+So one of the things that gets annoying to compilers is we would like to do transformations, assuming that the program is just going to work nicely.
+
+But like if you have if this isn't x times y but is x divided by y and you're going to compute that anyways, and x and y aren't going to change.
+
+But what happens to be zero?
+
+Um, you might say, well, two of my programs are going to crash and divide by zero, whether it's here or here or here or here.
+
+So that's fine. Right? But. Eric?
+
+You okay? You look. Oh, I'm just squinting.
+
+Yeah, yeah, I looked sure, if that was a squinting through his handwriting is bad or a squinting like this doesn't make sense.
+
+No. We're good. Okay. But, yeah, if, you know, let's say we're going to go this way.
+
+And before we do that x divided by y, we're going to do star P.
+
+But P also happens to be null. Right now, our program will still crash, but it will crash differently, right?
+
+But if we don't optimize the code, our programmer gets a seg fault.
+
+And if we do optimize the code, they get a divide by zero.
+
+And that might be confusing to the programmer if they run it and they're like oh, divide by zero.
+
+Huh. Well, it can't be this. Because if Y was zero, P would be null and then I would have crashed over here.
+
+So that's not it, right? Like if they're expecting it to behave like the code you have.
+
+Which means as always, things like exception behavior and underflow and overflow, um, may make us very sad in terms of, um.
+
+In terms of what we can and can't optimize and how we move things around.
+
+All right. So those are the four like classic data flows.
+
+And um. They give you some optimizations?
+
+Um, it's really nice. And, uh, the next thing we want to talk about is loops.
+
+Because loops are really important for optimization.
+
+We're going to talk about more and more after the edge of our analysis here and why our loops are so important.
+
+For optimizing code. Utah.
+
+You know. Yeah. Like, anything that's not in a loop doesn't matter.
+
+Right? Like, if you do, if you do something like, I want to, uh, optimize the entry to int main void.
+
+Or it mean, you know, like charge starts to be like, no, don't optimize that.
+
+That will happen once in your program. Well, okay.
+
+And it should happen once in your program. When I was like learning to program C back when I was like in fifth grade.
+
+I, I had corrupted my stack frame in such a way that one function would return and it would go back into the entry to main.
+
+And I was really confused. Um, but that's probably not the case.
+
+We want to optimize for either. Okay.
+
+Um. So. Loops. I want you all to start thinking about what is a loop.
+
+Like if somebody were like, I need a definition of a loop in terms of a control flow graph.
+
+Um. What?
+
+What would you say that like, is like precise enough definition to exactly identify loops.
+
+And while you're thinking about this question, I'm going to draw on the more. So you all just think you're welcome to discuss.
+
+I love a good thing pair share because you could have dogs.
+
+That's a big one. Yeah. I just love it.
+
+I think it's like. Just. Oh.
+
+Anything that can potentially repeat. Because.
+
+Blink once or several times. But then you.
+
+Individuals who break. It's.
+
+Which. Means exclude as well.
+
+All right. Does anyone want to give me a definition of a loop? Like what?
+
+Like, how do you say given a control flow graph? What is a loop?
+
+More. How will we identify loops in a control flow graph? Well, cycle in the flow graph.
+
+Any cycle in the flow graph. Okay, so hang on.
+
+We have any cycle.
+
+Really? I was going to say like a case where like a child block reference is like a parent block.
+
+A child block references the parent like an ancestor block.
+
+Any other, um, thoughts? Just those.
+
+That's fine. Eric. Uh, that back edge is probably going to be taken like, a majority of the time as well.
+
+Okay. So, uh, you would say so.
+
+So that's a little bit more of, uh, a characteristic of loops that we might think about for optimization than how to identify them.
+
+But I am going to put the word back natural here. Okay.
+
+Um. Announce. Billy again.
+
+Like, uh, the most basic one of your ass. Like a kid, like you said something that could repeat.
+
+Could repeat. Okay, so let's let's just start with, um.
+
+Like. Is this a loop?
+
+No. What about this?
+
+Yeah. The whole thing. Uh. Um.
+
+You know, just this part right here. Is this a loop?
+
+Yeah. You know the whole thing? No. Almost inside.
+
+We have an inner loop. Oh, we have two loops.
+
+Oh my gosh. Okay, so one of the things that's tricky about this is here we have actually two different loops and content markers.
+
+You could do red and green. Right.
+
+This is a loop. And this is another loop, right?
+
+And they're nested inside each other. Which means that if we just talk about a cycle like we can say like, here's a cycle.
+
+But that's not a loop, right? That's that's like part of a loop and didn't get this right.
+
+Okay. Um, what about this?
+
+Yeah. So Matthew talks about an audience.
+
+What? She was coupled, more gates was coupled, nor gates.
+
+Um, I mean, not quite, but.
+
+And like, well, I think there's just one loop and it's everything but the top and bottom left.
+
+So in some ways this feels kind of a looping in that like we're going.
+
+Through here, right?
+
+But, um, in compilers world, this is actually not a proper loop.
+
+Even though there's such simplicity, cyclic behavior, the thickness of the a word.
+
+Really. Okay. You can zero. And. You know, I told you about my, like, world Walker game, right?
+
+I was like describing it to my wife. It's like, oh. And there's like this wildness thing.
+
+She's like, I don't think wildness is a word. I'm like, why not?
+
+Like, I think it is, but like, if not, it should be. Um, it didn't show.
+
+I should have checked. Um, so this this is not technically a loop.
+
+And if you try to think of a like C or Tiger programing of loops, none of them will compile into something that looks like this, right?
+
+But when you say that it's not a loop, like the full thing is not a loop.
+
+But there are two loops, if you like. Remove yourself a little bit.
+
+Um, like this part. Yeah, yeah.
+
+So this and just are loops.
+
+Hold on I don't yeah. That's a infinity.
+
+Uh that one actually. Yeah. So these parts maybe, maybe I'd have to think about.
+
+But um, but this, this construct will not come up from you just writing like a for loop or a while for a couple of them.
+
+Right. This comes up from arbitrary go tos. Eric.
+
+Oh, I was going to say kind of looked like looks like what? Which rule book version would maybe look like it.
+
+Also, it looks like mutual recursion because tail recursion is and mutual recursion are just go to in disguise.
+
+Um. Right like mutual until recursion there go to with like better marketing to
+
+go to in terms of go to like and see what it just be like if something else.
+
+Yeah. Let me just yeah this is like this is like an ifelse.
+
+But then this has like go to over here and so forth.
+
+Okay. So the way that compilers people define loops is in terms of domination.
+
+Um, no, not that kind of domination.
+
+I know what you're all thinking. It's not like that. Craft operation.
+
+Um. All right.
+
+Uh, this is, um. I should not raise mana.
+
+I should never raise. So in a graph, if I say that node A dominates node would be.
+
+What it means is that all paths.
+
+From start. Of the graph to be passed.
+
+Through. Okay. All right.
+
+And so if I look at this graph, for example, this note well that's the start.
+
+This node dominates this node right.
+
+To get to here I have to go through this. Neither of these nodes dominates this node.
+
+Right? Because you get here, I don't have to go through this and I don't have to go through this, but this one dominates this game.
+
+Does it make sense? And we just say a note dominates itself?
+
+Okay. So if I ask does this note dominated south.
+
+The answer is just yes. Because any path to get here has to go through that note.
+
+Um, and so. Going with Billy's answer here of a child block reference is an ancestor.
+
+He's on the right track. He just needs to. He just needs to know about domination, to like, really precise it in.
+
+And what that's going to be is that if, um, a dominance be we're going to have a back edge.
+
+And let's make it a back edge from, you know, um. And to start, you know, if there's an edge.
+
+E to S and S dominates.
+
+Right. So this is going to be what gives us this more precise notion of what Billu is calling an ancestor over here.
+
+Um, where we need to know, uh, not just that it kind of came earlier in the graph because we might think about rearranging things, but if.
+
+We have something that dominate and an edge back from what is dominated to the Dominator.
+
+Then, uh, that's the back edge of a loop, and we say that each back edge defines a particular loop.
+
+So that's why in here we can say this loop is defined by this back edge.
+
+Right. Because this node is dominated by this one. And there's this edge that identifies this loop and this.
+
+Back edge identifies this look. If we look over here, um.
+
+Right. Like this. Is not dominated by.
+
+That's right. Because we could go this way.
+
+Um, and so we don't have, like, one big this, as was pointed out, like this dominates this and this dominates this.
+
+So this would look like a loop and this would look like a loop. But the other cyclical control flow in there is not a true looping behavior.
+
+And one of the things that's important about this, um, domination definition is that the, uh,
+
+the destination of the back edge, the start of the bike, gives us a firm start of the loop.
+
+We know that this node is the entry point to the loop because it dominates the rest of the loop body, right.
+
+You can't get to the rest of it without going through there.
+
+Whereas here, if we were trying to talk about this as one big loop,
+
+you can get here without going through here and you can get here without going through here.
+
+So we don't have like a clear this is the start of right.
+
+And yes dominates them all. But nothing's going back to yet.
+
+Does that make sense? All right. 236 pounds.
+
+Jack. Do you have like. And something where something's pollinated by two different things.
+
+And so you don't have that well defined start.
+
+So this node is dominated by this one, this one and this one.
+
+But could it have like that instead of like having the back edge down to like the one.
+
+Well, it could have a back edge up to like another one that dominates it as well.
+
+Like could this have like an edge to here. Yeah, sure.
+
+And then we just have two loops. Okay. Right. So each of those back edges defines a loop.
+
+Yeah that would be fine. Um, and they still would have well defined entries of like this one is for this loop and this one is for this.
+
+So that would look basically like two nested loops where there's just nothing like curly brace, curly brace.
+
+When you get to the end of them, you're either jumping back around this loop if you're still in it or if you exited,
+
+you're going back to the start of this crash, or if you like, an outbreak or something like, uh, if you had a break in here.
+
+So break would basically be if like you just went this way, but still is a loop, it just has a different way to get out, right?
+
+Rather than just a normal exit, which can complicate some reasoning about the loops.
+
+But, um, doesn't change our definition for. All right.
+
+Um, I'm not going to go any further here because we have like two minutes left,
+
+and this seems like a good stopping point with an intro to domination and graphs.
+
+Um, we'll pick back up here and talk about loops.
+
+We'll also talk a little bit more about domination. We'll talk about what we can do with loops to, um, optimize our code okay.
+
+Questions. We're not happy Wednesday.
+
+So I will see you all on Monday.
+
+Don't let anyone April fools you too much today. We didn't actually go to the gym.
+
+Oh, that was the usual. Yeah. Okay. Uh.
+
+Good idea. Hey, so, uh, let me tell you about the best April fool I ever pulled.
+
+Right on it. Yeah.
+
+Okay. Yeah. Okay. I think we like power down.
+
+Yeah. Um. Yeah. So when I was an undergrad, I did my undergrad at Georgia Tech.
+
+And, uh, they guaranteed on campus housing for freshman and sophomore sophomores.
+
+And then after that, you went into a lottery to, like, figure out if you had on campus housing or not because they didn't have enough money.
+
+And, um, so my sophomore year, when I would have been a rising junior, I was in the lottery and lost the lottery,
+
+as did my very good friend who was also a competitor and just came out like a couple days before it.
+
+And so here I knew that the computers in certain classrooms didn't have any log in on them.
+
+And we also, being CSE majors, knew how to spoof emails and the housing website had.
+

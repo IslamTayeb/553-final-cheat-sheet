@@ -1,0 +1,1309 @@
+[Auto-generated transcript. Edits may have been applied for clarity.]
+Closer to you. I have a lot of final projects in this class.
+
+How does that work? Did you make it through the next 14 days?
+
+Uh, yeah, basically the same. We need.
+
+Wow. Yeah, yeah. This just depends on the pixel. This is crazy.
+
+You ratio. Hello everyone.
+
+We are kids. Everyone. That's why you're here.
+
+This is like 25 people in the class. It's like, I don't know.
+
+It's not like a random selection. It's like somebody just came in, like, wiped out this part of the class here.
+
+Um, okay. Maybe there was a dragon. Um.
+
+All right. Uh, welcome. How's everybody doing?
+
+Jogging weekends. Yeah.
+
+So, uh, my kids did that Easter thing, which we we.
+
+Apparently you can pay the Girl Scouts to come with Easter eggs in your yard, which takes us slightly off.
+
+Uh, the quality of. All right. Yes. This is great.
+
+So? So Margaret ordered 20 Easter eggs.
+
+They built her for 30 and actually put 20 there, which, I mean, she can go up there like, hey, you only gave me 28.
+
+The problem was because they built her for 30. She told the kids that they each find 15.
+
+And so I think they're like scouring the yard.
+
+It's like there's no more eggs. I only have 11 and Ellie has nine.
+
+I was like, maybe they gave us 20. Um, so I went out and like, how can we make 20 eggs?
+
+But, uh, my Easter thing was a dragon egg.
+
+Chocolate dragon egg from shaved ice, which looks really fancy, but, uh.
+
+Anyways. Okay. Um, just a few, like, notes on, uh, where we are this semester.
+
+So we're going to finish up a little briefly, and we're going to talk about garbage collection.
+
+Then we have two days for topics by request.
+
+So if you all don't have any requests, I'm probably going to talk about things like, uh,
+
+compiling old languages, compiling functional languages, uh, continuation, passing style, some of that stuff.
+
+Um, if you do have requests, just post on a discussion.
+
+Hey, I'd like you to talk a little bit about blog and, um, you know, I'll generally try and get most of the requests, how much and how deep.
+
+I'll talk about block. Depends on what it is. Um, if it's anything too wild and crazy, I might just do a short section on it.
+
+Um, but basically, we have those two days. The 15th is review for the final.
+
+So, uh, as for all review things. I'm still calling something.
+
+As for all review, things come with questions. I'll answer whatever questions you have when you run out of questions will be done.
+
+And then, um, you kind of have this weird.
+
+We have this weird thing that they've slightly changed where, like, grad classes go a week beyond the undergrad classes,
+
+and now it's like classes can pick what they end when they don't end.
+
+But when I first started, it was like grad classes and early.
+
+And so for this class, being a mix of grads and undergrads, the way I got around that was, I said basic.
+
+Like on the one hand, I don't want the undergrads to feel like they're missing out by getting too few a week.
+
+And on the other hand, I don't want the grad students complaining just making us go to classes past the end of it.
+
+So our last week of class is compiler's hacking days, which basically means come work with your group.
+
+We've got a really big rooms. You can all spread out. I'll be here.
+
+It'll basically be like big office hours for a final push on your compilers and, um, and, and, you know, with my help available, uh, if you need it.
+
+Okay. Um. Okay, so that's the roadmap for the semester.
+
+You tell what's between the final compromise and.
+
+What is left between finishing register allocation and the final compiler?
+
+Um. So this is one of those things where, like, there's just a variety of stuff to get your program to run in,
+
+and from mundane things like, oh, every label we output, we need data.
+
+Uh, not every label, every string we output.
+
+We need data, uh, label for the string dot ascii o dot word, the length of the string, Ascii the string text.
+
+Because that's how strings are laid out in Tiger. They're not C strings that are in L terminated.
+
+There are word that's the length and then the text okay.
+
+Then when you have functions they need dot text dot global dot whatever, blah blah like that stuff.
+
+And then you try and run your program. And it doesn't work.
+
+And you need to like go back and say like, oh my gosh, this was a bug that we missed in our translation.
+
+Oh, let's debug that. Oh wait, we are not producing the right frame size for this function because why?
+
+And like there's just a little bit of like trying to get your programs.
+
+Like all the way through all the pieces you theoretically have working to like, actually, like I can just say spam load queens dot s run.
+
+There's the output. Everything is happy. Okay.
+
+All right. Um, other questions. Okay, so what did we talk about last time?
+
+You know. Translating loops. Translating loops.
+
+Why do we care about loops? Because that's where we get all of our efficiency gains.
+
+Yeah, because if it's not in a loop, you're going to do it once. And if you do it once in a program, you don't care, right?
+
+You care about things you do not want. Also, just as a side note, did I tell you all earlier in the semester that I have this list of,
+
+uh, songs I really like compiler students to make up one day, like loops.
+
+I did it again. You mentioned it once at the beginning.
+
+Uh, I think you mentioned. Okay, well, now that we're later in the semester, we can come to those songs like loops.
+
+I did that again. I would really like, um, and, uh, we'll come to another one of those today, but, uh, yeah.
+
+And these days, I guess I could just ask AI to make them for me, like, hey, ChatGPT make loops.
+
+I did it again. About. Yes. Um, okay.
+
+Uh, what else did we talk about?
+
+Yeah. Utah. You know, more data flow analysis, right.
+
+So we finished out, um, I don't remember exactly where we split between what, but we did reaching definitions.
+
+Right, which is the set of assignments that can reach a particular use.
+
+What can we use reaching definitions for. What?
+
+Yeah.
+
+We can split live ranges so we can take a variable and realize that it can be two separate variables to make life easier on our register allocator.
+
+We can also do things like constant propagation, copy propagation, or not really an optimization,
+
+but realizing that, uh, something might be unassigned when we, when we get to it.
+
+Um, and also dead code elimination, right. If something has no side effects and its definition reaches no uses, then there's no point in having it.
+
+We may as well get rid of it. Okay. Um, and then we did loops.
+
+How do we know what's in or like what is a loop?
+
+What do we need? Theo.
+
+There's a black edge, um, from two nodes.
+
+And then if one of the nodes dominates the other nodes. Yeah.
+
+So we need a node to dominate another node, and the dominated node has a back edge to the dominating node that makes a loop.
+
+Right. Um, and so we talked about domination and um.
+
+I think we left off with that big idea and didn't talk about how to actually compute domination.
+
+Is that right? So let's start there with how to compute domination.
+
+We're going to have a control for the graph. For, for.
+
+To. Are you? Joined squares for some reason.
+
+This is the other way home. This one.
+
+27. And nine year old.
+
+Okay. All right. Here's a control flow graph.
+
+We want to compute domination. Does anybody have a guess on what the we might do.
+
+What? Um.
+
+What? What is that big hammer we've been using, like, the last couple weeks?
+
+Iterate to a fixed point. Okay, so we need some, uh, equations that describe this.
+
+And so we're going to say what dominates uh block.
+
+Well we know that a block dominates itself right.
+
+But then look at it using some other things. This is like our regular little union not let's you.
+
+And what was the definition of domination? What does it mean if I say three dominates for.
+
+Theo. All paths from, um, 3 to 4 run through three.
+
+Like, oh yeah, I'll pass from not from 3 to 4, one through three, but from this, that entry up here go through three.
+
+Okay. Or so if I go, if I started the start and I ended up at four, I've definitely gone through three.
+
+So how do you think we might do that equation wise?
+
+Are we going to want a union or an intersection. Intersection.
+
+An intersection. Over.
+
+What? Paths. Two four.
+
+Well, okay. I don't need to intersect over all paths. Four.
+
+I just need to intersect over the predecessors to four.
+
+Right. So P in the predecessors of B dominators of P right.
+
+So basically if something dominates all your predecessors it also dominates you.
+
+Right. So like if I look at seven something has to dominate ten and five and six to dominate seven.
+
+Go by that. And then what's going to dominate five and six.
+
+Well like things that dominate four are going to dominate five and six and so on and so on and so on okay.
+
+So we can just look one level back and intersect all the dominators of the previous assumption.
+
+Now. We're going to enter into a fixed point.
+
+We have two options the least fixed point and the greatest fixed point.
+
+Which one do we want? Crash.
+
+It's the greatest fixed point. How did you know? Let me know if you're doing what you want.
+
+All possible or in one clue is we have an intersection, right?
+
+So like in general, when we have an intersection, we want the greatest fixed point.
+
+When we have a union, we want the least fixed point. Um, and so when we want the greatest fixed point, what do we start with?
+
+Almost in, like, the full sentence.
+
+Yeah. Everything. So what's gonna dominate this block? Everything.
+
+I'm just going to write pages, not write out all ten numbers.
+
+Right. And that's going to be important if you think about things where it goes cyclically around.
+
+If we if we start with the empty set, um, we'd run into the problem that like we'd say, oh, nothing dominates tens or nothing dominates seven.
+
+But things are definitely going to dominate it, right. If you if you did that wrong, you would hopefully realize that Kinesis.
+
+So with that in mind, we need one little bit where.
+
+How do we deal with kind of this incoming edge? Well, that's going to be nothing up there.
+
+Whether you like it written that way or that way.
+
+Right. There's there's going to be nothing coming in on that edge, because the only thing that's going to dominate our first block is itself.
+
+So I go through this, do I want to go this way or this way?
+
+This one, right? Because if I, if I'm looking at my predecessors, I want to go in order.
+
+So the things behind me are most recently updated. I'm looking at my successors.
+
+I want to go backwards so that things after me. So here I'm going to see that I have the empty set intersect everything.
+
+And this term is going to be the empty set. Union two is one.
+
+So that's going to be dominated by just itself.
+
+Which makes sense because if you say what are all the paths from the start to one going to have to go through,
+
+they're going to have to go through one because it's the first block. Okay.
+
+What about to Chris? What dominates two.
+
+Uh. Is just one.
+
+It is just. Well, it's almost just one. This term is just one.
+
+Union in itself. Yeah, but everything dominates itself. Okay.
+
+Jack zero. What about three? Uh.
+
+1 in 3. Yeah, 1 in 3. Two doesn't dominate it because we've got one.
+
+One, two and everything. And when we intersect those, we get just one.
+
+And we union that with three. And we've got one and three.
+
+Jack one. How about 4134134.
+
+Um, Patrick, how about 513451345.
+
+How about six? Yeah.
+
+One three. Four six. Right?
+
+Because if I go, I have to get to one, three and four to get to either of these.
+
+But then five and six and you have about seven, one, three, four, seven.
+
+Right. So we've got this intersect. This is one, three four intersect.
+
+Everything is still 134. And we add in seven.
+
+And this is where I think it's important because if this were the empty set we would say this is just seven.
+
+But that's clearly not right. Alicia, how about 8 to 17?
+
+We sound like my three year old when she was like, maybe two trying to count, right?
+
+She's actually pretty good at Caltech, but like, all right. What about not.
+
+12334. Or we could just decide that I carefully constructed this example so that we never have six and seven after one after the other.
+
+My seven year old is kind of nuts about that. What about ten?
+
+I lost track of where we are. It's up to you.
+
+Yeah. Uh, one three. Four. Seven. Um, no.
+
+Not seven. Yes. Seven. And then eight. And no. Nine. And.
+
+And now we've done everything. Are we done? No we don't.
+
+Well, we might be. We just don't know it yet. Right. So, like, if we go back to again, this isn't going to change.
+
+This isn't going to change. This isn't going to change. This isn't going to change. This isn't going to change.
+
+This isn't going to change this one. Fortunately, this is still like a superset of this.
+
+So this isn't going to change. That's not going to change. That's not going to change. That's not going to change.
+
+Right. Okay, so that's how we compute domination.
+
+Um, Billy, with that in mind, where is there a loop back edge in here?
+
+Um, uh, at. Uh, three.
+
+Technically. Uh, yeah.
+
+So three to itself. And then, um.
+
+Yeah. So this is a loop back edge because three dominates itself and loops back to itself.
+
+That marker's terrible. All right. Thomas.
+
+Any other little packages in here? Uh.
+
+9211921. Yeah.
+
+9 to 1. There's one, Pete said.
+
+What? 10 to 7. Yeah. And any others.
+
+Not all of them. Okay.
+
+And so, uh, that would be how we can identify, um, loops.
+
+Um, we can go compute Dominators. We can come up with, um.
+
+Uh, back edges and find loops in here. One other thing, while we're on the subject of domination is.
+
+You might hear about an immediate dominator. Right?
+
+So if I look at, for example, seven and is dominated by lots of things one, three, four and seven, its immediate dominator is four.
+
+And how did I pick that? Well, the immediate dominator is not itself.
+
+And is sort of the closest thing that dominates it.
+
+That is, um, of everything that is not seven.
+
+If I look at for the other things in here, also dominate four or yeah, they dominate four.
+
+Right. So one and three dominate okay. So it's the closest thing to you that dominate you.
+
+That is not yourself. And um with the immediate Dominators, if you want you can draw them out as a tree.
+
+Eight. So this is the immediate dominator tree.
+
+Right. Which, um, gives us kind of a graphical representation of the dominance relationship here.
+
+And if I look at any, um, node in the tree.
+
+Everything on the path from one to it is it's set of dominators.
+
+Right. Um.
+
+I'm going to briefly talk about one more thing.
+
+We're like half a day behind. So we're going to like talk about one more loops thing and then move into garbage collection.
+
+And um, um, that loops thing, uh, if it's going to be loop invariant code motion,
+
+which also I think we should have a song everybody do in the loop of motion.
+
+Come on, baby, do. You guys don't know that song.
+
+The locomotion. Now, okay.
+
+It's like a much older song. So what I'm hearing is I can't go with any song older than Britney Spears for you guys.
+
+Now. How?
+
+It's one of those things that comes up at home, too, like my wife doesn't know, like all these songs,
+
+but like when I lived in the middle of nowhere, Georgia in high school, like the oldies station was kind of the only like semi same thing to play.
+
+And so like I noted. Yeah. Did you have like radio that you knew.
+
+We did have a favorite here. Yes. Um, but like.
+
+Yeah. There was like an oldies station and that was like the main thing that was like on the radio to listen to and, um.
+
+It was okay. I lived in Warner Robins. It's not like I live like 300 miles from, like, the nearest building or anything, but it's, um.
+
+Not. It's not Atlanta there. But anyway, so my wife does not know any old songs, but our nanny knows lots of all these songs.
+
+So like I will reference something in our nanny will know it and my wife will be like, what are you talking about?
+
+All right. Um. So let's just suppose that I write code like this.
+
+Hey, this is totally reasonable code to write. Yeah. I'm summing up all the things in my array, which is a two dimensional array, and this is an AI.
+
+And this isn't J. Hey, do you all buy that?
+
+That's totally reasonable code to write. You will not be angry at somebody for writing this code is not just like a ridiculous example.
+
+What is highly inefficient about this code? If our compiler does nothing fancy creation.
+
+Practices are difficult multiplied in half, such as linearly.
+
+Um. So yeah.
+
+So there's some computation going on here. Right.
+
+Uh, to, to to get that, it depends a little bit on how my array is laid out,
+
+whether that is like in Java, this is a load of this and then a load of that.
+
+Right like this is an array of pointers. Let's just assume that's what I'm thinking about.
+
+Um, and so Chris's point is this J like we're going to multiply by four and we could change that to
+
+like something plus equals four each time around the loop where we basically change it from,
+
+um, a pointer to or from from array indexing to a pointer.
+
+So that would make that slightly more efficient. But what about this first thing here.
+
+Does that change every time around? The anytime, anytime around the inner loop?
+
+No. Like we would prefer to write something like this.
+
+Or at least execute something like this. And turn it into that right?
+
+Now, of course, most of you probably don't write code like this.
+
+You write it the other way, it's more convenient, and you want to write nice code and have your compiler take care of all the performance details.
+
+So what is it about what we have here that lets us do this transformation?
+
+And or is it actually okay to do this transformation? You know, the AI is invariant through M iterations.
+
+The inner loop. Yeah. So I doesn't change. And the reason why we know AI doesn't change is if we look at.
+
+So if I'm right this back here.
+
+If we look at the reaching definitions for this, it's going to have some only definition that reaches it is from like outside this loop.
+
+Right. And the only definitions that reach this are also.
+
+And the other was spots. From outside this loop.
+
+Right. So the only definitions that reach a use are from outside that loop.
+
+That particular thing is loop invariant.
+
+It doesn't change going around that loop.
+
+And if we have a more complex expression where all the definitions that reach all of the parts of it only come from outside that loop,
+
+we might want to just pull that computation out of the loop.
+
+And avoid recomputing it right.
+
+Get rid of this load being done in times and do it one time outside the loop so that rather than n times m loads, we just have n loads of my array at.
+
+I don't like that. Could anything go wrong?
+
+Surely, surely something could go wrong because otherwise Dhruv would not possibly ask, right?
+
+So what could go wrong here? Theo as it abounds, I is out of bounds.
+
+Um, so let's say that n is like the length of the array and m is the length of.
+
+The other dimension of the army. I think you might be, like, kind of on the right track.
+
+Suppose for a moment that my like.
+
+Let's suppose my code here is correct. It does Billy.
+
+Um, maybe. I mean, you could do some, like, weird parallelization or something where like, the total itself is getting added up incorrectly.
+
+Um, in some weird way where, like, you were trying to update the total twice.
+
+Um, and you're reading it before your for your writing to it.
+
+Well, okay, so if we're trying to parallelize this loop, that's a whole different beast, right?
+
+Then we need something where we're going to like have j equals zero to m over two and m over to M on two different threads.
+
+And they get their totals. And we like combine those together at the end or something.
+
+But that's like a whole whole other beast. Let's suppose for a second my code here is.
+
+My original code was right, but. Sometimes the way that I have set things up.
+
+You know my array. So my array. Can point at people.
+
+Some are right. Right. It's supposed to look like this. All right.
+
+So here and it's four and M is two. Yeah.
+
+What if my code is is allowed to have.
+
+What if my code is allowed to have cases where n is for m is zero, and every pointer in my array is, uh.
+
+Actually. Sorry. My array itself is null. This is work just fine.
+
+My result is not. In my original code, I would never compute my array at I at J.
+
+If I mean zero, right? But in this transformed code I would try to compute my array at I.
+
+Which would do what? There is no point or exception if this is Java segmentation fault, if this is C plus plus whatever your language does.
+
+And so now I've taken code that worked fine.
+
+When my array is null and m is zero and changed it into code, that does not work fine because it will segfault.
+
+Yeah. Is the lake still for with the null? All right.
+
+Um. I mean, you could argue that that I should have n equals zero in this case, but.
+
+Uh uh, the code before I would accept this input without a problem.
+
+Right. And so we can imagine, like you can say.
+
+But, drew, your program shouldn't do this.
+
+But. Well, yeah, but the compiler, like the compiler, can't get to decide, like what the program should and shouldn't do in this regard.
+
+And we should just think about other circumstances where having moved something out of a loop that could have executed zero times has introduced,
+
+uh, a problematic behavior, um, to our code.
+
+Right. Like maybe maybe we are dividing by m inside that loop.
+
+And if M is zero, we will never divide. But if we move it outside the loop now, we will divide by zero and anything like that.
+
+So we could have changed the exception behavior of our program by doing this transformation.
+
+Well, that's unfortunate isn't it? Jack.
+
+If this is just. Like if this is the only bad case in just like.
+
+And if and like because we presume that you know, maybe this is you presume that this is, uh, like happening far more times.
+
+That. Sure we can do something like that.
+
+Okay. So especially in this case where it's pretty simple to figure out that condition.
+
+We can just check once quickly.
+
+And, um, in fact, I don't know if you all remember from when we were doing loop transformations.
+
+Programmers like a while loops, but compilers like to do while loops.
+
+Right. Because like a do while loop, you, you know,
+
+you get to execute it and then just test your condition and jump back to the top rather than having to test the condition at the start.
+
+Right. And so, uh, for loops are while loops in disguise.
+
+Right. But if I put my four loop inside an if like this, I can turn it into a do while loop and a do while loop I know executes at least once.
+
+And, um. Importantly, let me change this to this.
+
+Actually, let me write that in red because we're transforming our code. And.
+
+Right. Importantly, if we look at this do while loop right here.
+
+My p r. Sorry. My array. I, I don't think the people that expression that we're thinking about moving out of the loop body is a very busy expression,
+
+which means we know we're going to compute it, right?
+
+Remember, we're very busy expressions and thing. They were kind of like, uh, this seems less useful than our other data flows.
+
+Well, it turns out to be useful in this situation because when we're moving that code up, we know that we want to be for sure.
+
+We're going to compute it. If we have a do while loop, we know we're going to go in there.
+
+So we know we're going to compute it. And so this transformation makes that very busy right before the loop entrance.
+
+Does that make sense? All right.
+
+That's loops. Everyone happy? Anybody happy?
+
+Anybody not happy, Jack? This seems like one like other, possibly like other bad cases.
+
+Like how do you come up with what the condition should be, or is it always going to be like pretty straightforward?
+
+Um. So I'd say that what we did here.
+
+Actually happened in kind of a couple steps of like, can we change a while, loop into a do Y like an infinite do while loop, right.
+
+That gives us a space in between the F and the start of the loop, where we can do something once that we know is going to happen.
+
+And, um, kind of tucked in there was this condition, which is also exception free, is also loop invariant.
+
+So rather than checking it in here, I may as well push it out here. Right.
+
+And now my loop is kind of split like the F and the do while are split across the other loop.
+
+But that transformation of like turn a while loop into an infinite do wild.
+
+Now you've got room in between them for something that can happen safely outside the looping part.
+
+But after you know it'll happen at least once, is like the common thing.
+
+So then we can also reapply loop invariant code motion to that if condition and push for that.
+
+You can, uh, change that, you know.
+
+Well, before I change the interlude to a do while loop, the outer loop can stay a for loop.
+
+Um, unless there's something that we want. To, um, to do to that.
+
+So you do want to get your first, uh, get at me.
+
+I am so sure. You're saying you can't read this?
+
+I'm saying p equals minor, right? I, I basically have pulled this computation out,
+
+and then I just turned that for loop into a j equals zero do total plus equals p j j plus plus while j is less than m.
+
+And then the f is pushed outside because it's also invariant.
+
+Oh, okay. All right.
+
+Any more questions about loops? Nobody's going to make me a Britney Spears song.
+
+Problems like that again. One day, one day, somebody is going to.
+
+So when I was, um, when I was in grad school, uh, the semester that I started dating Margaret,
+
+who's now my wife, um, I was teaching, um, they had like, little half credit courses on different topics.
+
+And so I was teaching a C plus plus course for undergrads that was, you know,
+
+in part for PhD students to get teaching experience and for the undergrads to get topics that weren't in the main curriculum and so forth and so on.
+
+And Margaret was in, um. A sorority, and she invited choose an undergrad as a grad student.
+
+Um, she invited me over for whatever.
+
+And, like, as we were over there, some people who were doing whatever thing for some had to,
+
+like, come to sing Britney Spears songs and stuff to their to Margaret's sorority.
+
+And I mentioned this in part because we were just talking about Lupita again.
+
+But the funny part is one of the students who was doing that was a student in my class.
+
+And so he's like singing Britney Spears songs, and he sees me sitting there and he's like looking really embarrassed and whatever.
+
+Um, anyways, so. All right. Garbage collection.
+
+First of all, what is garbage? Theo allocated memory you don't need anymore.
+
+Uh, okay. So allocated memory we don't need anymore.
+
+What does it mean to not need it? Krish, I think.
+
+Okay. We have nothing points for it anymore. Utah. Similarly, not Staffordshire anymore.
+
+Okay. So these are actually ways that we can conservatively approximate garbage.
+
+Garbage is actually anything that can't affect the future computation of our program.
+
+Right. So we might have values that can be pointed at, but that can't possibly affect the future value of our program.
+
+But figuring out if something is garbage is on us.
+
+Undecidable. Undecidable. Right. And so we approximate.
+
+You guys are like man, if true says we're going to approximate something. We know it's either undecidable or incomplete, right?
+
+Right. We know we know that if something's undecidable we want to approximate it.
+
+And so being unreachable is a good safe approximation of garbage.
+
+There will be garbage values that may still be reachable, but figuring out that those are garbage would drop us right off the Turing cliff.
+
+And so we're going to, um, just use unreachable.
+
+Um, and so we are going to, um.
+
+Oh, yeah. Um, so who like C plus plus programing for C programing.
+
+Who likes malloc and free. Who has never had a memory leak in their life.
+
+Nobody. You guys don't do, like, perfect programing all the time.
+
+You know what's going to be funny? It's going to be like in five years. I'm going to ask that question.
+
+And people are going to be like, oh, like, no, I've never had a memory leak because I just ask,
+
+like Gemini, to write my code and it doesn't leak memory.
+
+So like, what are you talking about? Um. But, uh.
+
+Anyways. Okay. Um, so garbage collection is a thing that people are like, hey, let's let's put this in.
+
+Um, it has some interesting trade offs.
+
+So what are some advantages and disadvantages of garbage collection?
+
+That you can't. Crash isn't overhead.
+
+It adds overhead. Okay. We have to go and do work to discover garbage.
+
+If our programmer was perfect, they could just tell us what to get rid of, and we wouldn't have to worry about that.
+
+What else? P.
+
+Yes. Maybe an advantage is not off. Free up more space on the heap.
+
+It'll free up more space on the heap than what? Like not doing anything or.
+
+Yeah. Okay, so if we don't do anything and we just leak memory like your Tiger programs will do.
+
+That's probably bad. Why is that bad? How much memory does your computer have?
+
+Like, not finite, but, like, how long does your program rot?
+
+I decided a lot of time. And what? Okay. Well, like you go, you write a program.
+
+I don't know, you run it. Yeah. Like it's a memory.
+
+You exit, the OS reclaims all that memory.
+
+So, like, why? Why do you care if you leak memory?
+
+This isn't 1980, is it, Thomas? Other programs.
+
+Every two years. Okay. How big is your disc? Oh.
+
+Do you watch this? Yes.
+
+Wait, that's also slow. It's slow.
+
+Oh. It's slow. Wait a second. So some memory is faster than others.
+
+Is. Is the disk the only slow thing?
+
+No. Well, no. No.
+
+It's like, so ridiculously slow that if we're going to go there, we have to run other programs.
+
+But main memory is also slow as processors go.
+
+Right? So what do we care about?
+
+To keep things fast in the memory hierarchy. You couldn't.
+
+Keeping them in the cache. And what do we need to keep things in the cache? You got so much data that you have to spell out.
+
+Which means good. What? What's the L word? Well Pete.
+
+Locality. Right. So if we have some data we need and then some data we don't need and then some data we need and then some data we don't need,
+
+that's worse for the cache. And if we just have data that we need right.
+
+And so um, as we if we accumulate lots of garbage in memory, we might have at whatever granularity you're,
+
+you're talking about a page where, oh, this four kilobyte page, we want these 128 bytes on it.
+
+And the rest is garbage. Right. That's really bad in terms of the locality and the paging behavior and will make things really inefficient.
+
+This is, by the way, why you have to, like, restart Chrome every week.
+
+Right. Like, I don't know if I don't know about you guys, but the way I use Chrome is I have like 50 tabs open because,
+
+you know, I've got to come back to that sometime. And if I close it, I'm going to forget about it.
+
+And like as time goes on,
+
+like its memory usage gets higher and higher and higher and it gets slower and slower and slower until I finally have to quit and like,
+
+restart Chrome. And then I've lost everything I was thinking about and like go from there, right?
+
+Because it leaks. Memory can restore the place. What it can restore the pages up to.
+
+Yeah, if you like. Quit it in one way you can. But if you just blink or if you use grouping it like optimizes some of that.
+
+Okay. I thought it like click deactivate like old times.
+
+Yeah. And it just yeah it will do some of that stuff.
+
+But like for me at least Chrome like if you watch its memory footprint over the weeks it just keeps growing.
+
+Thomas this is a different browser. Just use a different browser.
+
+Um, sorry. As a Google Chrome, pretty much like contractually obligated to use Chrome.
+
+Um, I probably shouldn't joke about that given their antitrust suits.
+
+There's not actually a contractual obligation. Uh, yeah.
+
+Um, okay. So locality very important.
+
+Um, all right.
+
+So we're going to talk about a couple different kinds of garbage collection.
+
+Um, if somebody just walks up to you on the street and was like a quick invent a way to do garbage collection, what would you come up with?
+
+Crash reference. Yeah. If you see, this is like, you know, this is one of those things where sometimes I feel like a magician,
+
+like I ask the same question every year and I always get the same answer.
+
+And like, one day somebody is going to be like, well, generational garbage collecting with a mix of stuff and copy of Market Sweep.
+
+But so far I'm like 14 for 14 on the reference.
+
+Catholic. Right. So how does reference counting work?
+
+Um, so we've got like our register file and it's got some pointers to some objects.
+
+Uh, we have pointers to other objects. Yes.
+
+Okay. There we go. Right. So there's our heap. Um, each object has, like, a little number on the front which says how many arrows are pointing at it.
+
+And when I manipulate the sheep.
+
+So maybe I go allocate a new object. Its reference count is going to start at one because it's going to be referenced by some register.
+
+And then if I, um, let's say I change this pointer to be null, I'm going to decrement that reference count that became zero.
+
+So what should I do. Should free it up and decrement the reference count it points at.
+
+And then this one became zero. So I need to free it up and decrement those.
+
+And this one became zero. And now that's gone, right?
+
+So by changing that one pointer, we went and cleaned all that stuff up.
+
+And of course there's something now point if this say you know gets pointed at that,
+
+we increment that reference count so that it knows that this is pointing out.
+
+Does it seem good or bad? Billy's like, I don't know.
+
+That's a trick question. What do you mean by good or bad? How fast does this seem?
+
+Why not talk fast? Not fast.
+
+Right. So if I say p equals q, right.
+
+So let's just let's say p and q are registers. This would be like a register to register mode right.
+
+Without reference counting but with reference counting.
+
+What does this need to compile into. If.
+
+She's not equal to null before the move. We need to decrement the reference count of each of P.
+
+Right. So we basically need like town equals p ref count town minus minus.
+
+Oh. We got to check if that zero. If town is equal to zero.
+
+Recursive tree. Uh, p.
+
+Else. Uh. Uh.
+
+P arrow ref. Count equals tell.
+
+So that takes care of the thing we're about to, like, overwrite.
+
+But we also need to do this. If you are not equal to null.
+
+Uh. Tell or skew.
+
+Ref count. Town halls plus.
+
+Q ref count. Okay, so, uh, that means that instead of just.
+
+Oh, and then we need to do the actual p equals q. Right.
+
+So that basically means we have a branch, a load.
+
+Uh, subtract a branch.
+
+We're going to like this is only going to happen in the case where we're freeing something up, um, a store,
+
+another branch, another load, an increment, a store, and then finally our register to register move.
+
+Right. So what was I registered to register?
+
+Remove is now three branches, two loads, two arithmetic instructions, two stores and the register to register move.
+
+And a partridge in a pear tree. Right.
+
+So that's a lot of overhead on every pointer manipulation operation.
+
+So we also need to check off party points to keep up.
+
+Um. Yeah, actually this one.
+
+Sorry, I should done. I should've just done this one first. Right.
+
+Because if I do this and at the same thing, I might erroneously, but this one just needs to go first and then I'll just increment it.
+
+That's right. Oh, and this is, by the way, uh, if it's single threaded code.
+
+If it's multi-threaded code, I probably better lock some locks in there.
+
+And locking locks is very expensive. Right?
+
+Because it's atomic. We modify right operations which take like 50 cycles.
+
+And so if I'm going to like lock up and lock you to do these things like walk.
+
+Right. So like this has gotten a really, really slow.
+
+Um. And what's.
+
+Oh look how slow is it? Depends a lot on what we're doing, right.
+
+If what we're doing involves a lot of pointer manipulation, like we're rearranging linked lists and binary search trees.
+
+This overhead is huge. Like ten x, right. If what we're doing is a lot of arithmetic where our pointers don't change like matrix multiply,
+
+then this overhead is really small because we're not doing pointer manipulation right.
+
+So you can have people who can say, oh look this is reference counting.
+
+And it doesn't really do much like because I'm not manipulating pointer. Another problem with reference counting is let's suppose for a moment.
+
+That my sheep ends up looking like that. All right, so this object has a reference count of two.
+
+It's pointed out by this.
+
+And this, uh, this reference object has a reference count of one because as pointed out by this, and we have this cycle in our graph of references.
+
+What is going to happen if I point this? Somewhere else.
+
+Well, this is going to go to one. And, uh, am I going to collect these objects ever?
+
+No, because this has a reference count of one. Why? Because this is pointing out this has a reference count of one.
+
+Because this is pointing at it. So any cycle in our object graph will never be collected under reference counting.
+
+Well, that's because the whole point was to collect all this stuff. So reference counting.
+
+That. Especially because Python does it.
+
+So, you know, it's fast. I don't like very much.
+
+I. So.
+
+Advantages. Conceptually simple. Um.
+
+Disadvantages. Very slow. At least in cases of a lot of pointer manipulation and won't collect cycles.
+
+So what else can we do? We can do marketing sweep, which is, um, one of the more popular garbage collection schemes.
+
+Um, and so the idea is that you have your, your.
+
+Your registers, right? Okay.
+
+Ourselves. Let's give ourselves like a little cycle in the graph here.
+
+He. Now, as I get ready to describe all this, I'm going to talk about the root set.
+
+Which is things that we know are reachable. So, um, this is generally things that have, uh, are in our pointers in our register file.
+
+On the stack. Maybe global data.
+
+Our programing language has like global variables and such.
+
+So all the things that can be starting points to reach other data.
+
+I'm just drawing this as the register file.
+
+But like in reality we have a stack pointer which points to a whole bunch of stack frames that basically look like a linked list.
+
+Right? And then they have pointers. Um, we need to be able to tell which things are pointers and which things are integers.
+
+For the moment, we're going to just assume that we can do that. But we'll talk about how to do that um, a little later.
+
+So here's my heap. Right now everything is reachable. Um, my program is executing along and maybe changes some things.
+
+So maybe this pointer points at some newly made object down here.
+
+We make some more objects. Do to do to do.
+
+Uh, well, our program is doing some stuff.
+
+It's going to point another object, and then at some point we decide we need to garbage collect.
+
+Okay. And so we're going to stop the world. We're going to stop computing and go run the garbage collector.
+
+And, um, when do we decide we need to do this? Generally, when we run out of space in our heap, or at least in some portion of our people.
+
+Talk about generational garbage collection soon. But we go, oh, I don't have enough memory to satisfy this request.
+
+I better go to garbage collection. So Markham suite has two phases, as you might guess, the mark phase and the sweet phase.
+
+And the mark phase goes first by basically doing a DFS of the ship and every object it can reach, it puts a mark on.
+
+So it goes oh here's a route router. Oh I can reach this.
+
+I can reach this. To reach this. Okay, great.
+
+I'm going to keep going to our roots that I can reach this, reach this, I can reach this I care, I can reach this, I can reach this.
+
+Um, if we had cycles, the market serves as our visited site.
+
+Like, anytime I get something that's already marked, I visited it. So I don't need to keep going.
+
+And when I'm done, everything that is marked is reachable because I got there by a graph search and everything that is not marked is unreachable.
+
+Right. And so the sweep phase basically goes along and erases all the things that are unreachable.
+
+Then you might say, but true, if they're unreachable, how do we find them to erase them?
+
+And remember that even though I'm drawing this nice picture up here that looks very conceptual,
+
+our sheep is actually one big linear piece of memory, right?
+
+So like that first object up there has like some header with its mark met and it says how big this object is.
+
+Like I'm 128 bytes okay.
+
+And here's the next thing.
+
+Maybe the next thing is this object over here with its little header that says like I'm 64 bytes and it's mark fit is false.
+
+And then, you know, here's the next thing, and so on and so on. I'm, I don't know, 96 bytes and I'm Mark.
+
+And so the sweet phase basically goes remembers that the sheep is actually a linear A
+
+thing and not a picture I've drawn on the board and can say I'm going to start here,
+
+I'm going to see that this is Mark. I'm going to see that this allocation is 128 bytes.
+
+And then I can go to the next object and see that it's unmarked.
+
+Put it on the free list. Right. So here's my free list. Maybe my free list is empty.
+
+And so it's like, oh, there we go. Oh, this one's marked. And by the way, as we get to the marked ones we clear their marked beds.
+
+Right. Oh this next one it's I don't know. 256.
+
+Okay. And we can use this like as our free list and so on and so on.
+
+And we can basically just walk through the sheet using the size of each block to tell us where to find the next step.
+
+The important thing is we go through and we clear the marked bits for next time, or anything that is already marked and anything that is unmarked.
+
+Gets freed up and put on the free list. And now we have some memory available for next time.
+
+What do you all think? It was good.
+
+So we need to know when we do this.
+
+Um, what is a pointer in the register file on the stack and inside of each object's.
+
+Right. We don't necessarily need to know what kind of point it is like if it's a pointer to.
+
+A cat or a pointer to a goldfish or whatever, a linked list or a binary search tree or something.
+
+But we do need to know what's a pointer and what's not. So one thing we can do inside each object is this header.
+
+They basically have the market the size of the object.
+
+And like a bitmask. For pointers.
+
+Right. So if our object is, say 32 fields, we can have 32 up to up to 32 field.
+
+We can have 32 bits that say um.
+
+Um, like one if it's a pointer and zero if it's not to tell us what, what it is.
+
+And if it's more than that, we need more than 32 birds. We just we keep extending this header.
+
+It's a little complicated what we do, but keep doing it this way or have more info at the end or something like that.
+
+Okay. Um, but 32 field objects is generally a pretty good amount of size,
+
+but we can basically keep a little bit mass that says which of these are pointers and which aren't.
+
+So we know which ones to follow as we do our DFS.
+
+Does that sound good? We could do kind of a similar thing with stack frames.
+
+Each stack frame can have a header that says which words in a stack frame or pointers and which aren't.
+
+And then what about the register file? Some things like the stack pointer.
+
+We know what that's doing all the time, right? Always pointing at a stack frame.
+
+So we just know how to interpret that. Um, but other things we need a way to tell.
+
+So one way, which is the way that the group who did garbage collection, uh, five,
+
+six years ago in this class to get in the Hall of Fame dead is you can make a bitmask for the register file.
+
+There's 32 bit 32 registers in MIPs, so that works out nicely.
+
+Um, at each possible allocation site.
+
+Right. So like if you're, you know, trying to do x equals allocate.
+
+Or GC. In 28 bytes.
+
+You basically when you call this. Um, the next PC is going to go in the return address register, right?
+
+So if I put a label right there, the value of L 42 would be the value of the return address register.
+
+If I make this particular call, go by that. And so you can basically keep a little table in memory.
+
+Right. You can have a table in memory that is keyed by the PC after your call,
+
+and has a value of the bitmask of which register has a pointer and which doesn't,
+
+and then your code inside of allocate or garbage collect can basically, uh,
+
+use the return address register to look up the appropriate bitmask and go from there.
+
+Does that sound cool? Now they did it as just like a linearly scanned table.
+
+Obviously, you'd want to do something a little more efficient, like a hash table, or at least a binary search or something.
+
+Um, because you might have lots of allocation sites in a real program crash.
+
+Um, just a general question. How often do you run this? How often do you do what?
+
+Like this whole suite? Um, as with all good things in computer engineering, it's depends.
+
+Right? Um. If you have.
+
+If you have generational GC, which we'll talk about next time because we're running low on time.
+
+Your youngest generation gets garbage collected very frequently, but that collection is very fast because it's small.
+
+Um, you're basically saying like, why should I care if I have to search a big table?
+
+I mean, in a real program where you have like a million allocation sites, you probably don't want to keep that right.
+
+Um. But and I mean, there are easy ways to avoid it.
+
+Just make it a hash table. Uh, what was I going to say?
+
+Oh, right. So how do you generate this bitmask.
+
+They basically took typing information down from IR translation all the way down to register allocation,
+
+where they kept track of which temps correspond to pointers.
+
+And then when you do register allocation and so forth, like you know, which temps are live and mapped to which registers.
+
+And you can build this bit vector by basically saying once mapped to zero.
+
+Oh that's this town. That was a pointer.
+
+So I'll make that better one. This was an int. So I'll make that bit a zero.
+
+And so on and so on. Right. So this basically like touched all their fingers from er to register allocation to generate that stuff.
+
+And then they also wrote like the C runtime that actually did the garbage collection.
+
+Which is. Kind of cool. All right.
+
+Uh, so that's the gist of Mark. And so we. Um.
+
+What do you all think of the trade offs for it? Seem better than reference counting.
+
+We're not paying a cost for every point or manipulation anymore.
+
+We're paying a cost like a big cost once in a while to go do this market sweep algorithm.
+
+Right. And by the way, how big is that cost?
+
+Basically going to be proportional to the number of live objects which we have to graph search through, right?
+
+But then we have to go through, um, everything.
+
+Right. So it's going to be seeing the live objects and the dead objects.
+
+Right? So it's basically going to be, you know, on the order of like big O.
+
+Live objects plus dead objects show by that.
+
+Now this cost happens fairly rarely whenever allocation fails, which means that we wanted to look at its amortized cost.
+
+How often are we going to have to do that again? It's kind of roughly proportional to, um.
+
+To, um. Uh, the total size of the heap or like to.
+
+Be less free space we have left, the more we're going to have to do it right.
+
+So if we were to say, um, it's basically like the total size of the heap.
+
+Minus the live objects. Right?
+
+And by the way, life plus dead is just the total size of the heap. Right.
+
+So, um, if I wanted to make my heap bigger.
+
+That's not going to help me with this amortized cost, right?
+
+Because the numerator and denominator are both going to go up. And so it's not going to help me that much to just make my heap bigger and bigger.
+
+Does that make sense. Like I will collect more rarely, but I will do more work in collecting because I still have to look at the whole.
+
+Okay. So.
+
+That's a little bit of a downside, in that I can't just throw more memory at it to make it more efficient, at least not like a lot more efficient.
+
+Um, and another downside is that we have to stop the world for this whole collection.
+
+Right now. That's not a timescale where.
+
+You as a person probably don't care so much unless the heap is really big.
+
+But if you were dealing with some kind of like real time system or something, that pause to garbage collect may be a big deal, right?
+
+Like you're you're missing out on some important input or not moving the robot hand in
+
+time or something because you paused for five milliseconds to garbage collect a big heap.
+
+And that could have been a really big problem.
+
+Um, there is such a thing as concurrent collection where, like, the garbage collector runs in parallel with the program.
+
+It's it's hard. Don't ask me for the details next time.
+
+Like I said, we're about half a day behind. Next time, we'll talk about stopping copy.
+
+I don't want to start that with three minutes left. And then we'll also talk about generational collection.
+
+And then we will, uh, talk about whatever topics you want.
+
+So. Or like I said, if nobody has any topics I'll talk about functional languages and object oriented language.
+
+You can help us get comfortable. Sound good?
+
+All right. We're almost to the end of the semester. Go, team.
+
+Write your compilers. All right. Uh, Monday, everyone have a good day.
+
+I'll see you on Wednesday. It's not quite time to say goodbye. Yeah.
+
+Specifically. Want to try it faster.
+
+That's that. And I like that.
+
+Oh, that's pretty much.
+
+You can do some things, you know, like.
+
+Almost. That would be crazy. Will happen.
+
+Sooner than I would like. Uh. Maybe not. You ready for needing some?
+
+Some way to pinch them so things aren't in your register. Like you've always.
+
+Thought about. Well, it's the things that they're generally not.
+
+Just tell you where to find the the starting point for finding things.
+
+Like if I have if registered as zero is pointing in the opposite direction.
+
+That is how I'm going to start my DFS going to that object.
+
+And then also. Because we know and do wild will happen at least once.
+
+And so now we don't have to worry about introducing exception behavior.
+
+Uh, yes. Only 4.0. I mean it just like that, right?
+
+So while we might execute, you know, times. Yeah, but if there's something inside it that the condition of it falls under, which protects us from.
+
