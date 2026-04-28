@@ -1484,5 +1484,471 @@ Induction Variable Elimination & Loop detection via back edges (Domination) \\
 \end{tabular}
 \end{adjustbox}
 
+%% ============================================================
+%% TEXTBOOK CONDENSATION (Appel, Chapters 13--19, pp. 278--474)
+%% ============================================================
+
+\section{Garbage Collection --- Formal Algorithms (Ch.~13)}
+
+\subsection{Mark-and-Sweep: Formal Algorithm}
+
+The mark phase performs a depth-first search from every root (registers, stack, globals). The sweep phase walks the \textbf{entire heap linearly} using size headers to step from object to object.
+
+\begin{lstlisting}
+(* Mark phase *)
+function DFS(x) =
+  if x is a pointer into the heap
+    if record x is not marked
+      mark x
+      for each field f_i of record x: DFS(x.f_i)
+
+(* Sweep phase *)
+p <- first address in heap
+while p < last address in heap
+  if record p is marked then unmark p
+  else (p.f_1 <- freelist; freelist <- p)
+  p <- p + (size of record p)
+\end{lstlisting}
+
+\textbf{Cost}: Let $R$ = reachable words, $H$ = heap size. One collection costs $c_1 R + c_2 H$ (where $c_1 \approx 10$ instructions for DFS marking, $c_2 \approx 3$ for sweep). Each collection reclaims $H - R$ words. Amortized cost per word allocated = $(c_1 R + c_2 H) / (H - R)$. If $R/H > 0.5$ after collection, the heap should be expanded.
+
+\textbf{DFS stack problem}: The explicit DFS stack can grow up to $H$ words (longest path in graph). \textbf{Pointer reversal} (Algorithm 13.6) eliminates the external stack by temporarily storing the ``back pointer'' in each record's field as it is traversed, then restoring the original value when popping. Uses a \texttt{done[x]} counter (how many fields processed) and variable $t$ as the implicit stack top.
+
+\textbf{Freelists}: An array \texttt{freelist[i]} stores a linked list of all free records of size $i$. Allocation of size $i$: take head of \texttt{freelist[i]}. If empty, find \texttt{freelist[j]} for $j > i$, split it, put remainder on \texttt{freelist[j-i]}. If all empty, invoke GC.
+
+\textbf{Fragmentation}: External fragmentation = many free records smaller than $n$, none of size $n$. Internal fragmentation = using a too-large record without splitting.
+
+\subsection{Reference Counting: Formal Code}
+
+When executing \texttt{x.f\_i := p}:
+\begin{lstlisting}
+z <- x.f_i              (* old value *)
+z.count <- z.count - 1
+if z.count = 0 then recursive_free(z)
+x.f_i <- p              (* actual assignment *)
+p.count <- p.count + 1
+\end{lstlisting}
+
+\textbf{Optimization}: Instead of recursively decrementing children when freeing $r$, do it lazily when $r$ is later removed from the freelist. This breaks work into shorter pieces for interactive programs.
+
+\textbf{Two fundamental problems}: (1) \textbf{Cycles} cannot be reclaimed (A$\to$B$\to$A stays $\geq 1$ forever). (2) \textbf{Very expensive}: every pointer assignment requires $\sim$8 extra instructions.
+
+\subsection{Copying Collection: Formal Algorithm}
+
+\textbf{Forwarding} (Algorithm 13.8): Given pointer $p$:
+\begin{itemize}
+  \item If $p$ points to from-space and $p.f_1$ points to to-space: $p$ was already copied. Return $p.f_1$ (the forwarding pointer).
+  \item If $p$ points to from-space and not yet copied: copy record to \texttt{next}, install forwarding pointer $p.f_1 \leftarrow \texttt{next}$, advance \texttt{next}. Return $p.f_1$.
+  \item Otherwise: return $p$ unchanged.
+\end{itemize}
+
+\textbf{Cheney's Algorithm} (BFS copying, Algorithm 13.9):
+\begin{lstlisting}
+scan <- next <- beginning of to-space
+for each root r: r <- Forward(r)
+while scan < next
+  for each field f_i of record at scan
+    scan.f_i <- Forward(scan.f_i)
+  scan <- scan + (size of record at scan)
+\end{lstlisting}
+
+The to-space region between \texttt{scan} and \texttt{next} \emph{is} the BFS queue. No external stack or pointer reversal needed.
+
+\textbf{Cost}: $c_3 \cdot R$ total ($c_3 \approx 10$). No sweep phase. Each collection reclaims $H/2 - R$ words. Amortized cost per word = $c_3 R / (H/2 - R)$. As $H \gg R$, cost approaches zero. With $H = 4R$: $\sim$10 instructions per word.
+
+\textbf{Locality}: BFS gives poor locality (adjacent objects in to-space are at same BFS depth, not along pointer chains). DFS gives better locality. \textbf{Semi-depth-first} (Algorithm 13.11): when copying a record, immediately follow one child pointer depth-first; other children handled by Cheney's BFS scan.
+
+\subsection{Generational Collection: Formal Details}
+
+\textbf{Remembering old$\to$young pointers} (four methods):
+\begin{enumerate}
+  \item \textbf{Remembered list}: After each store \texttt{b.f\_i := a}, put $b$ into a vector of updated objects. At GC, scan for pointers into young generation.
+  \item \textbf{Remembered set}: Like remembered list, but use a bit per object to avoid duplicates.
+  \item \textbf{Card marking}: Divide memory into ``cards'' of $2^k$ bytes. When address $b$ is updated, mark card $b \gg k$. Card mark array indexed by card number.
+  \item \textbf{Page marking}: Use virtual memory dirty bits. Write-protect old-gen pages. Store triggers SIGSEGV $\to$ handler records dirty page, unprotects it.
+\end{enumerate}
+
+\textbf{Sizing}: Each older generation exponentially bigger: $G_0 = 0.5$ MB, $G_1 = 2$ MB, $G_2 = 8$ MB, etc. Collect $G_0$ and $G_1$ together when $G_1$ accumulates too much.
+
+\textbf{Cost}: Youngest generation typically $< 10\%$ live data. With copying collector and $H/R = 10$: amortized cost $\approx c_3 R / 9R \approx 1$ instruction per word.
+
+\subsection{Incremental Collection and Tricolor Marking}
+
+\textbf{Tricolor marking}: White = not yet visited (potentially garbage). Grey = visited but children not yet examined. Black = visited and all children examined.
+
+\textbf{Critical invariant}: No black object may point to a white object. If the mutator breaks this, a live white object looks like garbage.
+
+\textbf{Write barriers} (preserve invariant during incremental GC):
+\begin{itemize}
+  \item \textbf{Dijkstra/Lamport}: When storing white pointer $a$ into black object $b$, color $a$ grey.
+  \item \textbf{Steele}: When storing white $a$ into black $b$, color $b$ grey (re-process $b$).
+  \item \textbf{Virtual memory}: All-black pages are read-only. Store triggers page fault $\to$ handler marks all objects on page grey.
+\end{itemize}
+
+\textbf{Read barriers}:
+\begin{itemize}
+  \item \textbf{Baker}: When mutator fetches pointer to white object, color it grey immediately. Mutator never holds pointer to white object. Cost: 2--3 extra instructions per fetch ($\geq 20\%$ overhead).
+\end{itemize}
+
+\subsection{Compiler Interface for GC}
+
+\textbf{Fast allocation} with copying collector: \texttt{next} and \texttt{limit} kept in registers. Steps: test $\texttt{next} + N < \texttt{limit}$, move \texttt{next} to result, advance \texttt{next} by $N$. With inlining and batching: $\sim$4 instructions per record.
+
+\textbf{Pointer maps}: Describe which registers and frame locations hold pointers at each GC-safe point (function calls, allocation calls). Keyed by return address. Collector walks the stack frame by frame, using each return address to look up the pointer map.
+
+\textbf{Record descriptors}: First word of every heap object points to a type descriptor. Descriptor tells total size and which fields are pointers. One word overhead per record.
+
+\textbf{Derived pointers}: A derived pointer points into the middle of a record (e.g., \texttt{a - 2000} for \texttt{a[i-2000]}). Pointer map identifies each derived pointer and its base pointer. When collector relocates base $a$ to $a'$, it adjusts derived pointer: $t_1 \leftarrow t_1 + (a' - a)$. A derived pointer implicitly keeps its base pointer live.
+
+%% ============================================================
+\section{Compiling OO Languages --- Formal Details (Ch.~14)}
+%% ============================================================
+
+\subsection{Single Inheritance: The Prefixing Technique}
+
+When class B extends A, fields inherited from A are laid out at the \textbf{beginning} of B's record, in the same order. New fields come after. Example: A = [a], B = [a, b, c], C = [a, d], D = [a, b, c, e]. Field ``a'' is always at offset 0 regardless of the actual class.
+
+\textbf{Dynamic dispatch (3 steps)}: (1) Fetch vtable pointer from object at offset 0. (2) Fetch method pointer from vtable at the method's fixed offset. (3) Jump to that address (indirect call). Cost: 2 extra loads vs.\ static dispatch.
+
+\textbf{Vtable inheritance}: When B inherits from A, B's vtable \emph{starts with} entries for all method names known to A, then continues with B's new methods. If D overrides method $f$, D's vtable entry for $f$ points to $D\_f$ instead of $A\_f$, but at the \textbf{same offset} as in A's vtable.
+
+\subsection{Multiple Inheritance: Three Approaches}
+
+\textbf{Approach 1 --- Global graph coloring}: Model field names as graph nodes. Two fields that coexist in any class get an interference edge. Colors = offsets. Problem: leaves empty slots in objects (wasted space).
+
+\textbf{Approach 2 --- Packed objects with descriptor offsets}: Pack fields tightly (no empty slots). Class descriptor tells where each field is. To access field $a$ of object $x$: (1) fetch descriptor from $x$, (2) fetch $a$'s offset from descriptor, (3) fetch/store data at that offset. Cost: 3 instructions per field access instead of 1. Empty slots are in descriptors, not objects.
+
+\textbf{Approach 3 --- Hashing}: Each class descriptor contains a hash table mapping field/method names to offsets/addresses. Field names hashed at \emph{compile time} to integer \texttt{hash\_a}. Each field name gets a unique runtime record pointer \texttt{ptr\_a}. Descriptor has \texttt{Ftab} (field-offset table) and \texttt{Ktab} (key table). Cost: 4 instructions overhead per access. Compatible with dynamic class loading.
+
+\subsection{Testing Class Membership (instanceof)}
+
+\textbf{Simple algorithm}: Walk up the class hierarchy from the object's class to Object, comparing each class descriptor to the target.
+
+\textbf{Fast algorithm using display}: Reserve a fixed-size block (say 20 words) in each class descriptor. For class D at nesting depth $j$: slot $j$ = pointer to D, slot $j-1$ = D.super, \ldots, slot 0 = Object. To test ``x instanceof D'' (D at depth $j$): fetch slot $j$ from x's descriptor, compare to D's descriptor. \textbf{O(1)} test.
+
+\subsection{Optimizing Dynamic Dispatch}
+
+\textbf{Type hierarchy analysis}: For call \texttt{c.f()}, examine whether any subclass of C overrides $f$. If no override exists, replace dynamic call with static call.
+
+\textbf{Type propagation}: After \texttt{c := new C}, the exact class of $c$ is known. Propagate this information through assignments. At call sites, limit the range of possible method instances.
+
+\textbf{Method specialization}: Make a copy of method $f$ for each subclass. In the copy for class D, calls to \texttt{self.g()} become static calls to $D\_g$.
+
+%% ============================================================
+\section{Functional Programming Languages (Ch.~15)}
+%% ============================================================
+
+\subsection{Inline Expansion}
+
+\textbf{Definition}: Replace a function call with a copy of the function body.
+
+\textbf{Avoiding variable capture}: If the function body references an outer variable $x$, and the call site also has a local $x$, we must \textbf{alpha-convert} (rename) the local before substitution.
+
+\textbf{Algorithm 15.8} (inline expansion):
+\begin{itemize}
+  \item \textbf{Simple args} $f(i_1, \ldots, i_n)$: Replace with $B[a_1 \mapsto i_1, \ldots, a_n \mapsto i_n]$.
+  \item \textbf{Complex args} $f(E_1, \ldots, E_n)$: Introduce fresh names: \texttt{let var $i_1$ := $E_1$ \ldots\ var $i_n$ := $E_n$ in $B[a_k \mapsto i_k]$ end}. This avoids evaluating $E_k$ multiple times (important for side effects and efficiency).
+\end{itemize}
+
+\textbf{Loop-preheader transformation} (Algorithm 15.9): Split recursive function $f$ into prelude $f$ (called from outside) and loop $f'$ (called recursively). When any call to $f$ is inlined, the entire loop comes along.
+
+\textbf{Loop-invariant hoisting} (Algorithm 15.10): If every recursive call to $f'$ passes the same value for parameter $a_i$, remove $a_i$ from $f'$'s parameter list and access it from the enclosing scope.
+
+\textbf{Heuristics to avoid code explosion}: (1) Only inline at frequently executed call sites (loops). (2) Inline functions with very small bodies. (3) Inline functions called only once, then delete the original.
+
+\subsection{Closure Conversion}
+
+Closure conversion transforms the program so that \textbf{no function accesses free (nonlocal) variables}. Each free-variable access becomes a formal-parameter access.
+
+Given function $f(a_1, \ldots, a_n) = B$ at nesting depth $d$ with escaping locals $x_1, \ldots, x_k$: rewrite as $f(a_0, a_1, \ldots, a_n)$ where $a_0$ is the static link. A record $r = \{a_0, x_1, \ldots, x_k\}$ stores all escaping variables and the enclosing static link. Any nonlocal variable access becomes a record field access through $a_0$.
+
+\textbf{Function values} are represented as closures: code pointer + environment pointer. Instead of heap-allocating a two-word record, the compiler passes both as two adjacent arguments.
+
+\subsection{Efficient Tail Recursion}
+
+A call $f(x)$ is in \textbf{tail position} if ``calling $f$ is the last thing the enclosing function does before returning.''
+
+\textbf{Formal rules}: In \texttt{if $C$ then $B_1$ else $B_2$}, $B_1$ and $B_2$ are in tail position but $C$ is not. In \texttt{$C_1$ + $C_2$}, neither operand is in tail position (there is still an add to do). In \texttt{let var $x$ := $C$ in $B$ end}, $B$ is in tail position but $C$ is not.
+
+\textbf{Implementing tail calls}: (1) Move actuals into argument registers. (2) Restore callee-save registers. (3) Pop stack frame if it exists. (4) Jump (not call) to the callee. With copy propagation and frameless functions, a tail call can be \textbf{as cheap as a single jump instruction}.
+
+\subsection{Lazy Evaluation}
+
+\textbf{Strict} (Tiger, ML, C, Java): Evaluate each expression as control flow reaches it. \textbf{Lazy} (Haskell, Miranda): Only evaluate an expression when its value is demanded.
+
+\textbf{Call-by-name}: Each variable is a \textbf{thunk} (a function that computes the value on demand). Problem: a thunk may be called many times, redundantly yielding the same value.
+
+\textbf{Call-by-need} (lazy evaluation): Never evaluates the same thunk twice. Each thunk has a \textbf{memo slot}. First call: execute thunk, store result in memo slot, replace thunk function with \texttt{evaluatedFunc} (which just returns the memo). Subsequent calls: return memoized value immediately.
+
+\textbf{Key benefit}: Lazy evaluation avoids computing values that are never needed. Example: \texttt{fact(-1)} in a tree node is never evaluated if that node is never looked up.
+
+\textbf{Optimizations unique to lazy/pure languages}:
+\begin{itemize}
+  \item \textbf{Invariant hoisting} is valid (in strict languages, hoisting might introduce evaluation of an expression that was never needed).
+  \item \textbf{Dead-code removal} is safe (removing \texttt{g(x)} when result is unused; in strict languages, \texttt{g(x)} might have side effects or not terminate).
+  \item \textbf{Deforestation}: Remove intermediate data structures. E.g., \texttt{sum(squares(range(1,\allowbreak{}100)))} builds two lists; deforested version does everything in one pass. Only valid in pure languages where function call order does not matter.
+\end{itemize}
+
+\subsection{Strictness Analysis}
+
+$f(x)$ is \textbf{strict in $x$} if, whenever actual parameter $a$ would fail to terminate, $f(a)$ would also fail to terminate. If $f$ is strict in $x$, we can pass an evaluated $x$ instead of a thunk, avoiding thunk overhead.
+
+\textbf{Algorithm 15.17} (first-order strictness analysis): Define $M(E, \sigma)$ = ``expression $E$ may terminate if all variables in $\sigma$ may terminate.'' Compute set $H$ of tuples $(f, (b_1, \ldots, b_n))$ where $b_i = 1$ means ``argument $i$ may terminate.'' Fixed-point iteration. $f$ is strict in argument $i$ if $(f, (1, \ldots, 1, 0, 1, \ldots, 1))$ (0 in position $i$) is NOT in $H$.
+
+%% ============================================================
+\section{Polymorphic Types --- Formal System (Ch.~16)}
+%% ============================================================
+
+\subsection{Type Representations}
+
+\textbf{Monomorphic}: \texttt{Nil | Int | String | Unit | Record((sym, ty) list, unique) | Array(ty, unique) | Name(sym, ty)}.
+
+\textbf{Polymorphic}: \texttt{Nil | App(tycon, ty list) | Var(tyvar) | Poly(tyvar list, ty)}. Type constructors (\texttt{tycon}): \texttt{Int | String | Unit | Arrow | Array | Record(fieldname list) | TyFun(tyvar list, ty) | Unique(tycon, unique)}.
+
+Examples: \texttt{int} = \texttt{App(Int, [])}. \texttt{a $\to$ b} = \texttt{App(Arrow, [a, b])}.
+
+\subsection{Type Substitution (Algorithm 16.4)}
+
+\texttt{subst(Var($\alpha$), \{$\beta_1 \mapsto t_1, \ldots\}$)} = $t_i$ if $\alpha = \beta_i$, else \texttt{Var($\alpha$)}. For \texttt{App(TyFun([$\alpha_1, \ldots$], $t$), [$u_1, \ldots$])}: expand the TyFun by substituting, then continue. For \texttt{Poly}: alpha-convert bound variables to fresh names to avoid capture.
+
+\subsection{Type Equivalence (Algorithm 16.5 --- Unify)}
+
+\texttt{unify(App(tyc, [t1,\ldots]), App(tyc, [u1,\ldots]))}: recursively unify corresponding arguments. For TyFun: expand first. For Unique: check unique tags match, then unify arguments. For Poly: alpha-convert one set of bound variables to match the other, then unify bodies. Nil matches any Record type.
+
+\subsection{Hindley-Milner Type Inference (Algorithm 16.10)}
+
+Uses \textbf{metavariables} (placeholders for unknown types). Global environment $\sigma_m$ maps metavariables to their instantiations.
+
+\textbf{Extended unify for metavariables}: \texttt{unify(Meta($\alpha$), $t$)}: if $\alpha$ already instantiated, unify its value with $t$. If $t$ is also a Meta, follow its chain. If $\alpha$ occurs in $t$: \textbf{occurs check fails} (infinite type). Otherwise: $\sigma_m \leftarrow \sigma_m + \{\alpha \mapsto t\}$.
+
+\textbf{Generalization}: After type-checking function $f$, its type may contain free metavariables. Generalize over those not appearing in the enclosing environment: replace them with fresh type variables and wrap in \texttt{Poly}.
+
+\textbf{Instantiation}: At each use of a polymorphic variable, replace bound type variables with fresh metavariables.
+
+\textbf{Updatable variables restriction}: Do NOT generalize the type of a variable that is ever assigned to. Polymorphic references are unsound.
+
+\subsection{Representing Polymorphic Variables}
+
+\textbf{Problem}: The compiler cannot know the type (and thus size) of data in a polymorphic variable at compile time.
+
+\textbf{Solution 1 --- Expansion (monomorphization)}: For each type instantiation, generate a specialized copy. How C++ templates and Ada generics work. Pro: simple, efficient. Con: code bloat; difficulty with separate compilation; cannot handle polymorphic recursion.
+
+\textbf{Solution 2 --- Boxing}: Make all values one word. Values larger than one word are heap-allocated; the boxed value is a pointer. Arithmetic on boxed ints: unbox, operate, allocate new box. Very expensive.
+
+\textbf{Solution 3 --- Tagging}: Steal the low bit of every word. 0 = pointer (word-aligned), 1 = integer. Arithmetic needs extra shifts. Integers lose 1 bit of range.
+
+\textbf{Solution 4 --- Coercion-based}: Use unboxed representations for monomorphic code; box/tag only at calls to polymorphic functions.
+
+\textbf{Solution 5 --- Type-passing}: Pass type information to polymorphic functions so they know sizes and pointer-hood at runtime.
+
+%% ============================================================
+\section{Dataflow Analysis --- Formal Framework (Ch.~17)}
+%% ============================================================
+
+\subsection{Quadruples (IR for Optimization)}
+
+Simplify IR so each expression has at most one BINOP or MEM. Nested operations become separate statements with fresh temps. Standard forms:
+
+\begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{@{}ll@{}}
+\texttt{a $\leftarrow$ b \textit{op} c} & (arithmetic) \\
+\texttt{a $\leftarrow$ M[b]} & (load) \\
+\texttt{M[a] $\leftarrow$ b} & (store) \\
+\texttt{if a \textit{relop} b goto L1 else L2} & (branch) \\
+\texttt{a $\leftarrow$ f(a1,\ldots)} & (call) \\
+\texttt{goto L} / \texttt{L:} & (jump / label) \\
+\end{tabular}
+\end{adjustbox}
+
+\subsection{Reaching Definitions: Gen/Kill}
+
+\begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{@{}lll@{}}
+\textbf{Statement $s$} & \textbf{gen[$s$]} & \textbf{kill[$s$]} \\
+\hline
+$d: t \leftarrow b$ \textit{op} $c$ & $\{d\}$ & defs($t$) $- \{d\}$ \\
+$d: t \leftarrow$ M[$b$] & $\{d\}$ & defs($t$) $- \{d\}$ \\
+M[$a$] $\leftarrow b$ & $\emptyset$ & $\emptyset$ \\
+if / goto / label & $\emptyset$ & $\emptyset$ \\
+$d: t \leftarrow f(\ldots)$ & $\{d\}$ & defs($t$) $- \{d\}$ \\
+\end{tabular}
+\end{adjustbox}
+
+Equations: $\text{in}[n] = \bigcup_{p \in \text{pred}} \text{out}[p]$, \quad $\text{out}[n] = \text{gen}[n] \cup (\text{in}[n] - \text{kill}[n])$. Init to $\emptyset$, least fixed point.
+
+\subsection{Available Expressions: Gen/Kill}
+
+\begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{@{}lll@{}}
+\textbf{Statement $s$} & \textbf{gen[$s$]} & \textbf{kill[$s$]} \\
+\hline
+$t \leftarrow b$ \textit{op} $c$ & $\{b$ \textit{op} $c\} - \text{kill}[s]$ & exprs containing $t$ \\
+$t \leftarrow$ M[$b$] & $\{\text{M}[b]\} - \text{kill}[s]$ & exprs containing $t$ \\
+M[$a$] $\leftarrow b$ & $\emptyset$ & all M[$x$] exprs \\
+$t \leftarrow f(\ldots)$ & $\emptyset$ & exprs with $t$ + all M[$x$] \\
+\end{tabular}
+\end{adjustbox}
+
+Key subtlety: \texttt{b $\leftarrow$ b + c} does NOT generate $b + c$ (because $b$ is redefined). Formula: gen[$s$] = $\{b$ op $c\}$ $-$ kill[$s$].
+
+Equations: $\text{in}[n] = \bigcap_{p \in \text{pred}} \text{out}[p]$. Init non-start to full set. Greatest fixed point.
+
+\subsection{Transformations Using Dataflow Analysis}
+
+\textbf{CSE}: If $x$ op $y$ is available at statement $s: t \leftarrow x$ op $y$, find all reaching computations $n: v \leftarrow x$ op $y$. Introduce new temp $w$. At each $n$: $w \leftarrow x$ op $y$; $v \leftarrow w$. At $s$: $t \leftarrow w$.
+
+\textbf{Constant propagation}: If only reaching def of $t$ is $t \leftarrow c$ (constant), replace uses of $t$ with $c$.
+
+\textbf{Copy propagation}: If only reaching def is $t \leftarrow z$ and $z$ is not redefined on any path from $d$ to the use, replace $t$ with $z$.
+
+\textbf{Dead-code elimination}: If $a \leftarrow b$ op $c$ and $a$ is not live-out, delete the statement (unless it has implicit side effects like divide-by-zero).
+
+\subsection{Value Numbering (Algorithm 17.7)}
+
+A single-pass algorithm that finds all common subexpressions within a basic block, including cascading ones. Maintains a table $T$ mapping variables to value numbers and triples (value\#, op, value\#) to value numbers. Global counter $N$ counts distinct values.
+
+For each quadruple $a \leftarrow b$ op $c$: look up $b$ and $c$ in $T$ to get value numbers $n_b, n_c$. If $(n_b, \text{op}, n_c)$ already in $T$, mark as common subexpression and assign $a$ the same value number. Otherwise assign $a$ a new value number.
+
+\subsection{Alias Analysis}
+
+\textbf{Type-based}: Incompatible types cannot alias. Divide memory into alias classes: one per frame location, one per record field of each record type, one per array type.
+
+\textbf{Flow-based}: Each \texttt{malloc} call creates a new alias class. Track which alias classes each pointer variable may point to. Transfer function for $t \leftarrow b$: $(\text{A} - \Sigma_t) \cup \{(t, d, k) \mid (b, d, k) \in \text{A}\}$. For stores: A is unchanged (conservative). Solved by fixed-point iteration.
+
+\textbf{May-alias}: $p$ may-alias $q$ at statement $s$ if $\exists d, k$ such that $(p, d, k) \in \text{in}[s]$ and $(q, d, k) \in \text{in}[s]$.
+
+\textbf{Pure functional languages}: Alias analysis is unnecessary because variables are immutable. Even if multiple pointers to the same value exist, no pointer can cause the value to change.
+
+%% ============================================================
+\section{Loop Optimizations --- Formal Algorithms (Ch.~18)}
+%% ============================================================
+
+\subsection{Dominator Computation}
+
+$D[s_0] = \{s_0\}$, \quad $D[n] = \{n\} \cup \bigcap_{p \in \text{pred}(n)} D[p]$ for $n \neq s_0$.
+
+Initialize all $D[n]$ (except $s_0$) to the set of ALL nodes. Iterate in quasi-topological (DFS) order until convergence.
+
+\subsection{Loop-Invariant Hoisting Criteria}
+
+Statement $d: t \leftarrow a$ op $b$ is \textbf{loop-invariant} in loop $L$ if for each operand $a_i$: (1) $a_i$ is a constant, OR (2) all reaching definitions of $a_i$ are outside $L$, OR (3) exactly one definition of $a_i$ reaches $d$, and that definition is itself loop-invariant.
+
+\textbf{Hoisting to preheader is safe if}: (1) $d$ dominates all loop exits where $t$ is live-out, (2) there is only one definition of $t$ in the loop, and (3) $t$ is not live-out of the preheader.
+
+\textbf{While$\to$repeat transformation}: In a while-loop, no body statement dominates the loop exit (the header is the exit). Fix: transform to \texttt{if (guard) \{ do \{ body \} while (guard) \}}. Now body statements dominate the exit, enabling hoisting.
+
+\subsection{Induction Variables: Detection and Optimization}
+
+\textbf{Basic induction variable} $i$: Only definitions of $i$ within loop $L$ are $i \leftarrow i + c$ (or $- c$) where $c$ is loop-invariant. Triple: $(i, 0, 1)$ meaning $i = 0 + i \cdot 1$.
+
+\textbf{Derived induction variable} $k$ with triple $(i, a, b)$ means $k = a + i \cdot b$:
+\begin{itemize}
+  \item If $k \leftarrow j + d$ and $j$ has triple $(i, a_j, b_j)$: $k$ gets $(i, a_j + d, b_j)$.
+  \item If $k \leftarrow j \cdot c$ and $j$ has triple $(i, a_j, b_j)$: $k$ gets $(i, a_j \cdot c, b_j \cdot c)$.
+\end{itemize}
+
+\textbf{Strength reduction}: For derived variable $j$ with triple $(i, a, b)$: introduce $j'$. Initialize $j' \leftarrow a + i \cdot b$ in preheader. After each $i \leftarrow i + c$, add $j' \leftarrow j' + c \cdot b$. Replace assignment to $j$ with $j \leftarrow j'$.
+
+\textbf{Elimination}: After strength reduction, $i$ may be \textbf{useless} (dead at all exits, only used in self-definition). Delete it.
+
+\textbf{Rewriting comparisons}: If $j, k$ are coordinated induction variables in family of $i$ with triples $(i, a_j, b_j)$ and $(i, a_k, b_k)$, and $n$ is loop-invariant: $k < n$ becomes $j < (b_j/b_k)(n - a_k) + a_j$. Entire RHS is loop-invariant $\to$ computed once in preheader. Restrictions: $b_j(n - a_k)$ must be divisible by $b_k$; sign of $b_j/b_k$ must be known.
+
+\subsection{Array-Bounds Check Elimination}
+
+Conditions for eliminating bounds check \texttt{if $k <_u n$ goto L3 else L4} inside loop $L$: (1) There is an induction variable $j$ and loop-invariant $u$ in a loop-exit test that dominates the check. (2) $k$ is coordinated with $j$. (3) No nested loop redefines $k$. (4) $k$ increases when $j$ does.
+
+\textbf{Loop duplication}: Copy loop $L$ to $L'$. In $L'$, remove the bounds check (replace with unconditional goto). In preheader, test: if $k \geq 0$ and all increments $\geq 0$ and $u < (b_j/b_k)(n - \Delta_k - a_k) + a_j$, jump to $L'$ (fast, no checks). Otherwise jump to $L$ (slow, with checks).
+
+\subsection{Loop Unrolling}
+
+Copy loop body $K$ times. Agglomerate the $K$ increments and exit tests into one. \textbf{Robust version}: add an epilogue loop that handles the remaining $< K$ iterations. When unrolling by factor $K$, epilogue iterates up to $K - 1$ times.
+
+%% ============================================================
+\section{Static Single-Assignment Form (Ch.~19)}
+%% ============================================================
+
+\subsection{What is SSA?}
+
+\textbf{SSA form} is an intermediate representation where each variable has \textbf{exactly one definition} in the program text. The single definition site may be inside a loop executed many times (hence ``static'' single assignment, not dynamic).
+
+\textbf{Why SSA is useful}: (1) Algorithms are simpler with one definition per variable. (2) Def-use chains avoid the $N \times M$ quadratic blowup of regular def-use chains. (3) Def-use structure mirrors the dominator tree. (4) Unrelated uses of the same source variable become different SSA variables.
+
+\subsection{Phi-Functions}
+
+When two control-flow paths merge, a \textbf{phi-function} selects the correct version: $a_3 \leftarrow \phi(a_1, a_2)$ yields $a_1$ if control arrives from predecessor 1 and $a_2$ from predecessor 2. Implemented as MOVE instructions on each incoming edge.
+
+\subsection{Converting to SSA Form}
+
+\textbf{Step 1 --- Insert phi-functions}: Use the \textbf{dominance frontier criterion}. Whenever node $x$ contains a definition of variable $a$, insert a phi-function for $a$ at every node in $\text{DF}[x]$. Iterate because phi-functions are themselves definitions.
+
+\textbf{Dominance frontier} of node $x$: $\text{DF}[x] = \{w \mid x$ dominates a predecessor of $w$ but does not strictly dominate $w\}$.
+
+\textbf{Computing DF} (Algorithm computeDF):
+\begin{lstlisting}
+computeDF[n] =
+  S <- {}
+  for each y in succ[n]           (* DF_local *)
+    if idom(y) != n: S <- S + {y}
+  for each child c of n in dom tree
+    computeDF[c]
+    for each w in DF[c]           (* DF_up *)
+      if n does not dominate w: S <- S + {w}
+  DF[n] <- S
+\end{lstlisting}
+
+\textbf{Algorithm 19.6} (insert phi-functions): For each variable $a$, maintain a work-list $W$ initialized to all nodes that define $a$. For each $n$ in $W$, for each $y \in \text{DF}[n]$, insert phi-function at $y$ (if not already present) and add $y$ to $W$.
+
+\textbf{Step 2 --- Rename variables} (Algorithm 19.7): Walk the dominator tree. For each definition, push a new subscript onto a per-variable stack. For each use, replace with the subscript at the top of the stack. For phi-function arguments, use the stack state at the corresponding predecessor.
+
+\textbf{Edge splitting}: For edge $a \to b$ where $a$ has multiple successors AND $b$ has multiple predecessors: insert empty node $z$ between them. This gives \textbf{edge-split SSA form}.
+
+\subsection{Efficient Dominator Computation (Lengauer-Tarjan)}
+
+\textbf{Semidominators}: $\text{semi}(n)$ is the node $s$ with smallest DFS number having a path to $n$ whose intermediate nodes are not ancestors of $n$ in the DFS tree.
+
+\textbf{Dominator theorem}: Let $y$ be the node with smallest-numbered semidominator on the spanning-tree path from $\text{semi}(n)$ to $n$. Then: $\text{idom}(n) = \text{semi}(n)$ if $\text{semi}(y) = \text{semi}(n)$; otherwise $\text{idom}(n) = \text{idom}(y)$.
+
+With path compression: $O(N \log N)$. With balanced path compression: $O(N \cdot \alpha(N))$ (practically linear).
+
+\subsection{Optimizations Using SSA}
+
+\textbf{Dead-code elimination} (Algorithm 19.12): If a variable's use list is empty, its definition is dead. Delete it and remove from use lists of variables it referenced. Work-list based, linear time.
+
+\textbf{Simple constant propagation}: If $v \leftarrow c$ (constant), substitute $c$ for every use of $v$. If $v \leftarrow \phi(c, c, \ldots, c)$ (all same constant), replace with $v \leftarrow c$. Also: copy propagation, constant folding, constant conditions, unreachable code elimination. All linear time.
+
+\textbf{Conditional constant propagation} (the least fixed point): Uses a \textbf{lattice} for each variable: $\bot$ (no evidence any assignment executes) $<$ $c$ (evidence of one constant value) $<$ $\top$ (overdefined / multiple values). Also tracks block executability: $E[B] = \text{false}$ (no evidence block executes) or $\text{true}$.
+
+11 rules drive the analysis. Key ideas: (1) Start assuming nothing is executable and no variable has a value ($V[v] = \bot$, $E[B] = \text{false}$). (2) Phi-functions ignore operands from unexecutable predecessors. (3) A branch with constant condition marks only the taken successor as executable.
+
+Implementation: Two work-lists $W_v$ (variables) and $W_b$ (blocks). $V[x]$ rises at most twice ($\bot \to c \to \top$). $E[B]$ changes at most once.
+
+\textbf{After analysis}: Delete blocks where $E[B] = \text{false}$. Substitute constants where $V[x] = c$.
+
+\subsection{Control-Dependence Graph}
+
+Node $y$ is \textbf{control-dependent} on $x$ if from $x$ we can branch to $u$ or $v$; from $u$ there is a path to exit avoiding $y$; from $v$ every path to exit hits $y$.
+
+\textbf{Construction}: (1) Add entry node $r$ with edges to start and exit. (2) Build reverse CFG $G'$. (3) Build dominator tree of $G'$. (4) Compute dominance frontiers $\text{DF}_{G'}$. (5) CDG edge $x \to y$ whenever $x \in \text{DF}_{G'}[y]$.
+
+\textbf{Aggressive dead-code elimination}: Mark live any statement that (1) has I/O or memory side effects, (2) defines a variable used by a live statement, or (3) is a branch on which a live statement is control-dependent. Delete all unmarked statements.
+
+\subsection{Memory in SSA}
+
+Treat memory as a single ``variable'': each store creates a new version ($M_1 \leftarrow \text{store}(M_0, i, 4)$), each load reads a version ($x \leftarrow \text{load}(M_1, j)$). Phi-functions placed at join points for memory versions.
+
+\textbf{Practical rule}: Store instructions are always presumed live. Never reorder loads and stores. Stores can only be deleted if unreachable.
+
+\subsection{Converting Back from SSA}
+
+Phi-functions $y \leftarrow \phi(x_1, x_2, \ldots)$ become move instructions: insert \texttt{y $\leftarrow$ $x_i$} at the end of the $i$th predecessor block. In edge-split SSA form, each predecessor has a unique successor, so no conflicts arise.
+
+For register allocation: rely on \textbf{coalescing} to eliminate the moves. Do not assume SSA variables from the same source variable can share a register---transformations may have made their live ranges interfere.
+
+\textbf{Liveness for SSA} (Algorithm 19.17): For each variable $v$, walk backward from each use, stopping at $v$'s (unique) definition. The dominance property ensures the walk stays in $v$'s dominated region. Running time proportional to interference graph size.
+
+\subsection{SSA and Functional Intermediate Form}
+
+Close relationship between SSA and functional programming: both have single-assignment variables. Each phi-containing node becomes a function whose parameters are the phi-targets. Jumps to that node become function calls. Tail calls correspond to gotos. All SSA-based optimizations work equally well on functional intermediate form.
+
 \end{multicols}
 \end{document}
