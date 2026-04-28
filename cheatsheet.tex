@@ -508,6 +508,8 @@ Key: check $i < h$ (strictly) BEFORE incrementing. If $i = h$, we've done the la
 
 \textbf{IMPORTANT}: If using index multiple times (bounds check + access), move it to a register first! An expression like (x:=x+1; x) would increment twice if evaluated twice.
 
+\textbf{Bounds check optimization note}: Ideally IR would have explicit bounds-checking primitives so later optimizer passes could eliminate redundant checks (e.g., in \texttt{for i:=0 to n}, the $i \geq 0$ check is always true). Appel's IR doesn't distinguish bounds checks from other CJUMPs, so later phases can't recognize and remove them.
+
 \subsection{Records}
 malloc, MOVE each field to MEM at offset. Access: MEM(base + offset). Offset known at compile time. No bounds check.
 
@@ -907,6 +909,8 @@ Block 1: \texttt{a = x*y} $\to$ loop (doesn't modify x,y) $\to$ Block 2: \texttt
 \subsection{How CSE Actually Works (Multiple Predecessors)}
 If x*y is available via different computations (\texttt{a=x*y} in one path, \texttt{b=x*y} in another): can't just use a or b directly (they may have changed). Solution: at each computation site, add \texttt{temp = result}. At use point, replace with \texttt{temp}. May introduce reg-to-reg moves (cheaper than multiply, may be eliminated by allocator).
 
+\textbf{CSE tradeoff -- live range extension}: CSE can extend a temp's live range across the entire program (keeping the computed value alive for later reuse). This increases register pressure and may force spills. Sometimes \textbf{re-computing is cheaper than spilling}.
+
 \subsection{Reaching Definitions}
 A definition ``$x$:=\ldots'' at line $L$ \textbf{reaches} a use of $x$ if there exists a path from $L$ to the use with no other definition of $x$.
 
@@ -1013,8 +1017,11 @@ Naive code computes \texttt{4*i} five times, \texttt{4*j} multiple times.
 \textbf{7. Comparison Replacement}: Replace \texttt{i >= j} with \texttt{t2 >= t4}. WARNING: \texttt{4*i >= 4*j} $\neq$ \texttt{i >= j} in fixed-width arithmetic due to overflow! But 4*i is an array index -- overflow would segfault first $\to$ safe here, but ``something to be wary of in general.''
 \end{exambox}
 
+\subsection{Optimization Pass Ordering}
+There is no single correct ordering of optimization passes. Optimizations can enable or conflict with each other (e.g., CSE extends live ranges $\to$ harder reg alloc; inlining enables more CSE). GCC runs three separate instruction scheduling passes. Iterating passes can help but has diminishing returns.
+
 \subsection{Loop Invariant Code Motion (LICM)}
-All defs reaching operands of expression come from outside loop AND expression has no side effects $\to$ can hoist before loop.
+An expression is \textbf{loop-invariant} if ALL reaching definitions of its operands come from \textbf{outside} the loop (uses Reaching Defs + Domination). If loop-invariant AND no side effects $\to$ can hoist before loop.
 
 \begin{exambox}[{Worked: LICM Danger -- Zero-Trip Loops}]
 \scriptsize
@@ -1302,6 +1309,12 @@ Alias analysis, precise liveness, optimal register allocation: all undecidable/N
   \item Reg alloc failure: spill to memory
 \end{itemize}
 ``The Turing cliff is always there'' -- trying to be perfect makes your analyzer loop forever.
+
+\subsection{Control Flow Analysis (k-CFA)}
+In functional languages, \texttt{f(x)} -- we may not know what \texttt{f} is (could be any lambda). Iterate to fixed point: start assuming f can be any lambda, narrow down. Also applies to OO languages with dynamic dispatch (what method does \texttt{obj.method()} call?). This was Olin Shivers' thesis: k-CFA (k=context depth).
+
+\subsection{Typing Derivation (Midterm-Style)}
+Each node in a derivation tree corresponds to a typing rule. For \texttt{r.x := f(a[3*2]) + g(y.x)}: root = assignment rule (LHS type = RHS type, result = unit). LHS: record field rule (\texttt{r.x} $\to$ int). RHS: plus rule (both sides int). Left of +: function app (\texttt{f} is int$\to$int, arg = array index: \texttt{a[3*2]} $\to$ int). Right of +: function app (\texttt{g} is string$\to$int, arg = record field: \texttt{y.x} $\to$ string). Show all work for partial credit.
 
 \subsection{CPS}
 \textbf{Confirmed NOT on exam.} (But: no function returns; every function takes continuation K. Tail call = pass K directly. Exceptions = two continuations. Used as IR in SML/NJ.)

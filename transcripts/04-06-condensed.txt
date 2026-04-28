@@ -1,0 +1,157 @@
+CONDENSED LECTURE: April 6 (Mon) -- Domination, Loop-Invariant Code Motion, Garbage Collection
+=================================================================================================
+
+COMPUTING DOMINATION (Data Flow / Fixed Point)
+-----------------------------------------------
+Definition: Node A dominates node B if every path from the entry node to B must go through A.
+
+Equation:
+  Dom(B) = {B} UNION ( INTERSECTION over all predecessors P of B: Dom(P) )
+
+- Use INTERSECTION because domination requires ALL paths to go through the node.
+- Rule of thumb: intersection => greatest fixed point; union => least fixed point.
+- Greatest fixed point: initialize Dom(B) = {all nodes} for every block.
+  - If you start with the empty set, you would incorrectly conclude nothing dominates cyclic nodes.
+- For the entry node: Dom(entry) = {entry} (nothing comes before it).
+- Process nodes in forward order (so predecessors are updated before successors).
+- Iterate until no sets change (fixed point reached).
+
+Worked example on a 10-node CFG:
+  Dom(1) = {1}
+  Dom(2) = {1, 2}
+  Dom(3) = {1, 3}
+  Dom(4) = {1, 3, 4}
+  Dom(5) = {1, 3, 4, 5}
+  Dom(6) = {1, 3, 4, 6}
+  Dom(7) = {1, 3, 4, 7}
+  Dom(8) = {1, 3, 4, 7, 8}
+  Dom(9) = {1, 3, 4, 7, 9}
+  Dom(10) = {1, 3, 4, 7, 9, 10}
+
+IDENTIFYING LOOPS VIA BACK EDGES
+---------------------------------
+A back edge is an edge from node X to node Y where Y dominates X.
+- 3 -> 3 is a back edge (3 dominates itself, self-loop).
+- 9 -> 1 is a back edge (1 dominates 9).
+- 10 -> 7 is a back edge (7 dominates 10).
+
+IMMEDIATE DOMINATOR
+--------------------
+The immediate dominator of node X (idom(X)) is:
+  - Not X itself.
+  - The closest dominator: i.e., of everything that dominates X (other than X), idom(X) is dominated by all the others.
+  - Example: Dom(7) = {1, 3, 4, 7}. idom(7) = 4, because 1 and 3 also dominate 4.
+
+Immediate dominators form a tree (the dominator tree).
+  - For any node, the path from root to that node in the dominator tree = its full dominator set.
+
+
+LOOP-INVARIANT CODE MOTION
+----------------------------
+Motivation: Loops are where efficiency gains matter. If a computation inside a loop does not change across iterations, move it outside.
+
+Example:
+  for i = 0 to n:
+    for j = 0 to m:
+      total += myarray[i][j]
+
+- myarray[i] does not change in the inner loop (only definitions reaching it come from outside the inner loop).
+- We want to hoist myarray[i] out of the inner loop.
+
+How to detect loop-invariant expressions:
+  - Use reaching definitions: if all definitions reaching a use come from outside the loop, that expression is loop-invariant.
+  - If a more complex expression has all sub-parts whose reaching definitions come from outside the loop, the whole expression is loop-invariant.
+
+DANGER of loop-invariant code motion:
+  - If the loop might execute ZERO times, hoisting code out can introduce exceptions that would not have occurred.
+  - Example: if myarray is null and m=0, the original code never accesses myarray[i] (inner loop body never executes). But the hoisted code would access myarray[i] before the loop, causing a null pointer exception / segfault.
+  - Similarly: dividing by m inside the loop is safe if m=0 (loop never executes), but hoisting it out causes division by zero.
+
+Solution:
+  - Convert while-loop to: if (condition) { do-while loop }
+  - The do-while loop guarantees at least one execution.
+  - The hoisted code goes between the if-check and the do-while.
+  - The loop-invariant expression becomes a very busy expression at that point (we know it will be computed).
+  - Very busy expressions analysis: tells us an expression WILL be computed on all paths forward -- useful here because in a do-while, we know the body executes at least once.
+  - The if-condition itself is also loop-invariant, so it can be pushed further out.
+
+Transformation steps:
+  1. Turn for-loop into: if (m > 0) { do { ... } while (j < m); }
+  2. Now the do-while body executes at least once, so myarray[i] is very busy.
+  3. Hoist p = myarray[i] between the if and the do-while.
+  4. Replace inner loop body: total += p[j]
+  5. The if-condition (m > 0) can also be hoisted out of the outer loop if it is invariant there.
+
+
+GARBAGE COLLECTION
+===================
+
+What is garbage?
+  - Anything that cannot affect the future computation of the program.
+  - Determining true garbage is UNDECIDABLE.
+  - Conservative approximation: unreachable objects (nothing points to them) are garbage.
+  - There may be reachable objects that are still garbage, but detecting those is undecidable.
+
+Why garbage collection matters (beyond just not leaking):
+  - Memory hierarchy / locality: accumulated garbage causes poor cache behavior.
+  - Pages with mixed live/garbage data waste cache lines and cause paging inefficiency.
+
+REFERENCE COUNTING
+-------------------
+Each object has a count of how many pointers reference it.
+- When count drops to 0, free the object and decrement counts of objects it points to (recursively).
+
+What p = q compiles into (with reference counting):
+  1. If q != null: increment q->refcount
+  2. If p != null: decrement p->refcount; if p->refcount == 0, recursively free p
+  3. p = q
+
+Overhead: A simple register-to-register move becomes ~3 branches, 2 loads, 2 stores, 2 arithmetic ops, plus the move.
+- For multithreaded code: need locks (atomic read-modify-write ~50 cycles each).
+- Overhead is huge for pointer-heavy code (linked lists, trees); small for arithmetic-heavy code (matrix multiply).
+
+Fatal flaw: CYCLES are never collected.
+  - If A points to B and B points to A, both have refcount >= 1 forever, even if nothing else references them.
+
+Summary: Conceptually simple. Very slow for pointer manipulation. Cannot collect cycles.
+Python uses reference counting.
+
+MARK AND SWEEP
+---------------
+Two phases: Mark, then Sweep.
+
+Root set: registers, stack frames, global data -- anything that can be a starting point to reach heap objects.
+
+Mark phase:
+  - DFS from root set through the heap.
+  - Mark every reachable object.
+  - The mark bit serves as the "visited" set (handles cycles).
+
+Sweep phase:
+  - Walk through the heap linearly (using object headers that contain size).
+  - Unmarked objects: put on free list.
+  - Marked objects: clear the mark bit (for next collection).
+
+Object headers contain: mark bit, object size, pointer bitmask (which fields are pointers).
+
+Pointer identification:
+  - Each object: bitmask in header (1 = pointer, 0 = not). For <= 32 fields, fits in one word.
+  - Stack frames: similar header/bitmask for which words are pointers.
+  - Register file: at each allocation site, store a bitmask (keyed by PC/return address) indicating which registers hold pointers.
+    - Implementation: table in memory keyed by PC after allocation call -> bitmask.
+    - Type info flows from IR translation through register allocation to build these bitmasks.
+
+Generating register bitmasks:
+  - Carry type info (pointer vs int) from IR translation down to register allocation.
+  - At each allocation site, the liveness + register mapping tells you which registers hold pointers.
+
+Cost analysis:
+  - Mark: O(live objects) -- DFS through reachable objects.
+  - Sweep: O(live + dead objects) = O(total heap).
+  - Amortized cost: (live + dead) / (total_heap - live) = total / free_space.
+  - Making heap bigger does NOT help much: numerator and denominator both grow.
+
+Downsides:
+  - Must stop the world during collection.
+  - For real-time systems, the pause can be problematic.
+  - Concurrent collection exists but is very hard (program modifies state while collector runs).

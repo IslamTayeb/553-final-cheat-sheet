@@ -1,0 +1,191 @@
+CONDENSED LECTURE: April 8 (Wed) -- Stop-and-Copy GC, Generational GC, Continuation Passing Style
+====================================================================================================
+
+REVIEW: GARBAGE COLLECTION SO FAR
+-----------------------------------
+Reference counting: slow (overhead on every pointer manipulation), cannot collect cycles.
+Mark and sweep: DFS from root set marks reachable objects; sweep walks heap linearly, frees unmarked objects, clears marks.
+
+STOP AND COPY GARBAGE COLLECTION
+----------------------------------
+Heap is divided into two halves: ACTIVE half and INACTIVE half.
+
+Allocation:
+  - Objects are allocated linearly (bump pointer) in the active half.
+  - Allocation is just: increment pointer, check it didn't fall off the end.
+  - This makes heap allocation as fast as stack allocation.
+
+When allocation fails (active half is full):
+  1. Starting from the root set, copy all LIVE objects to the inactive half (via DFS or BFS).
+  2. Dead objects are NEVER touched (unlike mark-and-sweep which must traverse them during sweep).
+  3. Each copied object leaves behind a FORWARDING POINTER in its old location.
+     - If another reference to that object is encountered during traversal, the forwarding pointer is used instead of copying again.
+  4. Update all pointers (root set, inter-object references) to point to the new locations.
+  5. Swap roles: the inactive half becomes active; the old active half becomes inactive (its contents are now meaningless bits).
+  6. Retry the failed allocation from the new active half.
+
+Worked example:
+  - Root set points to D and G. D references B, B references A. G also references B.
+  - Copy D to inactive half, then B (D references it), then A (B references it). Leave forwarding pointers.
+  - Copy G. G references B, but B already copied -- use forwarding pointer, don't copy again.
+  - Objects C, E, F are dead -- never even looked at.
+
+Advantages:
+  - No fragmentation: automatic compaction (all live objects are contiguous after copy).
+  - Super fast allocation: just bump a pointer (as fast as stack allocation).
+  - Only touches live objects (dead objects are never examined).
+  - Objects that reference each other end up adjacent in memory -- good for cache locality.
+
+Disadvantages:
+  - WASTES HALF THE HEAP (inactive half is unused space).
+  - Copying cost (though most objects are small, ~16 bytes, so constant factor is small).
+  - Cache disruption from moving objects to new locations (all cached copies invalidated).
+
+Cost: proportional to live objects only (not dead objects).
+
+
+GENERATIONAL GARBAGE COLLECTION
+---------------------------------
+Key insight: combine the best of stop-and-copy and mark-and-sweep.
+
+Structure (multiple generations):
+  Generation 0 ("nursery"): small (e.g., 256 KB), uses stop-and-copy.
+  Generation 1: medium (e.g., 4 MB), uses mark-and-sweep.
+  Generation 2: large (e.g., 6 GB), uses mark-and-sweep.
+
+Lifecycle of objects:
+  - New objects are allocated in generation 0 (fast bump-pointer allocation).
+  - After surviving N collections in gen 0, objects are promoted to gen 1.
+  - After surviving M collections in gen 1, promoted to gen 2.
+  - Survival count stored in object header (e.g., 2 bits for "survive 3 times").
+
+INFANT MORTALITY principle:
+  - Newly allocated objects are very likely to become garbage quickly.
+  - The longer an object survives, the longer it is likely to continue surviving.
+  - Gen 0 will have ~95%+ garbage at collection time.
+
+Why this is efficient:
+  - Gen 0 collections are very frequent but very fast:
+    - Small space (256 KB fits in L2 cache -- all loads/stores are cache hits).
+    - ~95% garbage means only ~5% (~12 KB) of live data to copy.
+    - Wasting 256 KB (inactive half of nursery) is negligible.
+  - Gen 1 fills very slowly (only ~5% of gen 0 data survives each collection).
+  - Gen 2 fills even more slowly; collected very rarely.
+
+Sizing gen 0 to fit in L2 cache:
+  - E.g., 512 KB L2 cache -> 256 KB per half.
+  - All copying happens within L2 -- no memory bandwidth consumed, loads/stores are fast.
+  - Wasting 256 KB is trivial compared to overall memory usage.
+
+Special permanent generation:
+  - Some objects (e.g., Java class objects, method objects) will never die.
+  - These go in a special region that is never garbage collected.
+
+THE HARD PART: Pointers from older generations to younger generations
+  - Young-to-old pointers: no problem (when collecting young gen, we trace through old gen as part of root set).
+  - Old-to-young pointers: problematic. If an old object is the only reference keeping a young object alive, we'd have to scan the entire old generation to find it -- defeating the performance benefit.
+
+In purely functional languages (e.g., Haskell): this can't happen.
+  - Objects can only reference objects older than themselves (no mutation after creation).
+  - Old objects cannot be modified to point to new objects.
+
+For languages with mutation:
+  - Use page table tricks via mprotect():
+    1. Mark the older generation's memory pages as READ-ONLY.
+    2. If a write to the older generation occurs (creating an old-to-young pointer), it triggers a SIGSEGV.
+    3. Catch the SIGSEGV, record which page was written, mark that page as WRITABLE.
+    4. Maintain a vector/list of "dirty pages" that need special treatment during young-gen collection.
+    5. Only scan those dirty pages (not the entire old generation) for old-to-young pointers.
+  - This uses standard Unix system calls (mprotect). No special hardware needed.
+
+Promoting objects to older generations:
+  - When moving an object (e.g., D) to an older generation, also move everything it references (B, A).
+  - Rationale: if D is long-lived, objects it references are also likely long-lived.
+  - Set a flag during collection: "recurse with move to older generation."
+
+
+CONTINUATION PASSING STYLE (CPS)
+==================================
+Core idea: Functions NEVER return. Instead, each function receives an extra parameter -- a "continuation" (function K) -- and calls K with its result when done.
+
+CPS Factorial (head-recursive):
+  factorial(n, K) =
+    leq(n, 0, lambda b.          -- compute n <= 0, pass result to continuation
+      if b then K(1)             -- base case: "return" 1 by calling K(1)
+      else
+        minus(n, 1, lambda r.    -- compute n-1, pass result to continuation
+          factorial(r, lambda answer.  -- recurse with n-1
+            times(answer, n, K)  -- multiply answer*n, then call K with result
+          )
+        )
+    )
+
+- This is HEAD-recursive because the recursive call's continuation is NOT K -- there is work to do after (the multiplication).
+- Every primitive operation (<=, -, *) also takes a continuation.
+
+CPS Factorial (tail-recursive):
+  factorial_tail(n, answer, K) =
+    leq(n, 0, lambda b.
+      if b then K(answer)        -- base case: "return" accumulated answer
+      else
+        minus(n, 1, lambda r.    -- compute n-1
+          times(n, answer, lambda p.  -- compute n*answer
+            factorial_tail(r, p, K)   -- recurse: continuation IS K (tail call)
+          )
+        )
+    )
+
+- This is TAIL-recursive because the recursive call passes K directly as its continuation.
+- Tail calls are identified trivially in CPS: if the continuation passed to a recursive/function call IS the same K that was received, it's a tail call.
+
+Detecting tail calls in CPS:
+  - If a function call passes a DIFFERENT continuation than its own K: head recursive (work remains after return).
+  - If a function call passes the SAME K: tail call (nothing left to do -- optimizable to a jump).
+
+Multiple return values:
+  - K can take multiple parameters: K(a, b) instead of K(a). Equivalent to returning a tuple.
+
+CPS and Exceptions:
+  - try F(x) catch handler  becomes:
+    - F receives TWO continuations: a normal continuation (for return) and an exception continuation (for throw).
+    - Throwing an exception = calling the exception continuation.
+    - Normal return = calling the normal continuation.
+    - No stack unwinding needed; it's just a function call.
+
+Program termination in CPS:
+  - The top-level continuation is exit (or a print-then-exit chain).
+  - Example main: factorial(3, lambda a. print_int(a, lambda _. exit(0)))
+  - exit has type: int -> bottom (never returns).
+
+Why CPS is useful for compilers:
+  1. Makes execution order completely explicit (no implicit "what happens after return").
+  2. Tail calls are trivially identifiable (continuation is unchanged).
+  3. Functional language compilers (e.g., SML/NJ) use CPS as their intermediate representation.
+  4. Exceptions are just calling a different continuation (no complex stack unwinding).
+  5. In SML/NJ: stack frames are allocated on the heap and garbage collected.
+     - With young-generation stop-and-copy, heap allocation is as fast as stack allocation.
+     - Closures, non-local control flow, exception handling all "just work" via GC.
+
+Curry-Howard correspondence and CPS:
+  - not P  is equivalent to  P -> false.
+  - false corresponds to non-termination (a function that never returns).
+  - A continuation K: int -> false  has type  not(int).
+  - A CPS-converted function f(K: int->false): false  has type  (int->false) -> false  =  not(not(int)).
+  - Therefore: CPS conversion corresponds to DOUBLE NEGATION of all types in the Curry-Howard isomorphism.
+
+
+CONTROL FLOW ANALYSIS (CFA) for Functional/OO Languages
+---------------------------------------------------------
+Problem: In functional languages, f(x) -- we don't necessarily know what f is (it could be any lambda passed as a parameter).
+  - Can't build a call graph or control flow graph without knowing what f is.
+  - Determining what f could be requires knowing the data flow, which requires the control flow -> circular dependency.
+
+Solution: Iterate to a fixed point.
+  - Start: assume f could be ANY lambda in the program.
+  - Propagate: for each call site, narrow down which lambdas could flow there.
+  - Repeat until convergence.
+
+This is Control Flow Analysis (CFA), specifically k-CFA (where k = amount of calling context tracked).
+  - Enables optimizations in functional languages that were previously impossible.
+  - Also applies to object-oriented languages: object.method() -- which method is called depends on the dynamic type.
+  - Same analysis determines which types can reach a call site, resolving dynamic dispatch.

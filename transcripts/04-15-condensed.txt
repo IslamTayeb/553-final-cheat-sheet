@@ -1,0 +1,193 @@
+CONDENSED LECTURE: April 15 (Wed) -- Final Exam Review
+========================================================
+
+REGISTER ALLOCATION
+--------------------
+Process:
+  1. Build an interference graph from liveness information.
+  2. Simplify: repeatedly remove nodes with degree < K (number of available colors/registers).
+     - Push removed nodes onto a stack.
+     - Removing a node decreases its neighbors' degrees, potentially making more nodes removable.
+  3. Select: pop nodes from stack, assign colors. Each node gets a color not used by any already-colored neighbor.
+
+Spilling:
+  - If no node has degree < K, pick a node to potentially spill (mark with *).
+  - Continue simplification. When popping back, if no color is available for the spilled node, it stays uncolored.
+  - To actually handle a spill: insert loads before uses and stores after definitions of the spilled variable, then redo register allocation.
+  - Actual spill handling (rewriting code with extra loads/stores) is extra credit for the compiler project, not required for the exam.
+
+Coalescing heuristics (George and Briggs):
+  Briggs: When considering coalescing nodes A and B into one node, count how many neighbors of the combined node have non-trivial degree (>= K). If that count < K, safe to coalesce (the combined node can still be simplified).
+
+  George (asymmetric): When coalescing A into B, examine all neighbors of A. Each neighbor must either:
+    - Already have trivial degree (< K), OR
+    - Already be a neighbor of B.
+  If ALL of A's neighbors satisfy one of these conditions, safe to coalesce. (Can also check the other direction: B into A.)
+
+  You don't need to memorize which name is which, but you should be able to apply both heuristics.
+
+
+LIVENESS ANALYSIS (Block-Level then Instruction-Level)
+-------------------------------------------------------
+Block-level: compute live-in and live-out for each basic block (faster than per-instruction).
+
+Instruction-level from block-level:
+  - Start with the live-out set at the bottom of the block.
+  - Walk backwards through instructions.
+  - For each instruction: KILL what it writes (remove from live set), GEN what it reads (add to live set).
+
+Worked example:
+  Block:
+    x = q + a
+    y = c * 3
+    q = 5
+    a = b
+
+  Live-out = {x, y, u}
+
+  After "a = b":    kills a, gens b        -> live = {x, y, u, b}      (but a not in live-out, so no change from kill)
+                    Actually: live = {i, z, b} ...
+
+  [Corrected walkthrough from lecture]:
+  Start: live-out = {x, y, u}
+  Before "a = b":     kill a, gen b     -> {x, y, u, b}  (a wasn't live, no effect from kill)
+                      Actually the lecture had different variables. Working from the transcript:
+
+  Instruction sequence (bottom to top):
+    q = 5         -- kills q
+    y = c * 3     -- kills y, gens c (and 3 is constant)
+    x = q + a     -- kills x, gens q and a
+
+  Live-out = {x, y, u}
+  After last instruction (bottom): kills x, gens q and a -> {y, u, q, a}
+  After y = c * 3: kills y, gens c -> {u, q, a, c}     (actually gens z per lecture)
+  After q = 5: kills q -> {u, a, c}                     (gens nothing, 5 is constant)
+  After a = b: kills a, gens b -> {u, c, b}
+
+  The result should equal the block's live-in.
+
+Interference graph construction:
+  - When an instruction writes to variable X, X interferes with everything that is live immediately after that instruction.
+  - Exception: if X is not live after its own definition, it does not interfere with variables that are also not live.
+  - Two variables can share a register if they are never simultaneously live (no interference edge).
+  - Example: "a = b * 3" -- the write to a happens AFTER the read of b. So if b dies here, a and b do NOT interfere (could use the same register).
+
+
+FOUR CLASSIC DATA FLOW ANALYSES
+---------------------------------
+
+1. AVAILABLE EXPRESSIONS
+   Purpose: Common subexpression elimination.
+   - An expression (e.g., x*y) is "available" at a point if ALL paths to that point have computed it and its operands (x, y) have not been redefined since.
+   Direction: Forward.
+   Meet operator: INTERSECTION (must be available on ALL paths).
+   Fixed point: Greatest (start with all expressions available everywhere).
+   Gen: computing an expression generates its availability.
+   Kill: writing to any operand of an expression kills its availability.
+   Equations:
+     AE_in(B) = INTERSECTION over predecessors P: AE_out(P)
+     AE_out(B) = (AE_in(B) - Kill(B)) UNION Gen(B)
+   Optimization: If x*y is available, reuse the previously computed value instead of recomputing.
+
+2. REACHING DEFINITIONS
+   Purpose: Constant propagation, copy propagation, live range splitting, dead code elimination, detecting uninitialized variables.
+   - A definition "reaches" a point if there exists SOME path from the definition to that point where the variable is not redefined.
+   Direction: Forward.
+   Meet operator: UNION (if a definition reaches via ANY path, it reaches).
+   Fixed point: Least (start with empty sets).
+   Equations:
+     RD_in(B) = UNION over predecessors P: RD_out(P)
+     RD_out(B) = (RD_in(B) - Kill(B)) UNION Gen(B)
+
+3. LIVENESS (Live Variables)
+   Purpose: Register allocation.
+   - A variable is "live" at a point if there exists some path forward where it is used before being redefined.
+   Direction: Backward.
+   Meet operator: UNION over successors (if live in ANY successor, it's live here).
+   Fixed point: Least (start with empty sets).
+   Equations:
+     Live_out(B) = UNION over successors S: Live_in(S)
+     Live_in(B) = (Live_out(B) - Kill(B)) UNION Gen(B)
+
+4. VERY BUSY EXPRESSIONS
+   Purpose: Code hoisting (e.g., loop-invariant code motion safety).
+   - An expression is "very busy" at a point if it WILL be computed on ALL paths forward before any of its operands are redefined.
+   Direction: Backward.
+   Meet operator: INTERSECTION (must be computed on ALL forward paths).
+   Fixed point: Greatest (start assuming all expressions are very busy everywhere).
+   Use: When hoisting code out of a loop, verify the expression is very busy to ensure we're not introducing unnecessary computation.
+
+
+IR TRANSLATION
+---------------
+Given Tiger code, produce the corresponding IR tree.
+
+Example:
+  Tiger: a.x := f(a.y, a.z * 3)
+  Suppose a is a record {x, y, z} with a in temp 100, a.y in temp 101, a.z in temp 102.
+  Field offsets: x at offset 0, y at offset 4, z at offset 8.
+
+  IR tree:
+    MOVE(
+      MEM(BINOP(PLUS, TEMP(100), CONST(0))),     -- a.x (destination)
+      CALL(f,
+        MEM(BINOP(PLUS, TEMP(100), CONST(4))),    -- a.y (first argument)
+        BINOP(TIMES,
+          MEM(BINOP(PLUS, TEMP(100), CONST(8))),   -- a.z
+          CONST(3)                                  -- * 3
+        )
+        -- or equivalently: BINOP(TIMES, CONST(3), CONST(4)) if 3 means "third field" and we multiply by word size 4
+      )
+    )
+
+  Could also be asked in reverse: given an IR tree, produce the corresponding Tiger code.
+
+
+STATIC LINKS (Nested Functions / Frame Layout)
+------------------------------------------------
+For languages with nested function scopes (like Tiger):
+  - Accessing a variable in your own frame: relative to your frame pointer.
+  - Accessing a variable in your parent's frame: follow 1 static link to get parent's frame pointer, then access relative to that.
+  - Accessing a variable N levels out: follow N static links.
+
+When calling functions:
+  - Calling a CHILD function: pass your own frame pointer as its static link.
+  - Calling a SIBLING function (same parent, or recursive call): pass your static link as its static link.
+  - Calling a function N levels outward: follow N static links to find the right frame pointer to pass.
+
+
+GARBAGE COLLECTION (Exam-Relevant Summary)
+--------------------------------------------
+Three algorithms: Reference Counting, Mark-and-Sweep, Stop-and-Copy.
+Plus: Generational Garbage Collection (combining them).
+
+Be able to:
+  - Describe how each algorithm works.
+  - Explain trade-offs: why prefer stop-and-copy over mark-and-sweep (and vice versa)?
+  - Draw a picture of generational GC.
+  - Explain what's hard about generational GC (old-to-young pointers).
+
+LOOP INVARIANT CODE MOTION (Exam-Relevant)
+--------------------------------------------
+Be able to:
+  - Identify which lines of code are loop-invariant.
+  - Explain where they can be moved.
+  - Identify what is dangerous about moving them (exception behavior if loop executes 0 times).
+  - Explain how to correct for that danger (if-guarded do-while transformation).
+
+NOTES POLICY FOR FINAL
+------------------------
+Same as midterm: unlimited handwritten notes allowed.
+
+EXAM FORMAT
+------------
+- Longer than midterm (final exam slot is ~2.5x class period) but not intended to be 2.5x as long.
+- Questions will be focused/targeted rather than open-ended "optimize this code."
+- Examples of question styles:
+  - Given code, compute available expressions at each block. Then identify and eliminate common subexpressions.
+  - Given a loop, identify invariant code, explain dangers of hoisting, explain how to fix.
+  - Given an interference graph, perform register allocation (with potential spills marked).
+  - Given Tiger code, write the IR tree (or vice versa).
+  - Describe garbage collection algorithms and their trade-offs.
+- NOT on the exam: dynamic programming for instruction selection, writing CPS conversions, writing a complete GC runtime in C++.
+- Continuation passing style: will NOT be asked (too likely to cause confusion during timed exam).
